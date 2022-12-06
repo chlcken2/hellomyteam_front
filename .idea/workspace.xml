@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="43b999e6-fe43-469e-a197-dde9b0b367f0" name="Changes" comment="release.yml hellomyteam-front-release 네임 수정">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,7 +12,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature/comm" />
+        <entry key="$PROJECT_DIR$" value="release/1.0" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -28,10 +27,6 @@
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
-  </component>
-  <component name="ProjectId" id="2IWyZgaUXn6BkdhSk2tzPETC8Ee" />
-  <component name="ProjectViewState">
-    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
@@ -60,7 +55,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="release/1.0" />
+                        <option value="main" />
                       </list>
                     </value>
                   </entry>

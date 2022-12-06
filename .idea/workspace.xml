@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43b999e6-fe43-469e-a197-dde9b0b367f0" name="Changes" comment="release.yml hellomyteam-front-release 네임 수정">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +42,14 @@
       <option name="presentableId" value="Default" />
       <updated>1670311692767</updated>
     </task>
+    <task id="LOCAL-00001" summary="feature : .gitignore에 .idea추가">
+      <created>1670314000082</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1670314000082</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -55,7 +63,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="release/1.0" />
                       </list>
                     </value>
                   </entry>
@@ -69,6 +77,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="이그노어 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="이그노어 추가" />
+    <MESSAGE value="feature : .gitignore에 .idea추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature : .gitignore에 .idea추가" />
   </component>
 </project>

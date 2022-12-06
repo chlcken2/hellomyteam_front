@@ -12,7 +12,7 @@ function App() {
 
     return (
         <div>
-            22년 백엔드에서 가져온 데이터입니다 : {hello}
+            23년 백엔드에서 가져온 데이터입니다 : {hello}
         </div>
     );
 }

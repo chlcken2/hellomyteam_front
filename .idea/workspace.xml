@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="43b999e6-fe43-469e-a197-dde9b0b367f0" name="Changes" comment="feat(app, index): 기본 default base 작성">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/reportWebVitals.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/setProxy.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/setupTests.js" beforeDir="false" />
+    <list default="true" id="43b999e6-fe43-469e-a197-dde9b0b367f0" name="Changes" comment="feat(app, index): js =&gt; tsx 형식으로 변경">
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/index.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/logo.svg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +31,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2IWyZgaUXn6BkdhSk2tzPETC8Ee" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
@@ -56,7 +55,7 @@
       <option name="presentableId" value="Default" />
       <updated>1670311692767</updated>
       <workItem from="1670425499582" duration="840000" />
-      <workItem from="1670426402222" duration="213000" />
+      <workItem from="1670426402222" duration="611000" />
     </task>
     <task id="LOCAL-00001" summary="feat: ts 관련 라이브러리 의존성 추가 및 config 작성">
       <created>1670425779074</created>
@@ -72,7 +71,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670426150186</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="feat(app, index): js =&gt; tsx 형식으로 변경">
+      <created>1670426639917</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1670426639917</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -105,6 +111,7 @@
     <MESSAGE value="이그노어 추가" />
     <MESSAGE value="feat: ts 관련 라이브러리 의존성 추가 및 config 작성" />
     <MESSAGE value="feat(app, index): 기본 default base 작성" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(app, index): 기본 default base 작성" />
+    <MESSAGE value="feat(app, index): js =&gt; tsx 형식으로 변경" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(app, index): js =&gt; tsx 형식으로 변경" />
   </component>
 </project>

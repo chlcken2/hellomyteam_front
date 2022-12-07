@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="43b999e6-fe43-469e-a197-dde9b0b367f0" name="Changes" comment="release.yml hellomyteam-front-release 네임 수정">
+    <list default="true" id="43b999e6-fe43-469e-a197-dde9b0b367f0" name="Changes" comment="test github action">
       <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

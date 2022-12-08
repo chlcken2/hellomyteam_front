@@ -8,7 +8,8 @@ const App: React.FC = () => {
   const defaultFetchFunc = (): void => {
     if (DEV_BASE_URL) {
       axios
-        .get(`${DEV_BASE_URL}/api/hello`)
+        // .get(`${DEV_BASE_URL}/api/hello`)
+        .get('/api/hello')
         .then((response) => setHello(response.data))
         .catch((error) => console.log(error));
     }

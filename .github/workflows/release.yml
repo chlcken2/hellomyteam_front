@@ -1,8 +1,6 @@
 name: FRONTEND-Release-Deploy # Workflow 이름
 on: # Event 감지
   push:
-    paths:
-      - "/frontend/**"
     branches:
       - release # 릴리즈 브랜치의 푸쉬가 일어날 때 CI/CD를 진행하겠다는 뜻
 jobs: # Job 설정

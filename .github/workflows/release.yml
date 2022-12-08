@@ -15,7 +15,7 @@ jobs: # Job 설정
         run: yarn install --frozen-lockfile
       - name: Build # React Build
         run: | 
-            cd hellomyteam_front/fronted
+            cd fronted
             yarn build
       - name: zip create
         run:  zip -qq -r ./hellomyteam-front-release.zip .
@@ -38,4 +38,4 @@ jobs: # Job 설정
           —application-name hellomyteam-webservice
           —deployment-config-name CodeDeployDefault.AllAtOnce
           —deployment-group-name hellomyteam-webservice-group
-          —s3-location bucket=hellomyteam-github-action-s3-bucket,key=fronted/hellomyteam-front-release.zip,bundleType=zip
+          —s3-location bucket=hellomyteam-github-action-s3-bucket,key=hellomyteam-front-release/hellomyteam-front-release.zip,bundleType=zip

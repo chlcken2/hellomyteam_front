@@ -7,6 +7,7 @@ on: # Event 감지
 jobs: # Job 설정
   build:
     runs-on: ubuntu-latest
+    cd: fronted
     steps:
       - name: Checkout source code. # Repo checkout
         uses: actions/checkout@v2

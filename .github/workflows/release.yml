@@ -8,7 +8,7 @@ jobs: # Job 설정
   deploy:
     runs-on: ubuntu-latest
     env:
-      working-directory: ./fronted
+      working-directory: fronted
 
     steps:
       - name: Checkout source code. # Repo checkout

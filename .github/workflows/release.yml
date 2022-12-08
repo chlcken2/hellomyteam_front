@@ -5,7 +5,7 @@ on: # Event 감지
       - release/1.0 # 마스터 브랜치의 푸쉬가 일어날 때 CI/CD를 진행하겠다는 뜻
 
 jobs: # Job 설정
-  build:
+  deploy:
     runs-on: ubuntu-latest
     env:
       working-directory: /fronted

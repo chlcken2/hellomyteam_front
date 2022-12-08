@@ -37,4 +37,4 @@ run: |
     --application-name hellomyteam-webservice
     --deployment-config-name CodeDeployDefault.AllAtOnce
     --deployment-group-name hellomyteam-webservice-group
-    --s3-location bucket=hellomyteam-github-action-s3-bucket,key=hellomyteam/hellomyteam.zip,bundleType=zip
+    --s3-location bucket=hellomyteam-github-action-s3-bucket,key=hellomyteam-front-release/hellomyteam-front-release.zip,bundleType=zip

@@ -2,11 +2,10 @@ name: FRONTEND-Release-Deploy # Workflow 이름
 on: # Event 감지
   push:
     branches:
-      - release
+      - release # 릴리즈 브랜치의 푸쉬가 일어날 때 CI/CD를 진행하겠다는 뜻
 jobs:
   build:
     runs-on: ubuntu-latest # (4) 해당 스크립트를 작동할 OS 입니다.
-
     steps:
       - name: Checkout source code. # Repo checkout
         uses: actions/checkout@v2

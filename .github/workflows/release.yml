@@ -9,7 +9,7 @@ jobs: # Job 설정
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./fronted
+        working-directory: fronted
     steps:
       - name: Checkout source code. # Repo checkout
         uses: actions/checkout@v2

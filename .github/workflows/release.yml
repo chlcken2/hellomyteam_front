@@ -1,27 +1,49 @@
-name: Test deploy                    # Workflow 이름
-on:                                  # Event 감지
+name: FRONTEND-Release-Deploy # Workflow 이름
+on: # Event 감지
   push:
     branches:
-      - release
-jobs:                                # Job 설정
+      - release/1.0 # 마스터 브랜치의 푸쉬가 일어날 때 CI/CD를 진행하겠다는 뜻
+
+jobs: # Job 설정
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source code.   # Repo checkout
-        uses: actions/checkout@v2
-
-      - name: Check Node v            # Node v 확인
+      - name: Checkout source code. # Repo checkout
+        uses: actions/setup-node@v3
+        with:
+          token: ${{ secrets.GH_DOTCOM_TOKEN }}
+          node-version: 16
+      - name: Check Node v # Node v 확인
         run: node -v
-
-      - name: Install Dependencies    # 의존 파일 설치
+      - name: Install Dependencies # 의존 파일 설치
         run: yarn install --frozen-lockfile
 
-      - name: Build                   # React Build
+      - name: Build # React Build
         run: yarn build
 
-      - name: Deploy                  # Upload build file to S3
+      - name: zip create
+        run:  zip -qq -r ./hellomyteam-front-release.zip .
+        working-directory: fronted
+        shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload to S3 # Upload build file to S3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          run: aws s3 cp --region ap-northeast-2 ./$PROJECT_NAME.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$PROJECT_NAME.zip  #(14)
+          aws s3 cp —region ap-northeast-2 ./hellomyteam-front-release.zip s3://hellomyteam-github-action-s3-bucket/hellomyteam-front-release/hellomyteam-front-release.zip
+        working-directory: fronted
+      - name: Deploy # Deploy to EC2
+        run: aws deploy create-deployment
+          —application-name hellomyteam-webservice
+          —deployment-config-name CodeDeployDefault.AllAtOnce
+          —deployment-group-name hellomyteam-webservice-group
+          —s3-location bucket=hellomyteam-github-action-s3-bucket,key=hellomyteam-front-release/hellomyteam-front-release.zip,bundleType=zip
+        working-directory: fronted

@@ -20,7 +20,7 @@ jobs: # Job 설정
 
       - name: Build # React Build
         run: yarn build
-        working-directory: ./fronted
+        working-directory: fronted
 
       - name: zip create
         run:  zip -qq -r ./hellomyteam-front-release.zip .

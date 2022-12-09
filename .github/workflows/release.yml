@@ -20,7 +20,7 @@ jobs: # Job 설정
 
       - name: Build # React Build
         run: |
-          cd app
+          cd fronted
           yarn build                  
 
       - name: zip create

@@ -53,9 +53,5 @@ jobs: # Job 설정
         working-directory: frontend
 
       - name: Deploy # Deploy to EC2
-        run: aws deploy create-deployment
-          —application-name hellomyteam-webservice
-          —deployment-config-name CodeDeployDefault.AllAtOnce
-          —deployment-group-name hellomyteam-webservice-group
-          —s3-location bucket=hellomyteam-github-action-s3-bucket,key=hellomyteam-front-release/hellomyteam-front-release.zip,bundleType=zip
+        run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $CODE_DEPLOY_GROUP_NAME --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$PROJECT_NAME.zip    #(16
         working-directory: frontend

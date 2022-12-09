@@ -9,6 +9,9 @@ jobs: # Job 설정
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code. # Repo checkout
+        uses: actions/checkout@v3
+
+      - name: setup node. # Repo checkout
         uses: actions/setup-node@v3
         with:
           token: ${{ secrets.GH_DOTCOM_TOKEN }}

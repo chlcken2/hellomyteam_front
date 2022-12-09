@@ -38,12 +38,12 @@ jobs: # Job 설정
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          aws s3 cp —region ap-northeast-2 ./hellomyteam-front-release.zip s3://hellomyteam-github-action-s3-bucket/hellomyteam-front-release/hellomyteam-front-release.zip
+          aws s3 cp —region ap-northeast-2 ./hellomyteam-front-release.zip s3://hellomyteam-github-action-s3-bucket/hellomyteam_front/hellomyteam_front.zip
         working-directory: fronted
       - name: Deploy # Deploy to EC2
         run: aws deploy create-deployment
           —application-name hellomyteam-webservice
           —deployment-config-name CodeDeployDefault.AllAtOnce
           —deployment-group-name hellomyteam-webservice-group
-          —s3-location bucket=hellomyteam-github-action-s3-bucket,key=hellomyteam-front-release/hellomyteam-front-release.zip,bundleType=zip
+          —s3-location bucket=hellomyteam-github-action-s3-bucket,key=hellomyteam_front/hellomyteam_front.zip,bundleType=zip
         working-directory: fronted

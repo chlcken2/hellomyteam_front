@@ -45,7 +45,7 @@ jobs: # Job 설정
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           S3_BUCKET_NAME: hellomyteam-github-action-s3-bucket
-          PROJECT_NAME: hellomyteam
+          PROJECT_NAME: hellomyteam-front-release
           CODE_DEPLOY_APP_NAME: hellomyteam-webservice
           CODE_DEPLOY_GROUP_NAME: hellomyteam-webservice-group
 #        run: aws s3 cp —region ap-northeast-2 ./hellomyteam-front-release.zip s3://hellomyteam-github-action-s3-bucket/hellomyteam-front-release/hellomyteam-front-release.zip

@@ -19,8 +19,9 @@ jobs: # Job 설정
         run: yarn install --frozen-lockfile
 
       - name: Build # React Build
-        run: yarn build
-        cd: fronted
+        run: |
+          cd app
+          yarn build                  
 
       - name: zip create
         run:  zip -qq -r ./hellomyteam-front-release.zip .

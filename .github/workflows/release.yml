@@ -19,10 +19,11 @@ jobs: # Job 설정
         run: yarn install --frozen-lockfile
 
       - name: Build # React Build
-        run: cd fronted && yarn build
+        run: yarn build
+        working-directory: fronted
 
       - name: zip create
-        run:  zip -qq -r ./hellomyteam-front-release.zip .
+        run:  zip -qq -r ./hellomyteam_front.zip .
         working-directory: fronted
         shell: bash
 
@@ -38,7 +39,7 @@ jobs: # Job 설정
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          aws s3 cp —region ap-northeast-2 ./hellomyteam-front-release.zip s3://hellomyteam-github-action-s3-bucket/hellomyteam_front/hellomyteam_front.zip
+          aws s3 cp —region ap-northeast-2 ./hellomyteam_front.zip s3://hellomyteam-github-action-s3-bucket/hellomyteam_front/hellomyteam_front.zip
         working-directory: fronted
       - name: Deploy # Deploy to EC2
         run: aws deploy create-deployment

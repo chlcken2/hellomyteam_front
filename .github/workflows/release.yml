@@ -12,6 +12,8 @@ jobs: # Job 설정
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: 'npm'
+          cache-dependency-path: fronted/package-lock.json
       - run: npm ci
       - run: npm test
       - name: Checkout source code. # Repo checkout

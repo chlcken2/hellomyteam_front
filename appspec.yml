@@ -4,7 +4,7 @@ files:
   - source: /
     destination: /home/ec2-user/app/step2/myappF
     overwrite: yes
-file_exists_behavior: OVERWRITE
+
 permissions:
 #  - object: /
   - object: /home/ec2-user/app/step2/myappF
@@ -13,7 +13,7 @@ permissions:
     group: ec2-user
 
 hooks:
-  ApplicationStart:
+  BeforeInstall:
+    - location: beforeInstall.bash
+  AfterInstall:
     - location: deploy.sh
-      timeout: 60
-      runas: ec2-user

@@ -30,6 +30,7 @@ jobs:
 
       - name: Start Build with npm
         run: npm run bhild
+        working-directory: frontend
         env:
           CI: false
 

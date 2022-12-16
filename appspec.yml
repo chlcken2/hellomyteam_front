@@ -7,7 +7,7 @@ files:
 
 permissions:
 #  - object: /
-  - object: /home/ec2-user/app/step2/myappF
+  - object: /usr/local/myappf
     pattern: "**"
     owner: ec2-user
     group: ec2-user

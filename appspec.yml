@@ -14,6 +14,6 @@ permissions:
 
 hooks:
   BeforeInstall:
-    - location: scrpts/beforeInstall.bash
+    - location: scripts/beforeInstall.bash
   AfterInstall:
-    - location: scrpts/deploy.sh
+    - location: scripts/deploy.sh

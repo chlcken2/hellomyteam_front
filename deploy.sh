@@ -1,3 +1,3 @@
 
 #!/bin/bash
-echo "> [$(date +%y-%m-%d/%H:%M)] Deploy React" >> /usr/local/logfolder/deploy.log
+echo "> FE 배포 [$(date +%y-%m-%d/%H:%M)]"

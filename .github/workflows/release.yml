@@ -1,4 +1,4 @@
-name: FRONTEND-Release-Deploy # Workflow 이름
+name: frontend-Release-Deploy # Workflow 이름
 on: # Event 감지
   push:
     branches:

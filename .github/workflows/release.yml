@@ -45,7 +45,7 @@ jobs:
         run: aws deploy push --application-name=hellomyteam-front-release --description "myapp Test" --s3-location s3://hellomyteam-github-action-s3-bucket-front/hellomyteam-release/hellomyteam-release.zip --source .
 
       - name: Start Deploy with CodeDeploy      # CodeDeploy 실행
-        run: aws deploy create-deployment --application-name=hellomyteam-front-release --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name=hellomyteam-front-release --s3-location bucket=hellomyteam-github-action-s3-bucket-front,bundleType=zip,key=hellomyteam-front-release/hellomyteam-front-release.zip
+        run: aws deploy create-deployment --application-name=hellomyteam-front-release --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name=hellomyteam-front-release --s3-location bucket=hellomyteam-github-action-s3-bucket-front,bundleType=zip,key=hellomyteam-release/hellomyteam-release.zip
 
 
 #name: Frontend-Release-Deploy # Workflow 이름

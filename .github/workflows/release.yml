@@ -51,5 +51,5 @@ jobs: # Job 설정
         run: aws deploy push --application-name=$CODE_DEPLOY_APP_NAME --description "myapp Test" --s3-location s3://$S3_BUCKET_NAME/$PROJECT_NAME/$PROJECT_NAME.zip --source .
 
       - name: Code Deploy
-        run: aws deploy create-deployment --application-name=$CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name=$CODE_DEPLOY_GROUP_NAME --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,eTag=a4222539fd7f2adbb89d78566b45468e-19,key=$PROJECT_NAME/$PROJECT_NAME.zip
+        run: aws deploy create-deployment --application-name=$CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name=$CODE_DEPLOY_GROUP_NAME --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,eTag=1f379203c82dbf0705b11fea0eb95b83-19,key=$PROJECT_NAME/$PROJECT_NAME.zip
 #        working-directory: frontend

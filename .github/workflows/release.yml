@@ -51,7 +51,7 @@ jobs: # Job 설정
 
         run: aws s3 cp --region ap-northeast-2 ./$PROJECT_NAME.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$PROJECT_NAME.zip  #(14)
         working-directory: frontend
-
+# codedeploy front-release name check
       - name: Code Deploy
         run: aws deploy create-deployment
           --application-name=$CODE_DEPLOY_APP_NAME

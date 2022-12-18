@@ -18,7 +18,7 @@ const App: React.FC = () => {
   return (
     <>
       <button onClick={defaultFetchFunc}>Fetch</button>
-      {hello && <div>백엔드에서 가져온 데이터입니다 : {hello}</div>}
+      {hello && <div>성공! 백엔드에서 가져온 데이터입니다 : {hello}</div>}
     </>
   );
 };

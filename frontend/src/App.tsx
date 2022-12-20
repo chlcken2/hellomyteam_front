@@ -1,25 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { DEV_BASE_URL, PROD_BASE_URL } from './constants/urls';
+import { QueryClientProvider } from "react-query";
+import { CookiesProvider } from "react-cookie";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { AxiosInterceptor, queryClient } from "config";
+import { Main } from "pages";
 
-const App: React.FC = () => {
-  const [hello, setHello] = useState('');
-
-  const defaultFetchFunc = (): void => {
-    if (DEV_BASE_URL) {
-      axios
-        // .get(`${DEV_BASE_URL}/api/hello`)
-        .get('/api/hello')
-        .then((response) => setHello(response.data))
-        .catch((error) => console.log(error));
-    }
-  };
-
+const App = () => {
   return (
-    <>
-      <button onClick={defaultFetchFunc}>Fetch</button>
-      {hello && <div>성공! 백엔드에서 가져온 데이터입니다 : {hello}</div>}
-    </>
+    <QueryClientProvider client={queryClient}>
+      <CookiesProvider>
+        <AxiosInterceptor>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Main />} />
+            </Routes>
+          </Router>
+        </AxiosInterceptor>
+      </CookiesProvider>
+    </QueryClientProvider>
   );
 };
 

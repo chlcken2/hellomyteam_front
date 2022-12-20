@@ -14,12 +14,23 @@ module.exports = {
     "plugin:import/warnings", // 설치한 경우
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
+    "plugin:import/typescript",
   ],
   rules: {
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        js: "never",
+        jsx: "never",
+        ts: "never",
+        tsx: "never",
+        mjs: "never",
+      },
+    ],
     "no-return-await": "off",
     "linebreak-style": 0,
     "import/prefer-default-export": 0,
-    "import/extensions": 0,
     "no-use-before-define": 0,
     "import/no-unresolved": 0,
     "react/react-in-jsx-scope": "off",
@@ -38,6 +49,7 @@ module.exports = {
     "import/resolver": {
       node: {
         extensions: [".js", ".jsx", ".ts", ".tsx"],
+        moduleDirectory: ["node_modules", "src/"],
       },
     },
   },

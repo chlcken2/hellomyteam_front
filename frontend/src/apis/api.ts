@@ -1,6 +1,6 @@
 import axios from "axios";
 import { DEV_BASE_URL } from "constants/urls";
-import { useUser, useToken } from "hooks";
+import { useToken, useUser } from "hooks";
 import { useCookies } from "react-cookie";
 import React from "react";
 

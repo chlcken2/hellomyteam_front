@@ -1,11 +1,10 @@
 {
     "parserOptions": {
-        "ecmaVersion": "latest"
+        "ecmaVersion": "latest",
+        "sourceType": "module"
     },
     "env": {
-        "es2022": true,
-        "node": true,
-        "jest": true
+        "browser": true
     },
     "rules": {
         "prefer-const": [

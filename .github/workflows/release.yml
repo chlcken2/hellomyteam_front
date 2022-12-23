@@ -2,7 +2,7 @@ name: Frontend-Release-Deploy
 
 on:
   push:
-    branches: [ release/1.0 ]
+    branches: [ release/1.0 ] #release/1.0 push시 발생
 
 jobs:
   deploy:

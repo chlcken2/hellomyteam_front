@@ -1,37 +1,39 @@
 {
-    "extends": [
-        "standard-with-typescript",
-        "plugin:@typescript-eslint/recommended",
-        "prettier",
-        "prettier/prettier",
-        "plugin:prettier/recommended"
-    ],
-    "parserOptions": {
-        "project": "./tsconfig.json",
-        "ecmaVersion": 12,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "@typescript-eslint"
-    ],
-    "rules": {
-        "import/extensions": 1,
-        "import/no-named-as-default": 0,
-        "@typescript-eslint/strict-boolean-expressions": 0,
-        "@typescript-eslint/explicit-module-boundary-types": 0,
-        "@typescript-eslint/no-explicit-any": 0,
-        "@typescript-eslint/no-non-null-assertion": 0,
-        "@typescript-eslint/no-unused-vars": 0,
-        "@typescript-eslint/no-empty-function": 0,
-        "@typescript-eslint/no-empty-interface": 0,
-        "@typescript-eslint/no-inferrable-types": 0,
-        "@typescript-eslint/no-namespace": 0,
-        "@typescript-eslint/no-use-before-define": 0,
-        "@typescript-eslint/no-var-requires": 0,
-        "prettier/prettier":[  //or whatever plugin that is causing the clash
-            "error",
-            {
-                "tabWidth":2
-            }
-        ]        }
+  "extends": [
+    "standard-with-typescript",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "prettier/prettier",
+    "plugin:prettier/recommended"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "import/extensions": 1,
+    "import/no-named-as-default": 0,
+    "@typescript-eslint/strict-boolean-expressions": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-non-null-assertion": 0,
+    "@typescript-eslint/no-unused-vars": 0,
+    "@typescript-eslint/no-empty-function": 0,
+    "@typescript-eslint/no-empty-interface": 0,
+    "@typescript-eslint/no-inferrable-types": 0,
+    "@typescript-eslint/no-namespace": 0,
+    "@typescript-eslint/no-use-before-define": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "prettier/prettier": [
+      //or whatever plugin that is causing the clash
+      "error",
+      { "endOfLine": "auto" },
+      {
+        "tabWidth": 2
+      }
+    ]
+  }
 }

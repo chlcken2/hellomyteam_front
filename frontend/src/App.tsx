@@ -1,26 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { DEV_BASE_URL, PROD_BASE_URL } from './constants/urls';
+import GlobalStyle from './styles/GlobalStyles';
+import styled, { ThemeProvider } from 'styled-components';
+import { theme } from './styles/theme';
+import { Routes, Route } from 'react-router-dom';
+import Nav from './layouts/Nav';
+import Main from './layouts/Main';
+import FindTeam from './layouts/FindTeam';
+import Shorcut from './components/Shorcut';
+import Notice from './components/Notice';
 
-const App: React.FC = () => {
-  const [hello, setHello] = useState('');
-
-  const defaultFetchFunc = (): void => {
-    if (DEV_BASE_URL) {
-      axios
-        // .get(`${DEV_BASE_URL}/api/hello`)
-        .get('/api/hello')
-        .then((response) => setHello(response.data))
-        .catch((error) => console.log(error));
-    }
-  };
-
+function App() {
   return (
     <>
-      <button onClick={defaultFetchFunc}>Fetch</button>
-      {hello && <div>성공! 백엔드에서 가져온 데이터입니다 : {hello}</div>}
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+
+        <Nav />
+        <Routes>
+          <Route path="/" element={<Main />}>
+            <Route path=":shortcut" element={<Shorcut />}></Route>
+            <Route path="notice" element={<Notice />}></Route>
+          </Route>
+          <Route path="/search" element={<FindTeam />} />
+        </Routes>
+      </ThemeProvider>
     </>
   );
-};
+}
 
 export default App;

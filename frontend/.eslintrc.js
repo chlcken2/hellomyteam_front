@@ -44,6 +44,7 @@ module.exports = {
     "react/function-component-definition": [2, { namedComponents: "arrow-function" }],
     "react/button-has-type": 0,
     "no-extra-boolean-cast": 0,
+    "react/require-default-props": "off",
   },
   settings: {
     "import/resolver": {

@@ -45,6 +45,7 @@ module.exports = {
     "react/button-has-type": 0,
     "no-extra-boolean-cast": 0,
     "react/require-default-props": "off",
+    "@typescript-eslint/no-explicit-any": "off",
   },
   settings: {
     "import/resolver": {

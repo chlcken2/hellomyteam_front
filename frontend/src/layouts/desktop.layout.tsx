@@ -4,10 +4,10 @@ import { childrenPropType } from "../types";
 import MaxWidthLayout from "./maxWidth.layout";
 
 const ChildrenContainer = styled.div`
-  margin: 2rem 0 0 0;
-  display: flex;
+  /* display: flex; */
   justify-content: center;
   width: 100%;
+  padding-left: 110px;
 `;
 
 const DesktopLayout = ({ children }: childrenPropType) => {

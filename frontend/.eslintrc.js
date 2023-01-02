@@ -17,6 +17,12 @@ module.exports = {
     "plugin:import/typescript",
   ],
   rules: {
+    "prettier/prettier": [
+      "error",
+      {
+        endOfLine: "auto",
+      },
+    ],
     "import/extensions": [
       "error",
       "ignorePackages",

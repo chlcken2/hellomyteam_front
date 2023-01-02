@@ -3,12 +3,13 @@ import styled from "styled-components";
 
 const Container = styled.div<IMaxWidthLayout>`
   max-width: ${(props) => props.maxWidth || "1300px"};
-  padding: ${(props) => props.padding || "0 1rem"};
+  padding: ${(props) => props.padding || "0"};
   min-height: 80vh;
   width: 100%;
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   align-items: center;
+  text-align: center;
 `;
 
 interface IMaxWidthLayout {

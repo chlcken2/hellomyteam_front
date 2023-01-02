@@ -84,6 +84,7 @@ const DesktopNavbar = () => {
           role="presentation"
           className={`btn ${on === 0 ? "active" : ""}`}
           onClick={() => setOn(0)}
+          onKeyDown={() => setOn(0)}
         >
           <Link to="/">
             <span className="wrap">
@@ -101,7 +102,11 @@ const DesktopNavbar = () => {
             </span>
           </Link>
         </li>
-        <li className={`btn ${on === 1 ? "active" : ""}`} onClick={() => setOn(1)}>
+        <li
+          className={`btn ${on === 1 ? "active" : ""}`}
+          onClick={() => setOn(1)}
+          onKeyDown={() => setOn(1)}
+        >
           <Link to="/search">
             <span className="wrap">
               <span>
@@ -122,7 +127,11 @@ const DesktopNavbar = () => {
             </span>
           </Link>
         </li>
-        <li className={`btn ${on === 2 ? "active" : ""}`} onClick={() => setOn(2)}>
+        <li
+          className={`btn ${on === 2 ? "active" : ""}`}
+          onClick={() => setOn(2)}
+          onKeyDown={() => setOn(2)}
+        >
           <NavLink to="/alarm" style={({ isActive }) => (isActive ? style : {})}>
             <span className="wrap">
               <span>
@@ -143,7 +152,11 @@ const DesktopNavbar = () => {
             </span>
           </NavLink>
         </li>
-        <li className={`btn ${on === 3 ? "active" : ""}`} onClick={() => setOn(3)}>
+        <li
+          className={`btn ${on === 3 ? "active" : ""}`}
+          onClick={() => setOn(3)}
+          onKeyDown={() => setOn(3)}
+        >
           <NavLink to="/profile" style={({ isActive }) => (isActive ? style : {})}>
             <span className="wrap">
               <span>

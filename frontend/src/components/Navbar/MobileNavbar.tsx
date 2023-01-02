@@ -1,5 +1,7 @@
+import DesktopNavbar from "./DesktopNavbar";
+
 const MobileNavbar = () => {
-  return <h1>MobileNav</h1>;
+  return <DesktopNavbar />;
 };
 
 export default MobileNavbar;

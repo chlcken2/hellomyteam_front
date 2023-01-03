@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
-import { Routes, Route, Link, NavLink, Outlet } from 'react-router-dom';
-import Shorcut from '../components/Shorcut';
-import Notice from '../components/Notice';
+import React, { FC, useEffect, useState } from "react";
+import axios from "axios";
+import styled from "styled-components";
+import { Routes, Route, Link, NavLink, Outlet } from "react-router-dom";
+import FormWrap from "components/Form/FormWrap";
+import Join from "components/Form/Join";
+import Login from "components/Form/Login";
 
 const MainWrap = styled.main`
   padding-left: 110px;
@@ -17,27 +18,30 @@ const MainWrap = styled.main`
     padding-left: 0;
   }
 `;
-function Main() {
+const Main = () => {
+  const [hasId, setHasId] = useState<boolean>(false);
+
   return (
-    <MainWrap>
+    <>
+      <FormWrap>{!hasId ? <Login setHasId={setHasId} /> : <Join />}</FormWrap>
       <ul>
         {[
-          { path: 'shortcut', name: '둘러보기' },
-          { path: 'notice', name: '공지게시판' },
-          { path: 'notice', name: '자유게시판' },
-          { path: 'notice', name: '팀원' },
-          { path: 'notice', name: '프로필' },
+          { path: "shortcut", name: "둘러보기" },
+          { path: "notice", name: "공지게시판" },
+          { path: "notice", name: "자유게시판" },
+          { path: "notice", name: "팀원" },
+          { path: "notice", name: "프로필" },
         ].map((el, idx) => (
-          <li>
+          <li key={idx}>
             <Link className="active" to={`/${el.path}`}>
               {el.name}
             </Link>
           </li>
         ))}
       </ul>
-      <Outlet></Outlet>
-    </MainWrap>
+      <Outlet />
+    </>
   );
-}
+};
 
 export default Main;

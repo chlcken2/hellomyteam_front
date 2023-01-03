@@ -17,6 +17,12 @@ module.exports = {
     "plugin:import/typescript",
   ],
   rules: {
+    "jsx-a11y/label-has-associated-control": [
+      2,
+      {
+        labelAttributes: ["htmlFor"],
+      },
+    ],
     "prettier/prettier": [
       "error",
       {

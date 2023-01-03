@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { Routes, Route, Link, NavLink, Outlet } from "react-router-dom";
-import Shorcut from "../components/Navbar/Shorcut";
-import Notice from "../components/Navbar/Notice";
+import FormWrap from "components/Form/FormWrap";
+import Join from "components/Form/Join";
+import Login from "components/Form/Login";
 
 const MainWrap = styled.main`
   padding-left: 110px;
@@ -18,8 +19,11 @@ const MainWrap = styled.main`
   }
 `;
 const Main = () => {
+  const [hasId, setHasId] = useState<boolean>(false);
+
   return (
-    <MainWrap>
+    <>
+      <FormWrap>{!hasId ? <Login setHasId={setHasId} /> : <Join />}</FormWrap>
       <ul>
         {[
           { path: "shortcut", name: "둘러보기" },
@@ -36,7 +40,7 @@ const Main = () => {
         ))}
       </ul>
       <Outlet />
-    </MainWrap>
+    </>
   );
 };
 

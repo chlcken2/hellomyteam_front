@@ -1,7 +1,7 @@
 import React from "react";
 
 const Notice = () => {
-  return <div>Notice</div>;
+  return <div style={{ paddingTop: "40px" }}>Notice</div>;
 };
 
 export default Notice;

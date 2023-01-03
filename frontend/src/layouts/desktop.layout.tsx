@@ -8,6 +8,7 @@ const ChildrenContainer = styled.div`
   justify-content: center;
   width: 100%;
   padding-left: 110px;
+  background: #f8fafd;
 `;
 
 const DesktopLayout = ({ children }: childrenPropType) => {

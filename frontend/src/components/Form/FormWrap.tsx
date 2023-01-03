@@ -14,10 +14,11 @@ const Joinbg = styled.div`
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     background-color: #fff;
     width: 400px;
     padding: 24px;
+    border-radius: 16px;
   }
 `;
 

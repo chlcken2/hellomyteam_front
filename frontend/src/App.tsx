@@ -14,6 +14,7 @@ import ResponsiveLayout from "./layouts/responsive.layout";
 import FormWrap from "./components/Form/FormWrap";
 import Join from "./components/Form/Join";
 import Login from "./components/Form/Login";
+import "./styles/style.scss";
 
 const App = () => {
   const [hasId, setHasId] = useState<boolean>(false);

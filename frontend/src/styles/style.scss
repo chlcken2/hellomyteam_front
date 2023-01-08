@@ -1,0 +1,22 @@
+.join-wrap {
+  text-align: center;
+  .join-menu {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    li {
+      width: 50%;
+      h3 {
+        font-size: 14px;
+      }
+      img {
+        width: 100%;
+      }
+    }
+  }
+  .join-button {
+    display: block;
+    button {
+    }
+  }
+}

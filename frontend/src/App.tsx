@@ -26,7 +26,9 @@ const App = () => {
             <ThemeProvider theme={theme}>
               <GlobalStyle />
               <ResponsiveLayout>
-                <FormWrap>{!hasId ? <Login setHasId={setHasId} /> : <Join />}</FormWrap>
+                <FormWrap>
+                  {!hasId ? <Login setHasId={setHasId} /> : <Join setHasId={setHasId} />}
+                </FormWrap>
                 <Routes>
                   <Route path="/" element={<Main />}>
                     <Route path="shortcut" element={<Shorcut />} />

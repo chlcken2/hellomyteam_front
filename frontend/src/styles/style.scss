@@ -1,13 +1,31 @@
 .join-wrap {
   text-align: center;
+  h2 {
+    font-size: 22px;
+  }
   .join-menu {
     display: flex;
+    gap: 30px;
     flex-wrap: wrap;
     padding: 10px;
     li {
-      width: 50%;
+      width: 35%;
+      display: flex;
+      padding: 20px;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      border: 1px solid #e6e6e6;
+      border-radius: 8px;
+      span {
+        display: block;
+        text-align: center;
+        width: 100px;
+      }
       h3 {
+        padding-top: 7px;
         font-size: 14px;
+        color: #7a7a7a;
       }
       img {
         width: 100%;
@@ -15,8 +33,26 @@
     }
   }
   .join-button {
-    display: block;
-    button {
+    display: flex;
+    padding-top: 22px;
+    * {
+      height: 48px;
     }
+    .g-login {
+      width: 62px;
+      border-radius: 8px 0 0 8px;
+    }
+    .start-join {
+      background: #5e81ff;
+      color: #fff;
+      width: 100%;
+      border-radius: 0 8px 8px 0;
+    }
+  }
+}
+
+.go-back {
+  button {
+    margin-bottom: 30px;
   }
 }

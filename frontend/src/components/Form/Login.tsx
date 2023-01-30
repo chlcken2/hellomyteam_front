@@ -10,9 +10,14 @@ const Login: FC<IHas> = ({ setHasId }) => {
   const handleLogin = () => {
     setHasId(false);
     axios
-      .post("/auth/signup", {
-        email: "kim123@naver.com",
+      .post("/api/auth/signup", {
+        birthday: "19900103",
+        email: "home0@naver.com",
         joinPurpose: "TEAM_CREATE",
+        name: "hayoung",
+        password: "1229",
+        privacyYn: "YES",
+        termsOfServiceYn: "YES",
       })
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
@@ -47,11 +52,11 @@ const Login: FC<IHas> = ({ setHasId }) => {
         </li>
       </ul>
       <div className="join-button">
-        <button onClick={handleLogin} className="g-login">
+        {/* <button onClick={handleLogin} className="g-login">
           <span>Google 로그인</span>
-        </button>
+        </button> */}
         <button onClick={() => setHasId(true)} className="start-join">
-          Google 계정으로 시작하기
+          회원가입
         </button>
       </div>
     </div>

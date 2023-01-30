@@ -40,19 +40,87 @@
     }
     .g-login {
       width: 62px;
-      border-radius: 8px 0 0 8px;
+      border-radius: 8px;
     }
     .start-join {
       background: #5e81ff;
       color: #fff;
       width: 100%;
-      border-radius: 0 8px 8px 0;
+      border-radius: 8px;
+      border: none;
     }
   }
 }
 
 .go-back {
-  button {
+  > button {
+    background: transparent;
+    border: none;
+    padding: 0;
     margin-bottom: 30px;
+  }
+}
+.join-wrap2 {
+  padding: 2px;
+  text-align: left;
+  h1 {
+    font-size: 22px;
+    padding-bottom: 12px;
+  }
+  p {
+    font-size: 14px;
+    line-height: 22px;
+    color: #7a7a7a;
+    padding-bottom: 30px;
+  }
+  label {
+    display: block;
+    text-align: left;
+    color: #7a7a7a;
+    font-size: 14px;
+    padding: 9px 0;
+  }
+  form {
+    input[type="text"],
+    select,
+    button {
+      border: 1px solid #e6e6e6;
+      border-radius: 5px;
+      height: 38px;
+      width: 100%;
+    }
+    button {
+      background-color: #5e81ff;
+      color: #fff;
+      height: 48px;
+      border-radius: 8px;
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+  }
+  #check {
+    display: inline-block;
+  }
+  #check + label {
+    display: inline-block;
+  }
+  .check-input {
+    padding: 30px 0;
+    text-align: left;
+    input {
+      width: 20px;
+      height: 20px;
+      border: 2px solid lightgray;
+    }
+    label {
+      vertical-align: bottom;
+    }
+  }
+}
+
+.join-form {
+  div {
+    margin-bottom: 15px;
   }
 }

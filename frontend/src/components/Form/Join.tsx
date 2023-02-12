@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { FC, Dispatch, SetStateAction, useState, useEffect } from "react";
-import styled from "styled-components";
 import FormWrap from "./FormWrap";
 
 interface IHas {

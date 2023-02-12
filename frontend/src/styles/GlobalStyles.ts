@@ -65,7 +65,9 @@ const GlobalStyle = createGlobalStyle`
     height: 100vh;
     background-color: #f8fafd;
   }
-  
+  button {
+    cursor: pointer;
+  }
 `;
 
 export default GlobalStyle;

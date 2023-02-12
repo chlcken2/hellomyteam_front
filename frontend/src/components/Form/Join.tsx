@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { FC, Dispatch, SetStateAction, useState, useEffect } from "react";
 import styled from "styled-components";
 import FormWrap from "./FormWrap";
@@ -59,7 +60,19 @@ const Join: FC<IHas> = ({ setHasId }) => {
   const submit2 = (e: any) => {
     e.preventDefault();
     if (Object.keys(error2).length === 0) {
-      console.log(`결과물`, text, text2);
+      // console.log(`결과물`, text, text2);
+      axios
+        .post("/api/auth/signup", {
+          birthday: text2.birth,
+          email: text.email,
+          joinPurpose: "TEAM_CREATE",
+          name: text2.name,
+          password: text.pw1,
+          privacyYn: "YES",
+          termsOfServiceYn: "YES",
+        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
     } else {
       console.log(error2);
     }

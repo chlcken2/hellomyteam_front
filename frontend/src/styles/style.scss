@@ -82,6 +82,7 @@
   }
   form {
     input[type="text"],
+    input[type="password"],
     select,
     button {
       border: 1px solid #e6e6e6;
@@ -106,7 +107,7 @@
     display: inline-block;
   }
   .check-input {
-    padding: 30px 0;
+    // padding: 30px 0;
     text-align: left;
     input {
       width: 20px;
@@ -123,4 +124,8 @@
   div {
     margin-bottom: 15px;
   }
+}
+
+p.error-message {
+  padding-bottom: 0;
 }

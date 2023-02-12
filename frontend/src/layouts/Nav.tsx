@@ -1,89 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 
-const Header = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 110px;
-  height: 100vh;
-  background: #fff;
-  ul {
-    padding: 0 16px;
-    padding-top: 40px;
-    li {
-      ${({ theme }) => theme.flexCenterColumn};
-      margin-bottom: 16px;
-      text-align: center;
-      border-radius: 16px;
-      transition: all 0.3s;
-      &.active {
-        background-color: #f4f6fb;
-      }
-      a {
-        &.active {
-          background-color: #f4f6fb;
-          color: #000;
-          border-radius: 16px;
-          padding: 10px 0px;
-
-          svg {
-            color: #000;
-          }
-        }
-      }
-      width: 78px;
-      height: 63px;
-      a {
-        display: inline-block;
-        width: 100%;
-        color: ${({ theme }) => theme.colors.point};
-        span.wrap {
-          display: inline-block;
-          width: 100%;
-          span {
-            display: inline-block;
-            width: 100%;
-            &:first-child {
-              width: 16px;
-              height: 16px;
-            }
-            &:last-child {
-              padding-top: 8px;
-              text-align: center;
-              font-size: 16px;
-            }
-          }
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 390px) {
-    bottom: 0;
-    top: initial;
-    width: 100%;
-    height: 65px;
-    padding: 8px 0;
-    ul {
-      padding-top: 0;
-      display: flex;
-      justify-content: space-between;
-    }
-  }
-`;
-
-function Nav() {
+const Nav = () => {
   const [on, setOn] = useState(0);
   const style = {
-    backgroundColor: '#F4F6FB',
+    backgroundColor: "#F4F6FB",
   };
   return (
-    <Header>
+    <header>
       <ul>
         <li
-          className={`btn ${on === 0 ? 'active' : ''}`}
+          className={`btn ${on === 0 ? "active" : ""}`}
+          onKeyDown={() => setOn(0)}
           onClick={() => setOn(0)}
         >
           <Link to="/">
@@ -103,7 +31,8 @@ function Nav() {
           </Link>
         </li>
         <li
-          className={`btn ${on === 1 ? 'active' : ''}`}
+          className={`btn ${on === 1 ? "active" : ""}`}
+          onKeyDown={() => setOn(1)}
           onClick={() => setOn(1)}
         >
           <Link to="/search">
@@ -127,13 +56,11 @@ function Nav() {
           </Link>
         </li>
         <li
-          className={`btn ${on === 2 ? 'active' : ''}`}
+          className={`btn ${on === 2 ? "active" : ""}`}
+          onKeyDown={() => setOn(2)}
           onClick={() => setOn(2)}
         >
-          <NavLink
-            to="/alarm"
-            style={({ isActive }) => (isActive ? style : {})}
-          >
+          <NavLink to="/alarm" style={({ isActive }) => (isActive ? style : {})}>
             <span className="wrap">
               <span>
                 <svg
@@ -154,13 +81,11 @@ function Nav() {
           </NavLink>
         </li>
         <li
-          className={`btn ${on === 3 ? 'active' : ''}`}
+          className={`btn ${on === 3 ? "active" : ""}`}
+          onKeyDown={() => setOn(3)}
           onClick={() => setOn(3)}
         >
-          <NavLink
-            to="/profile"
-            style={({ isActive }) => (isActive ? style : {})}
-          >
+          <NavLink to="/profile" style={({ isActive }) => (isActive ? style : {})}>
             <span className="wrap">
               <span>
                 <svg
@@ -181,8 +106,8 @@ function Nav() {
           </NavLink>
         </li>
       </ul>
-    </Header>
+    </header>
   );
-}
+};
 
 export default Nav;

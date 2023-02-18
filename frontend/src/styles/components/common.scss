@@ -1,0 +1,10 @@
+@import '../abstracts/variables.scss';
+
+.button {
+    background: $main-blue-100;
+    color: $white;
+    width: 97px;
+    height: 41px;
+    border-radius: 8px;
+    border: none;
+}

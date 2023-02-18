@@ -1,4 +1,6 @@
 import axios from "axios";
+import Button from "components/common/button";
+import COLOR from "constants/color";
 import React, { FC, Dispatch, SetStateAction } from "react";
 
 interface IHas {
@@ -42,21 +44,25 @@ const Preview: FC<IHas> = ({ setHasId, setLogin }) => {
         </li>
       </ul>
       <div className="join-button">
-        <button
-          onClick={handleLogin}
-          className="start-join"
+        <Button
+          text="로그인"
+          handler={handleLogin}
           style={{
-            background: "#DBDBDB",
-            color: "#000",
+            background: COLOR.white,
+            color: COLOR["--gray-400"],
             fontWeight: "bold",
             marginRight: "5px",
+            width: "100%",
+            border: "1px solid #E6E6E6",
           }}
-        >
-          <span>HelloMyTeam 로그인</span>
-        </button>
-        <button onClick={() => setHasId(true)} className="start-join">
-          회원가입
-        </button>
+        />
+        <Button
+          text="회원가입"
+          handler={() => {
+            setHasId(true);
+          }}
+          style={{ width: "100%" }}
+        />
       </div>
     </div>
   );

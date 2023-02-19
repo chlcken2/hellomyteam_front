@@ -33,7 +33,12 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
           const after1week = new Date();
           after1week.setDate(now.getDate() + 7);
 
-          setCookie("refresh", refreshToken, { path: "/", expires: after1week });
+          setCookie("refresh", refreshToken, {
+            path: "/",
+            expires: after1week,
+            secure: true,
+            httpOnly: true,
+          });
           const item = {
             value: accessToken,
             expiry: new Date().getTime() + 1,

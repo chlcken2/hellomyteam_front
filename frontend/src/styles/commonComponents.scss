@@ -84,3 +84,11 @@
     }
   }
 }
+
+/*noti card*/
+.noti-card {
+  display: flex;
+  .noti-card__date {
+    display: flex;
+  }
+}

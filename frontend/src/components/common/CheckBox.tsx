@@ -54,4 +54,4 @@ const CheckBox = ({ errorMessage, id, checkBoxText }: CheckBoxType) => {
   );
 };
 
-export default CheckBox;
+export default memo(CheckBox);

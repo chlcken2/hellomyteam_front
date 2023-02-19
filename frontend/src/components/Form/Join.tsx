@@ -107,7 +107,6 @@ const Join: FC<IHas> = ({ setHasId }) => {
   }, [text]);
 
   useEffect(() => {
-    console.log(isCheck);
     if (isCheck) {
       setText2((current) => {
         const newText = { ...current };
@@ -124,7 +123,6 @@ const Join: FC<IHas> = ({ setHasId }) => {
   }, [isCheck]);
 
   useEffect(() => {
-    console.log(text2.privacyYn);
     const err2: IError2 = {};
     if (text2.name.length < 3) {
       err2.name = "이름은 세글자 이상 입력하시오";

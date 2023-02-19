@@ -8,10 +8,10 @@ import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 import LoginState from "recoil/atom";
 import { AxiosInterceptor, queryClient } from "config";
 import GlobalStyle from "styles/GlobalStyles";
-import Shorcut from "components/Navbar/Shorcut";
-import Notice from "components/Navbar/Notice";
-import Nav from "layouts/Nav";
+import Shorcut from "layouts/Navbar/Shorcut";
+import Notice from "layouts/Navbar/Notice";
 import Login from "components/Form/Login";
+import Nav from "./layouts/Nav";
 import Main from "./layouts/Main";
 import FormWrap from "./components/Form/FormWrap";
 import Join from "./components/Form/Join";
@@ -34,9 +34,6 @@ const App = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  useEffect(() => {
-    console.log(confirmLogin);
-  }, [confirmLogin]);
   return (
     <QueryClientProvider client={queryClient}>
       <CookiesProvider>

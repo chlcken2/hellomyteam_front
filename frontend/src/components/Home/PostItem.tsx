@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 
 interface PostItemType {
   title: string;
@@ -36,4 +36,4 @@ const PostItem: FC<PostItemType> = ({
   );
 };
 
-export default PostItem;
+export default memo(PostItem);

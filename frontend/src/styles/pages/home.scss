@@ -3,7 +3,8 @@
 .home-container {
   display: flex;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
+  height: fit-content;
   column-gap: 32px;
 
   .home-left-wrapper {
@@ -18,18 +19,38 @@
   }
 }
 
+.notice-container {
+  width: 100%;
+  height: 100%;
+}
+
 .section-contaner {
   width: 100%;
   background-color: #ffffff;
   padding: 32px;
   border-radius: 16px;
 
-  .section-title {
-    color: $black;
-    line-height: 28.64px;
-    font-weight: 600;
-    font-size: 24px;
-    margin-bottom: 32px;
+  .section-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      color: $black;
+      line-height: 28.64px;
+      font-weight: 600;
+      font-size: 24px;
+      margin-bottom: 32px;
+    }
+
+    .option-box {
+      display: flex;
+      column-gap: 16px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 17px;
+      color: $gray-400;
+    }
   }
 }
 
@@ -89,4 +110,10 @@
     border-radius: 8px;
     overflow: hidden;
   }
+}
+
+.pagination-wrapper {
+  width: 100%;
+  text-align: center;
+  margin-top: 24px;
 }

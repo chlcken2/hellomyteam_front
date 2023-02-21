@@ -229,7 +229,8 @@ header {
 .main-wrap {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
+  height: fit-content;
   padding: 40px;
   margin-left: 110px;
   background-color: #f8fafd;

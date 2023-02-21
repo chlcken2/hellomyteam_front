@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-interface NoticeItemType {
+interface PostItemType {
   title: string;
   content: string;
   author: string;
@@ -10,7 +10,7 @@ interface NoticeItemType {
   likeCount: number;
 }
 
-const NoticeItem: FC<NoticeItemType> = ({
+const PostItem: FC<PostItemType> = ({
   title,
   commentCount,
   content,
@@ -20,7 +20,7 @@ const NoticeItem: FC<NoticeItemType> = ({
   imageURL,
 }) => {
   return (
-    <div className="notice-item">
+    <div className="post-item">
       <div>
         <p className="title">{title}</p>
         <p className="content">{content}</p>
@@ -31,9 +31,9 @@ const NoticeItem: FC<NoticeItemType> = ({
           <span>좋아요 {likeCount}</span>
         </div>
       </div>
-      {imageURL && <img src={imageURL} alt="notice" />}
+      {imageURL && <img src={imageURL} alt={title} />}
     </div>
   );
 };
 
-export default NoticeItem;
+export default PostItem;

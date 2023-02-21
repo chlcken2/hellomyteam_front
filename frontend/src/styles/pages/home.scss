@@ -33,14 +33,14 @@
   }
 }
 
-// notice
-.notice-list {
+// post
+.post-list {
   display: flex;
   flex-direction: column;
   row-gap: 24px;
 }
 
-.notice-item {
+.post-item {
   display: flex;
   justify-content: space-between;
   padding: 12px 0px;

@@ -1,4 +1,4 @@
-import NoticeItem from "components/Home/NoticeItem";
+import PostItem from "components/Home/PostItem";
 import { FC } from "react";
 import "styles/pages/home.scss";
 
@@ -8,9 +8,9 @@ const Home: FC<any> = () => {
       <div className="home-left-wrapper">
         <section className="section-contaner">
           <h2 className="section-title">공지게시판</h2>
-          <ul className="notice-list">
+          <ul className="post-list">
             <li>
-              <NoticeItem
+              <PostItem
                 title="백엔드 v0.0.3 배포"
                 content="안녕하세요 백엔드 v0.0.3 이 배포 되었습니다. 감사합니다."
                 commentCount={7}
@@ -21,7 +21,7 @@ const Home: FC<any> = () => {
               />
             </li>
             <li>
-              <NoticeItem
+              <PostItem
                 title="[점검 완료] 익명게시판 관련 긴급 공지.."
                 content="익명게시판에 긴급 버그를 발견해서 익명게시판 글쓰기는 잠시 닫도록 하겠습니다 ?"
                 commentCount={7}

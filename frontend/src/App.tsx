@@ -8,10 +8,10 @@ import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 import LoginState from "recoil/atom";
 import { AxiosInterceptor, queryClient } from "config";
 import GlobalStyle from "styles/GlobalStyles";
-import Shorcut from "components/Navbar/Shorcut";
 import Notice from "components/Navbar/Notice";
 import Nav from "layouts/Nav";
 import Login from "components/Form/Login";
+import Home from "pages/Home/Home";
 import Main from "./layouts/Main";
 import FormWrap from "./components/Form/FormWrap";
 import Join from "./components/Form/Join";
@@ -59,7 +59,7 @@ const App = () => {
             )}
             <Routes>
               <Route path="/" element={<Main />}>
-                <Route path="shortcut" element={<Shorcut />} />
+                <Route path="/" element={<Home />} />
                 <Route path="notice" element={<Notice />} />
               </Route>
               {/* <Route path="/search" element={<FindTeam />} /> */}

@@ -58,7 +58,8 @@ const GlobalStyle = createGlobalStyle`
     src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
   }
   *{
-    font-family: "Pretendard"
+    box-sizing: border-box;
+    font-family: "Pretendard";
   }
   main {
     padding-left: 110px;

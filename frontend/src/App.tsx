@@ -5,13 +5,15 @@ import { CookiesProvider } from "react-cookie";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 
+import Home from "pages/Home/Home";
+import Notice from "pages/Home/Notice";
+import Board from "pages/Home/Board";
+
 import LoginState from "recoil/atom";
 import { AxiosInterceptor, queryClient } from "config";
 import GlobalStyle from "styles/GlobalStyles";
 import Nav from "layouts/Nav";
 import Login from "components/Form/Login";
-import Home from "pages/Home/Home";
-import Notice from "pages/Home/Notice";
 import Main from "./layouts/Main";
 import FormWrap from "./components/Form/FormWrap";
 import Join from "./components/Form/Join";
@@ -61,6 +63,7 @@ const App = () => {
               <Route path="/" element={<Main />}>
                 <Route path="" element={<Home />} />
                 <Route path="notice" element={<Notice />} />
+                <Route path="board" element={<Board />} />
               </Route>
               {/* <Route path="/search" element={<FindTeam />} /> */}
             </Routes>

@@ -1,11 +1,11 @@
 import PostItem from "components/Home/PostItem";
 import { FC } from "react";
 
-const Home: FC<any> = () => {
+const Home: FC = () => {
   return (
     <div className="home-container">
       <div className="home-left-wrapper">
-        <section className="section-contaner">
+        <section className="section-container">
           <div className="section-top">
             <h2>공지게시판</h2>
           </div>
@@ -33,28 +33,18 @@ const Home: FC<any> = () => {
             </li>
           </ul>
         </section>
-        <section className="section-contaner">
+        <section className="section-container">
           <div className="section-top">
             <h2>팀원</h2>
           </div>
         </section>
       </div>
       <div className="home-right-wrapper">
-        <section className="section-contaner">
+        <section className="section-container">
           <div className="section-top">
             <h2>자유게시판</h2>
           </div>
           <ul className="post-list">
-            <li>
-              <PostItem
-                title="새로 프로젝트 완성했습니다~!"
-                content="깃허브 활동에 따른 티어와 랭킹을 제공해주는 서비스입니다."
-                commentCount={7}
-                likeCount={7}
-                createdAt="2022.12.12"
-                author="sikang"
-              />
-            </li>
             <li>
               <PostItem
                 title="새로 프로젝트 완성했습니다~!"
@@ -75,6 +65,16 @@ const Home: FC<any> = () => {
                 createdAt="2022.12.12"
                 author="sikang"
                 imageURL="https://imagedelivery.net/R2WiK4wfRK3oBXTwjgzQfA/de760e86-c99d-4bc3-6fd0-2f765756b000/blogThumbnail"
+              />
+            </li>
+            <li>
+              <PostItem
+                title="새로 프로젝트 완성했습니다~!"
+                content="깃허브 활동에 따른 티어와 랭킹을 제공해주는 서비스입니다."
+                commentCount={7}
+                likeCount={7}
+                createdAt="2022.12.12"
+                author="sikang"
               />
             </li>
             <li>

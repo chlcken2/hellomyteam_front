@@ -33,11 +33,11 @@
     }
   }
   .join-button {
+    :nth-child(1){
+      margin-right: 5px;
+    }
     display: flex;
     padding-top: 22px;
-    * {
-      height: 48px;
-    }
     .g-login {
       width: 62px;
       border-radius: 8px;

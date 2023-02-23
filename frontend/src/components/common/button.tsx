@@ -1,21 +1,35 @@
-import { CSSProperties, memo } from "react";
+import { memo, useEffect, useState } from "react";
 import "../../styles/components/common.scss";
 
-interface PropsType {
+type ButtonEventTypes = React.MouseEvent<HTMLButtonElement>;
+
+interface PropsTypes {
   text: string;
-  handler: () => void;
-  style?: CSSProperties;
+  handler: (e?: ButtonEventTypes) => void;
   disabled?: boolean;
+  width?: "fullWidth" | "normal";
+  color?: "white" | "blue";
 }
 
-const Button = ({ text, handler, style, disabled }: PropsType) => {
+const Button = ({
+  text,
+  handler,
+  disabled = false,
+  width = "normal",
+  color = "white",
+}: PropsTypes) => {
+  const [className, setClassName] = useState(`${width}-${color}-button`);
+
+  useEffect(() => {
+    if (disabled) {
+      setClassName(`disabled-${width}-blue-button`);
+    } else {
+      setClassName(`${width}-${color}-button`);
+    }
+  }, [disabled]);
+
   return (
-    <button
-      onClick={() => handler()}
-      className="button"
-      style={style}
-      disabled={disabled}
-    >
+    <button onClick={(e) => handler(e)} className={className} disabled={disabled}>
       {text}
     </button>
   );

@@ -1,8 +1,8 @@
 import { memo, useEffect, useState } from "react";
-import "styles/components/input.scss";
+import "styles/components/common.scss";
 
 interface Props {
-  label: string;
+  label?: string;
   isRequierd?: boolean;
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
@@ -36,10 +36,12 @@ const Input = ({
 
   return (
     <div className={inputContainerClassName}>
-      <div>
-        {label}
-        {isRequierd && "*"}
-      </div>
+      {label && (
+        <div>
+          {label}
+          {isRequierd && "*"}
+        </div>
+      )}
       <input
         id={id}
         type={type}

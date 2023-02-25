@@ -1,0 +1,21 @@
+@import './variables.scss';
+
+@mixin white-button {
+    background: inherit;
+    color: $gray-400;
+    width: 97px;
+    height: 41px;
+    padding: 12px 24px 12px 24px;
+    border-radius: 8px;
+    border: 1px solid #E6E6E6
+}
+
+@mixin blue-button {
+    background: $main-blue-100;
+    color: $white;
+    width: 97px;
+    height: 41px;
+    padding: 12px 24px 12px 24px;
+    border-radius: 8px;
+    border: none;
+}

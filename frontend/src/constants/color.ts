@@ -18,4 +18,4 @@ const COLOR = {
   "--main-blue-200": "#335CEC",
 };
 
-export default COLOR;
+export default Object.freeze(COLOR);

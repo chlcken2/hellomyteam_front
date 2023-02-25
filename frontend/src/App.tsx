@@ -7,7 +7,6 @@ import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 
 import LoginState from "recoil/atom";
 import { AxiosInterceptor, queryClient } from "config";
-import GlobalStyle from "styles/GlobalStyles";
 import Shorcut from "components/Navbar/Shorcut";
 import Notice from "components/Navbar/Notice";
 import Nav from "layouts/Nav";
@@ -17,6 +16,7 @@ import FormWrap from "./components/Form/FormWrap";
 import Join from "./components/Form/Join";
 import Preview from "./components/Form/Preview";
 import "./styles/style.scss";
+import "./styles/base.scss";
 import { instance } from "./config/api";
 
 const App = () => {
@@ -42,7 +42,6 @@ const App = () => {
       <CookiesProvider>
         <AxiosInterceptor>
           <Router>
-            <GlobalStyle />
             <Nav />
             {!confirmLogin && (
               <FormWrap>

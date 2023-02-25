@@ -1,5 +1,3 @@
-import deepFreeze from "utils/deepFreeze";
-
 const COLOR = {
   black: "#1D1D1D",
   white: "#FFFFFF",

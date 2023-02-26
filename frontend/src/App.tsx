@@ -18,6 +18,7 @@ import Preview from "./components/Form/Preview";
 import "./styles/style.scss";
 import "./styles/base.scss";
 import { instance } from "./config/api";
+import FindTeam from "./layouts/FindTeam";
 
 const App = () => {
   const [login, setLogin] = useState(false);
@@ -61,7 +62,7 @@ const App = () => {
                 <Route path="shortcut" element={<Shorcut />} />
                 <Route path="notice" element={<Notice />} />
               </Route>
-              {/* <Route path="/search" element={<FindTeam />} /> */}
+              <Route path="/search" element={<FindTeam />} />
             </Routes>
           </Router>
         </AxiosInterceptor>

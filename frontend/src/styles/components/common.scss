@@ -1,33 +1,50 @@
-@import '../abstracts/variables.scss';
-@import '../abstracts/mixins.scss';
+@import "../abstracts/variables.scss";
+@import "../abstracts/mixins.scss";
 
 .normal-white-button {
-    @include white-button;
+  @include white-button;
 }
 
 .fullWidth-white-button {
-    @include white-button;
-    width: 100%;
+  @include white-button;
+  width: 100%;
 }
 
 .normal-blue-button {
-    @include blue-button;
+  @include blue-button;
 }
 
 .fullWidth-blue-button {
-    @include blue-button;
-    width: 100%;
+  @include blue-button;
+  width: 100%;
 }
 
 .disabled-normal-blue-button {
-    @include blue-button;
-    cursor: default;
-    background: $main-blue-50;
+  @include blue-button;
+  cursor: default;
+  background: $main-blue-50;
 }
 
 .disabled-fullWidth-blue-button {
-    @include blue-button;
-    background: $main-blue-50;
-    cursor: default;
-    width: 100%;
+  @include blue-button;
+  background: $main-blue-50;
+  cursor: default;
+  width: 100%;
+}
+
+.my-comment-wrap {
+  @include comment;
+}
+
+.other-comment-wrap {
+  @include comment;
+  background: inherit;
+}
+
+.edit-comment-wrap {
+  @include comment;
+  background: inherit;
+  textarea {
+    border: 1px solid $gray-200;
+  }
 }

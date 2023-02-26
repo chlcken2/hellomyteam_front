@@ -32,18 +32,26 @@
   width: 100%;
 }
 
+// label start
+
+.label-wrapper {
+  color: $gray-400;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  margin-bottom: 8px;
+
+  &.error {
+    color: $red-100;
+  }
+}
+
+// label end
+
 // input start
 
 .input-container {
   width: 100%;
-
-  div {
-    color: $gray-400;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 22px;
-    margin-bottom: 8px;
-  }
 
   input {
     width: 100%;
@@ -71,10 +79,29 @@
   }
 
   &.error {
-    div {
-      color: $red-100;
+    input {
+      border-color: $red-100;
     }
+  }
+}
 
+// input end
+
+// select start
+
+.select-container {
+  width: 100%;
+
+  p {
+    display: inline-block;
+    color: $red-100;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 22px;
+    margin-top: 4px;
+  }
+
+  &.error {
     input {
       border-color: $red-100;
     }

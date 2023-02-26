@@ -1,7 +1,8 @@
+import Label from "components/common/Label";
 import { memo, useEffect, useState } from "react";
 import "styles/components/common.scss";
 
-interface Props {
+interface PropsType {
   label?: string;
   isRequierd?: boolean;
   value: string;
@@ -23,7 +24,7 @@ const Input = ({
   id,
   onChange,
   placeholder,
-}: Props) => {
+}: PropsType) => {
   const [isError, setIsError] = useState(false);
   const inputContainerClassName = isError ? "input-container error" : "input-container";
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,12 +37,7 @@ const Input = ({
 
   return (
     <div className={inputContainerClassName}>
-      {label && (
-        <div>
-          {label}
-          {isRequierd && "*"}
-        </div>
-      )}
+      <Label id={id} isError={isError} isRequierd={isRequierd} label={label} />
       <input
         id={id}
         type={type}

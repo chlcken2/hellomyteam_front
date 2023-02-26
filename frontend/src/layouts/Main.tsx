@@ -5,6 +5,7 @@ import { useRecoilState } from "recoil";
 import LoginState from "recoil/atom";
 
 const Main = () => {
+  const [temp, setTemp] = useState("");
   const [on, setOn] = useState<number>(0);
   const [confirmLogin, setConfirmLogin] = useRecoilState(LoginState);
 

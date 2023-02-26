@@ -8,6 +8,8 @@ interface PropsTypes {
 const Label = ({ label, isRequierd, isError, id }: PropsTypes) => {
   const labelWrapperClassName = isError ? "label-wrapper error" : "label-wrapper";
 
+  if (!label) return null;
+
   return (
     <label className={labelWrapperClassName} htmlFor={id}>
       {label}

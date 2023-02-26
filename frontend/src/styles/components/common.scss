@@ -1,33 +1,84 @@
-@import '../abstracts/variables.scss';
-@import '../abstracts/mixins.scss';
+@import "../abstracts/variables.scss";
+@import "../abstracts/mixins.scss";
 
 .normal-white-button {
-    @include white-button;
+  @include white-button;
 }
 
 .fullWidth-white-button {
-    @include white-button;
-    width: 100%;
+  @include white-button;
+  width: 100%;
 }
 
 .normal-blue-button {
-    @include blue-button;
+  @include blue-button;
 }
 
 .fullWidth-blue-button {
-    @include blue-button;
-    width: 100%;
+  @include blue-button;
+  width: 100%;
 }
 
 .disabled-normal-blue-button {
-    @include blue-button;
-    cursor: default;
-    background: $main-blue-50;
+  @include blue-button;
+  cursor: default;
+  background: $main-blue-50;
 }
 
 .disabled-fullWidth-blue-button {
-    @include blue-button;
-    background: $main-blue-50;
-    cursor: default;
-    width: 100%;
+  @include blue-button;
+  background: $main-blue-50;
+  cursor: default;
+  width: 100%;
 }
+
+// input start
+
+.input-container {
+  width: 100%;
+
+  div {
+    color: $gray-400;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+    margin-bottom: 8px;
+  }
+
+  input {
+    width: 100%;
+    border: 1px solid $gray-100;
+    border-radius: 8px;
+    padding: 15px 16px;
+    outline: none;
+    color: $gray-400;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+
+    &:focus {
+      border-color: $main-blue-100;
+    }
+  }
+
+  p {
+    display: inline-block;
+    color: $red-100;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 22px;
+    margin-top: 4px;
+  }
+
+  &.error {
+    div {
+      color: $red-100;
+    }
+
+    input {
+      border-color: $red-100;
+    }
+  }
+}
+
+// input end

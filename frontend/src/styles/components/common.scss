@@ -127,8 +127,11 @@
   font-size: 14px;
   font-weight: 500;
   line-height: 22px;
-
   background-color: #ffffff;
+
+  &.active {
+    border-color: $main-blue-100;
+  }
 }
 
 .select-indicator {

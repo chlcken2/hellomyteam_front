@@ -8,6 +8,7 @@ import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 import Home from "pages/Home/Home";
 import Notice from "pages/Home/Notice";
 import Board from "pages/Home/Board";
+import Team from "pages/Home/Team";
 
 import LoginState from "recoil/atom";
 import { AxiosInterceptor, queryClient } from "config";
@@ -64,6 +65,7 @@ const App = () => {
                 <Route path="" element={<Home />} />
                 <Route path="notice" element={<Notice />} />
                 <Route path="board" element={<Board />} />
+                <Route path="team" element={<Team />} />
               </Route>
               {/* <Route path="/search" element={<FindTeam />} /> */}
             </Routes>

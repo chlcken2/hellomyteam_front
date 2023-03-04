@@ -132,3 +132,59 @@
   text-align: center;
   margin-top: 24px;
 }
+
+// team
+.team-list {
+  width: 100%;
+  margin-bottom: 100px;
+}
+
+.team-list-item {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid $gray-100;
+  font-size: 14px;
+  line-height: 20px;
+  color: $gray-400;
+
+  div {
+    padding: 16px;
+    font-weight: 500;
+
+    &.name {
+      display: flex;
+      align-items: center;
+      width: 15%;
+
+      .profile {
+        margin-right: 12px;
+        background-color: #4e4e4e;
+        border-radius: 99px;
+      }
+    }
+
+    &.role {
+      width: 10%;
+      span {
+        display: inline-block;
+        padding: 2px 16px;
+        color: $green-200;
+        background-color: #ecfcdc;
+        font-size: 12px;
+        border-radius: 4px;
+      }
+    }
+
+    &.position {
+      width: 10%;
+      span {
+        display: inline-block;
+        padding: 2px 16px;
+        color: #0063b8;
+        background-color: #d9f5fd;
+        font-size: 12px;
+        border-radius: 4px;
+      }
+    }
+  }
+}

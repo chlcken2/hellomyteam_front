@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 
-interface PostItemType {
+interface PropsType {
   title: string;
   content: string;
   author: string;
@@ -10,7 +10,7 @@ interface PostItemType {
   likeCount: number;
 }
 
-const PostItem: FC<PostItemType> = ({
+const PostItem: FC<PropsType> = ({
   title,
   commentCount,
   content,

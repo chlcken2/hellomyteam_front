@@ -31,13 +31,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 32px;
 
     h2 {
       color: $black;
       line-height: 28.64px;
       font-weight: 600;
       font-size: 24px;
-      margin-bottom: 32px;
     }
 
     .option-box {
@@ -71,42 +71,62 @@
 
 // post
 .post-list {
+  width: 100%;
   display: flex;
   flex-direction: column;
   row-gap: 24px;
 }
 
 .post-item {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
   padding: 12px 0px;
   cursor: pointer;
+  column-gap: 12px;
+
+  .info-box {
+    flex: 1;
+    overflow: hidden;
+  }
 
   .title {
+    width: 100%;
     font-weight: 600;
     line-height: 19px;
     color: $black;
     margin-bottom: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .content {
+    width: 100%;
     font-weight: 500;
     font-size: 14px;
     line-height: 17px;
     color: $gray-400;
     margin-bottom: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .name {
+    width: 100%;
     display: inline-block;
     font-weight: 500;
     font-size: 14px;
     line-height: 17px;
     color: $black;
     margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .sub-info-box {
+    width: 100%;
     display: flex;
     column-gap: 9px;
 
@@ -124,6 +144,7 @@
     border: 1px solid $gray-100;
     border-radius: 8px;
     overflow: hidden;
+    flex-shrink: 0;
   }
 }
 

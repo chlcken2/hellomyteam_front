@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 
 interface PropsType {
   name: string;
@@ -21,4 +21,4 @@ const TeamItem: FC<PropsType> = ({ name }) => {
   );
 };
 
-export default TeamItem;
+export default memo(TeamItem);

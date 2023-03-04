@@ -21,7 +21,7 @@ const PostItem: FC<PropsType> = ({
 }) => {
   return (
     <div className="post-item">
-      <div>
+      <div className="info-box">
         <p className="title">{title}</p>
         <p className="content">{content}</p>
         <span className="name">{author}</span>

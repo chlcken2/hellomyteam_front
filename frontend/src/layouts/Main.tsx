@@ -3,6 +3,7 @@ import axios from "axios";
 import { Routes, Route, Link, NavLink, Outlet } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import LoginState from "recoil/atom";
+import Checkbox from "components/common/Checkbox";
 
 const Main = () => {
   const [on, setOn] = useState<number>(0);

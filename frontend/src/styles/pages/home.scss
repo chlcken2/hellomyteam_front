@@ -154,7 +154,11 @@
     &.name {
       display: flex;
       align-items: center;
-      width: 15%;
+      width: 176px;
+
+      @media (max-width: 600px) {
+        width: 40%;
+      }
 
       .profile {
         margin-right: 12px;
@@ -164,7 +168,12 @@
     }
 
     &.role {
-      width: 10%;
+      width: 128px;
+
+      @media (max-width: 600px) {
+        width: 30%;
+      }
+
       span {
         display: inline-block;
         padding: 2px 16px;
@@ -176,7 +185,12 @@
     }
 
     &.position {
-      width: 10%;
+      width: 160px;
+
+      @media (max-width: 600px) {
+        width: 30%;
+      }
+
       span {
         display: inline-block;
         padding: 2px 16px;

@@ -34,9 +34,6 @@ const App = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  useEffect(() => {
-    console.log(confirmLogin);
-  }, [confirmLogin]);
   return (
     <QueryClientProvider client={queryClient}>
       <CookiesProvider>

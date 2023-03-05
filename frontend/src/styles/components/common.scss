@@ -33,18 +33,26 @@
   width: 100%;
 }
 
+// label start
+
+.label-wrapper {
+  color: $gray-400;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  margin-bottom: 8px;
+
+  &.error {
+    color: $red-100;
+  }
+}
+
+// label end
+
 // input start
 
 .input-container {
   width: 100%;
-
-  div {
-    color: $gray-400;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 22px;
-    margin-bottom: 8px;
-  }
 
   input {
     width: 100%;
@@ -72,13 +80,95 @@
   }
 
   &.error {
-    div {
-      color: $red-100;
-    }
-
     input {
       border-color: $red-100;
     }
+  }
+}
+
+// input end
+
+// select start
+
+.select-container {
+  width: 100%;
+
+  p {
+    display: inline-block;
+    color: $red-100;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 22px;
+    margin-top: 4px;
+  }
+
+  &.error {
+    .select-control {
+      color: $red-100;
+      border-color: $red-100;
+    }
+  }
+}
+
+.select {
+  position: relative;
+  width: 100%;
+}
+
+.select-control {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid $gray-100;
+  border-radius: 8px;
+  padding: 15px 16px;
+  outline: none;
+  color: $gray-400;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+  background-color: #ffffff;
+
+  &.active {
+    border-color: $main-blue-100;
+  }
+}
+
+.select-indicator {
+  cursor: pointer;
+}
+
+.select-menu-wrapper {
+  margin-top: 8px;
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+  padding: 15px 16px;
+  border: 1px solid $gray-100;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+
+.select-menu {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+  color: $gray-400;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+
+  max-height: 260px;
+  overflow-y: scroll;
+}
+
+.select-menu-item {
+  padding: 15px 16px;
+
+  &:hover {
+    background-color: $main-blue-50;
   }
 }
 

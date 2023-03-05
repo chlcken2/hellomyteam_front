@@ -20,6 +20,7 @@ import FormWrap from "./components/Form/FormWrap";
 import Join from "./components/Form/Join";
 import Preview from "./components/Form/Preview";
 import "./styles/style.scss";
+import "./styles/base.scss";
 import { instance } from "./config/api";
 
 const App = () => {
@@ -37,15 +38,11 @@ const App = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  useEffect(() => {
-    console.log(confirmLogin);
-  }, [confirmLogin]);
   return (
     <QueryClientProvider client={queryClient}>
       <CookiesProvider>
         <AxiosInterceptor>
           <Router>
-            <GlobalStyle />
             <Nav />
             {!confirmLogin && (
               <FormWrap>

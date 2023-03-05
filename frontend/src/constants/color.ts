@@ -1,6 +1,4 @@
-import deepFreeze from "utils/deepFreeze";
-
-const COLOR = deepFreeze({
+const COLOR = {
   black: "#1D1D1D",
   white: "#FFFFFF",
   "--blue-100": "#F8FAFD",
@@ -18,6 +16,6 @@ const COLOR = deepFreeze({
   "--main-blue-50": "#B4C4FF",
   "--main-blue-100": "#5E81FF",
   "--main-blue-200": "#335CEC",
-});
+};
 
-export default COLOR;
+export default Object.freeze(COLOR);

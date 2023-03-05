@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Button from "./button";
 
-const TeamCard = () => {
+interface NotiType {
+  title: string;
+  slogan: string;
+  num: number;
+}
+const TeamCard = ({ title, slogan, num }: NotiType) => {
   const img = process.env.PUBLIC_URL;
-  const [title, setTitle] = useState("헬로우마이팀");
-  const [slogan, setSlogan] = useState("안녕하세요 헬로우마이팀입니다.");
-  const [num, setNum] = useState(24);
   const test = () => {
     console.log("test");
   };

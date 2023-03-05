@@ -1,10 +1,11 @@
 import PostItem from "components/Home/PostItem";
+import TeamItem from "components/Home/TeamItem";
 import { FC } from "react";
 
 const Home: FC = () => {
   return (
     <div className="home-container">
-      <div className="home-left-wrapper">
+      <div className="home-wrapper notice">
         <section className="section-container">
           <div className="section-top">
             <h2>공지게시판</h2>
@@ -33,13 +34,27 @@ const Home: FC = () => {
             </li>
           </ul>
         </section>
+      </div>
+      <div className="home-wrapper team">
         <section className="section-container">
           <div className="section-top">
             <h2>팀원</h2>
           </div>
+          <div className="team-list">
+            <div className="team-list-item">
+              <div className="name">이름</div>
+              <div className="role">역할</div>
+              <div className="position">포지션</div>
+            </div>
+            <ul>
+              {Array.from({ length: 4 }, () => ({ name: "손흥민" })).map((item, idx) => (
+                <TeamItem key={idx} name={item.name} />
+              ))}
+            </ul>
+          </div>
         </section>
       </div>
-      <div className="home-right-wrapper">
+      <div className="home-wrapper board">
         <section className="section-container">
           <div className="section-top">
             <h2>자유게시판</h2>

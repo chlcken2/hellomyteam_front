@@ -9,7 +9,8 @@ import Home from "pages/Home/Home";
 import Notice from "pages/Home/Notice";
 import Board from "pages/Home/Board";
 import Team from "pages/Home/Team";
-
+import Detail from "pages/Home/Detail";
+import Write from "pages/Home/Write";
 import LoginState from "recoil/atom";
 import { AxiosInterceptor, queryClient } from "config";
 import GlobalStyle from "styles/GlobalStyles";
@@ -62,6 +63,8 @@ const App = () => {
                 <Route path="" element={<Home />} />
                 <Route path="notice" element={<Notice />} />
                 <Route path="board" element={<Board />} />
+                <Route path="board/:id" element={<Detail time="1시간" />} />
+                <Route path="board/write" element={<Write />} />
                 <Route path="team" element={<Team />} />
               </Route>
               {/* <Route path="/search" element={<FindTeam />} /> */}

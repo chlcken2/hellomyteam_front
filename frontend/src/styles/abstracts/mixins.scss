@@ -20,6 +20,7 @@
   border: none;
 }
 
+
 @mixin comment {
   width: 904px;
   background: $blue-100;
@@ -124,6 +125,27 @@
       padding: 2px;
       :nth-child(1) {
         margin-right: 5px;
+      }
+    }
+  }
+}
+
+@mixin title {
+  padding: 24px;
+  border-radius: 16px;
+  background: #fff;
+  .button {
+    display: block;
+    width: 50px;
+    height: 50px;
+  }
+  .content {
+    h2 {
+      font-size: 24px;
+      font-weight: 500;
+      + p {
+        color: $gray-400;
+        padding-top: 20px;
       }
     }
   }

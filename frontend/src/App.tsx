@@ -5,10 +5,15 @@ import { CookiesProvider } from "react-cookie";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 
+import Home from "pages/Home/Home";
+import Notice from "pages/Home/Notice";
+import Board from "pages/Home/Board";
+import Team from "pages/Home/Team";
+import Detail from "pages/Home/Detail";
+import Write from "pages/Home/Write";
 import LoginState from "recoil/atom";
 import { AxiosInterceptor, queryClient } from "config";
-import Shorcut from "components/Navbar/Shorcut";
-import Notice from "components/Navbar/Notice";
+import GlobalStyle from "styles/GlobalStyles";
 import Nav from "layouts/Nav";
 import Login from "components/Form/Login";
 import Main from "./layouts/Main";
@@ -35,9 +40,6 @@ const App = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  useEffect(() => {
-    console.log(confirmLogin);
-  }, [confirmLogin]);
   return (
     <QueryClientProvider client={queryClient}>
       <CookiesProvider>
@@ -59,8 +61,12 @@ const App = () => {
             )}
             <Routes>
               <Route path="/" element={<Main />}>
-                <Route path="shortcut" element={<Shorcut />} />
+                <Route path="" element={<Home />} />
                 <Route path="notice" element={<Notice />} />
+                <Route path="board" element={<Board />} />
+                <Route path="board/:id" element={<Detail time="1시간" />} />
+                <Route path="board/write" element={<Write />} />
+                <Route path="team" element={<Team />} />
               </Route>
               <Route path="/search" element={<FindTeam />} />
             </Routes>

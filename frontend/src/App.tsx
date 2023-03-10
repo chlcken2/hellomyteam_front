@@ -11,6 +11,7 @@ import Board from "pages/Home/Board";
 import Team from "pages/Home/Team";
 import Detail from "pages/Home/Detail";
 import Write from "pages/Home/Write";
+import Profile from "pages/Home/Profile";
 import LoginState from "recoil/atom";
 import { AxiosInterceptor, queryClient } from "config";
 import GlobalStyle from "styles/GlobalStyles";
@@ -66,6 +67,7 @@ const App = () => {
                 <Route path="board/:id" element={<Detail time="1시간" />} />
                 <Route path="board/write" element={<Write />} />
                 <Route path="team" element={<Team />} />
+                <Route path="profile" element={<Profile />} />
               </Route>
               {/* <Route path="/search" element={<FindTeam />} /> */}
             </Routes>

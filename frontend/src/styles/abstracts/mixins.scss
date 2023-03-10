@@ -22,32 +22,39 @@
 
 @mixin comment {
   width: 904px;
-  height: 110px;
-  padding: 16px;
   background: $blue-100;
   display: flex;
   border-radius: 8px;
+  padding: 16px;
 
   .comment-avatar {
     margin-right: 12px;
     background: $gray-300;
-    width: 42px;
+    min-width: 42px;
     height: 42px;
+    border-radius: 42px;
   }
 
   .comment-main-box {
     width: 100%;
-    .comment-writer {
-      font-size: 12px;
+    .comment-header {
+      display: flex;
       margin-bottom: 12px;
+      font-size: 12px;
       font-weight: 500;
-      color: #1d1d1d;
+      .comment-writer {
+        color: #1d1d1d;
+        margin-right: 5px;
+      }
+      .comment-date {
+        color: $gray-400;
+      }
     }
 
     .comment-box {
       display: flex;
-      justify-content: space-between;
-      .comment {
+      textarea {
+        margin-right: 23px;
         width: 782px;
         height: 84px;
         background: inherit;
@@ -55,6 +62,10 @@
         line-height: 21px;
         font-size: 14px;
         color: $gray-400;
+        resize: none;
+        &:focus {
+          outline: none;
+        }
       }
 
       .comment-edit-box {
@@ -102,6 +113,17 @@
         border-radius: 4px;
         width: 45px;
         height: 33px;
+      }
+    }
+
+    .comment-footer {
+      display: flex;
+      margin-top: 7px;
+      font-size: 12px;
+      color: $gray-300;
+      padding: 2px;
+      :nth-child(1) {
+        margin-right: 5px;
       }
     }
   }

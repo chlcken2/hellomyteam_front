@@ -45,6 +45,9 @@
   @include comment;
   background: inherit;
   textarea {
-    border: 1px solid $gray-200;
+    width: 760px !important;
+    padding: 12px;
+    border: 1px solid $gray-200 !important;
+    border-radius: 8px;
   }
 }

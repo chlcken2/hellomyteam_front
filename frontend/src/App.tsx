@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, useCallback } from "react";
 
 import { QueryClientProvider } from "react-query";
 import { CookiesProvider } from "react-cookie";
@@ -14,7 +14,6 @@ import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 
 import { AxiosInterceptor, queryClient } from "config";
-import GlobalStyle from "styles/GlobalStyles";
 import Nav from "layouts/Nav";
 import Login from "components/Form/Login";
 import Main from "./layouts/Main";
@@ -30,18 +29,20 @@ const App = () => {
   const [login, setLogin] = useState(false);
   const [hasId, setHasId] = useState(false);
   const [confirmLogin, setConfirmLogin] = useRecoilState(LoginState);
-  useEffect(() => {
-    instance
-      .get("/api/user/me")
-      .then((res) => {
-        if (res.data.status === "success") {
-          setConfirmLogin(true);
-          setUser(res.data.data);
-        }
-      })
-      .catch((err) => console.log(err));
-  }, []);
 
+  useEffect(() => {
+    if (localStorage.getItem("access")) {
+      setConfirmLogin(true);
+      instance
+        .get("/api/user/me")
+        .then((res) => {
+          if (res.data.status === "success") {
+            setUser(res.data.data);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <CookiesProvider>

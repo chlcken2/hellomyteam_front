@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useUser } from "hooks";
 import { useCookies } from "react-cookie";
 
 import React from "react";
@@ -19,43 +18,66 @@ const AxiosInterceptor = (props: Props) => {
   const [cookie, setCookie] = useCookies(["refresh"]);
 
   instance.interceptors.request.use(
-    // token refresh
+    // req할 때마다 header에 access token을 던진다
     async (config) => {
       const newConfig = { ...config };
       const accessToken = JSON.parse(localStorage.getItem("access")).value;
-      const refreshToken = JSON.parse(localStorage.getItem("access")).value;
 
       if (!accessToken) {
         config.headers.accessToken = null;
-        config.headers.refreshToken = null;
         return config;
       }
       if (config.headers && accessToken) {
         config.headers.Authorization = `${accessToken}`;
-        config.headers.refreshToken = `${refreshToken}`;
         return config;
-      }
-
-      // TODO: 수정예정
-      const { user } = useUser();
-      if (user) {
-        if (accessToken) {
-          newConfig.headers.Authorization = `${accessToken}`;
-        } else {
-          const { refresh } = cookie.refresh;
-          const refreshInstance = createInstance();
-          await refreshInstance.post("/api/auth/refresh", { refresh }).then((data) => {
-            console.log(`hayoung${data}`);
-            const newAccess = data.data.access;
-            newConfig.headers.Authorization = `${newAccess}`;
-          });
-        }
       }
       return newConfig;
     },
 
     async (error) => {
       return await Promise.reject(error);
+    },
+  );
+
+  instance.interceptors.response.use(
+    // req할 때마다 header에 access token을 던진다
+    async (config) => {
+      return config;
+    },
+    async (err) => {
+      const originalConfig = err.config;
+
+      console.log("hayoung", err);
+      if (err.response.status === 498) {
+        const { refresh } = cookie;
+        // TODO: 토큰이 만료될때마다 갱신해줌. 창현님이 api 수정하신 후에 로직 추가할 예정
+        console.log(refresh);
+
+        try {
+          const res = await axios({
+            url: "/api/auth/refresh",
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${refresh}`,
+            },
+          });
+          if (res) {
+            const { accessToken, refreshToken } = res.data.data;
+            // access - localStorage
+            localStorage.setItem("access", JSON.stringify(accessToken));
+            // refresh - cookie
+            const now = new Date();
+            const after1week = new Date();
+            after1week.setDate(now.getDate() + 7);
+            setCookie("refresh", refreshToken, { path: "/", expires: after1week });
+          }
+          return await instance.request(originalConfig);
+        } catch (err) {
+          console.log("토큰 갱신 에러");
+        }
+        return Promise.reject(err);
+      }
+      return Promise.reject(err);
     },
   );
 

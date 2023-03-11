@@ -39,6 +39,8 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
             expiry: new Date().getTime() + 1,
           };
           localStorage.setItem("access", JSON.stringify(item));
+          localStorage.setItem("refresh", JSON.stringify(item));
+
           setConfirmLogin(true);
         })
         .catch((err) => {

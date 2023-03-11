@@ -1,8 +1,9 @@
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { Routes, Route, Link, NavLink, Outlet } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import LoginState from "recoil/atom";
+import UserState from "recoil/userAtom";
 import "styles/pages/home.scss";
 
 const MENU = [
@@ -16,6 +17,11 @@ const MENU = [
 const Main = () => {
   const [on, setOn] = useState<number>(0);
   const [confirmLogin, setConfirmLogin] = useRecoilState(LoginState);
+  const useUser = useRecoilValue(UserState);
+
+  useEffect(() => {
+    console.log(useUser);
+  });
 
   return (
     <div className="main-wrap">

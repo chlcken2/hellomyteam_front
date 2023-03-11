@@ -11,6 +11,8 @@ import Board from "pages/Home/Board";
 import Team from "pages/Home/Team";
 
 import LoginState from "recoil/atom";
+import UserState from "recoil/userAtom";
+
 import { AxiosInterceptor, queryClient } from "config";
 import GlobalStyle from "styles/GlobalStyles";
 import Nav from "layouts/Nav";
@@ -24,6 +26,7 @@ import "./styles/base.scss";
 import { instance } from "./config/api";
 
 const App = () => {
+  const [user, setUser] = useRecoilState(UserState);
   const [login, setLogin] = useState(false);
   const [hasId, setHasId] = useState(false);
   const [confirmLogin, setConfirmLogin] = useRecoilState(LoginState);
@@ -33,6 +36,7 @@ const App = () => {
       .then((res) => {
         if (res.data.status === "success") {
           setConfirmLogin(true);
+          setUser(res.data.data);
         }
       })
       .catch((err) => console.log(err));

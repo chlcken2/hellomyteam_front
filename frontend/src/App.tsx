@@ -13,7 +13,6 @@ import Detail from "pages/Home/Detail";
 import Write from "pages/Home/Write";
 import LoginState from "recoil/atom";
 import { AxiosInterceptor, queryClient } from "config";
-import GlobalStyle from "styles/GlobalStyles";
 import Nav from "layouts/Nav";
 import Login from "components/Form/Login";
 import Main from "./layouts/Main";

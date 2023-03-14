@@ -20,7 +20,6 @@
   border: none;
 }
 
-
 @mixin comment {
   width: 904px;
   background: $blue-100;
@@ -41,14 +40,15 @@
     .comment-header {
       display: flex;
       margin-bottom: 12px;
-      font-size: 12px;
-      font-weight: 500;
       .comment-writer {
         color: #1d1d1d;
-        margin-right: 5px;
+        font-size: 16px;
+        font-weight: 600;
+        margin-right: 8px;
       }
       .comment-date {
-        color: $gray-400;
+        font-size: 14px;
+        color: $gray-300;
       }
     }
 
@@ -57,7 +57,7 @@
       textarea {
         margin-right: 23px;
         width: 782px;
-        height: 84px;
+        height: 88px;
         background: inherit;
         border: none;
         line-height: 21px;
@@ -99,21 +99,12 @@
         height: 20px;
         padding: 0px 10px;
         > ul > li {
-          width: 3px;
-          height: 3px;
+          width: 4px;
+          height: 4px;
           background: $gray-400;
-          border-radius: 3px;
+          border-radius: 4px;
           margin-top: 3px;
         }
-      }
-
-      .comment-complete-box {
-        background: $blue-100;
-        color: $gray-400;
-        border: 1px solid $gray-100;
-        border-radius: 4px;
-        width: 45px;
-        height: 33px;
       }
     }
 
@@ -123,8 +114,12 @@
       font-size: 12px;
       color: $gray-300;
       padding: 2px;
-      :nth-child(1) {
-        margin-right: 5px;
+      .comment-like {
+        color: $gray-300;
+        margin-right: 8px;
+      }
+      .comment-to-comment {
+        color: $gray-300;
       }
     }
   }

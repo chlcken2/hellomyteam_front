@@ -80,9 +80,25 @@ const Comment = ({
       editCompleteHanler();
     };
     return (
-      <button className="comment-complete-box" onClick={() => onClickEvent()}>
-        완료
-      </button>
+      <div className="comment-edit-box">
+        <button
+          className="comment-edit"
+          onClick={() => {
+            deleteHandler();
+          }}
+        >
+          취소
+        </button>
+        <div className="comment-edit-line" />
+        <button
+          className="comment-edit"
+          onClick={() => {
+            onClickEvent();
+          }}
+        >
+          완료
+        </button>
+      </div>
     );
   };
 
@@ -118,8 +134,8 @@ const Comment = ({
           {myComment && commentButtonHandler()}
         </div>
         <div className="comment-footer">
-          <div>좋아요</div>
-          <div>댓글</div>
+          <div className="comment-like">좋아요</div>
+          <div className="comment-to-comment">댓글</div>
         </div>
       </div>
     </div>

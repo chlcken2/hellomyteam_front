@@ -46,9 +46,10 @@
   @include comment;
   background: inherit;
   textarea {
-    width: 760px !important;
+    height: 114px !important;
+    background: $white !important;
     padding: 12px;
-    border: 1px solid $gray-200 !important;
+    border: 1px solid $gray-100 !important;
     border-radius: 8px;
   }
 }

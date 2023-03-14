@@ -10,6 +10,9 @@ import Notice from "pages/Home/Notice";
 import Board from "pages/Home/Board";
 import Team from "pages/Home/Team";
 import CreateTeam from "pages/Account/CreateTeam";
+import Detail from "pages/Home/Detail";
+import Write from "pages/Home/Write";
+
 import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 
@@ -23,6 +26,7 @@ import Preview from "./components/Form/Preview";
 import "./styles/style.scss";
 import "./styles/base.scss";
 import { instance } from "./config/api";
+import FindTeam from "./layouts/FindTeam";
 
 const App = () => {
   const [user, setUser] = useRecoilState(UserState);
@@ -67,9 +71,12 @@ const App = () => {
                 <Route path="" element={<Home />} />
                 <Route path="notice" element={<Notice />} />
                 <Route path="board" element={<Board />} />
+                <Route path="board/:id" element={<Detail time="1시간" />} />
+                <Route path="board/write" element={<Write />} />
                 <Route path="team" element={<Team />} />
               </Route>
               <Route path="/profile" element={<CreateTeam />} />
+
             </Routes>
           </Router>
         </AxiosInterceptor>

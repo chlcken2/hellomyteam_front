@@ -33,6 +33,25 @@
   width: 100%;
 }
 
+.my-comment-wrap {
+  @include comment;
+}
+
+.other-comment-wrap {
+  @include comment;
+  background: inherit;
+}
+
+.edit-comment-wrap {
+  @include comment;
+  background: inherit;
+  textarea {
+    width: 760px !important;
+    padding: 12px;
+    border: 1px solid $gray-200 !important;
+    border-radius: 8px;
+  }
+}
 // label start
 
 .label-wrapper {

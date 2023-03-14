@@ -1,4 +1,5 @@
 import Comment from "components/common/comment";
+import { useState } from "react";
 import "../styles/components/common.scss";
 
 const text =
@@ -7,10 +8,22 @@ const writer = "Beson";
 const test = true;
 
 const FindTeam = () => {
+  const [value, setValue] = useState<string>(text);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setValue(e.target.value);
+  };
+
   return (
     <div className="main-wrap">
       <h1 className="main-title">팀 찾기</h1>
-      <Comment text={text} writer={writer} myComment={test} />
+      <Comment
+        text={value}
+        writer={writer}
+        myComment={test}
+        date="2023.02.01"
+        editHandler={handleChange}
+      />
     </div>
   );
 };

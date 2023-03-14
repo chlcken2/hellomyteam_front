@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { FC, Dispatch, SetStateAction, useState, useEffect } from "react";
 import { useCookies } from "react-cookie"; // useCookies import
 import LoginState from "recoil/atom";
+import UserState from "recoil/userAtom";
 import { useRecoilState } from "recoil";
 import { AxiosInterceptor, instance } from "../../config/api";
 
@@ -17,6 +18,7 @@ interface IError {
 const Login: FC<IHas> = ({ setHasId, setLogin }) => {
   const [cookies, setCookie, removeCookie] = useCookies(["refresh"]);
   const [confirmLogin, setConfirmLogin] = useRecoilState(LoginState);
+  const [user, setUser] = useRecoilState(UserState);
 
   const submit = (e: any) => {
     e.preventDefault();
@@ -39,6 +41,15 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
             expiry: new Date().getTime() + 1,
           };
           localStorage.setItem("access", JSON.stringify(item));
+
+          instance
+            .get("/api/user/me")
+            .then((res) => {
+              if (res.data.status === "success") {
+                setUser(res.data.data);
+              }
+            })
+            .catch((err) => console.log(err));
           setConfirmLogin(true);
         })
         .catch((err) => {

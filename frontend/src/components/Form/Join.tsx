@@ -53,6 +53,7 @@ const Join: FC<IHas> = ({ setHasId }) => {
       setReset(false);
     } else {
       console.log(error);
+      alert(error);
     }
   };
 
@@ -70,8 +71,19 @@ const Join: FC<IHas> = ({ setHasId }) => {
           privacyYn: "YES",
           termsOfServiceYn: "YES",
         })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+        .then((res) => {
+          if (res.data.status === "error") {
+            alert(res.data.message);
+            setHasId(true);
+          } else {
+            alert("회원가입에 성공했습니다.");
+            setHasId(false);
+          }
+        })
+        .catch((err) => {
+          alert(err);
+          setHasId(true);
+        });
     } else {
       console.log(error2);
     }
@@ -107,7 +119,6 @@ const Join: FC<IHas> = ({ setHasId }) => {
   }, [text]);
 
   useEffect(() => {
-    console.log(isCheck);
     if (isCheck) {
       setText2((current) => {
         const newText = { ...current };
@@ -124,7 +135,6 @@ const Join: FC<IHas> = ({ setHasId }) => {
   }, [isCheck]);
 
   useEffect(() => {
-    console.log(text2.privacyYn);
     const err2: IError2 = {};
     if (text2.name.length < 3) {
       err2.name = "이름은 세글자 이상 입력하시오";

@@ -15,6 +15,7 @@ import Write from "pages/Home/Write";
 
 import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
+import Alarm from "pages/Alarm/Alarm";
 
 import { AxiosInterceptor, queryClient } from "config";
 import Nav from "layouts/Nav";
@@ -75,8 +76,9 @@ const App = () => {
                 <Route path="board/write" element={<Write />} />
                 <Route path="team" element={<Team />} />
               </Route>
+              <Route path="/search" element={<FindTeam />} />
+              <Route path="/alarm" element={<Alarm />} 
               <Route path="/profile" element={<CreateTeam />} />
-
             </Routes>
           </Router>
         </AxiosInterceptor>

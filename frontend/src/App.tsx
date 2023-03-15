@@ -9,8 +9,10 @@ import Home from "pages/Home/Home";
 import Notice from "pages/Home/Notice";
 import Board from "pages/Home/Board";
 import Team from "pages/Home/Team";
+import CreateTeam from "pages/Account/CreateTeam";
 import Detail from "pages/Home/Detail";
 import Write from "pages/Home/Write";
+
 import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 import Alarm from "pages/Alarm/Alarm";
@@ -51,7 +53,6 @@ const App = () => {
       <CookiesProvider>
         <AxiosInterceptor>
           <Router>
-            <Nav />
             {!confirmLogin && (
               <FormWrap>
                 {login && !hasId ? (
@@ -65,6 +66,7 @@ const App = () => {
                   ))}
               </FormWrap>
             )}
+            <Nav />
             <Routes>
               <Route path="/" element={<Main />}>
                 <Route path="" element={<Home />} />
@@ -75,7 +77,8 @@ const App = () => {
                 <Route path="team" element={<Team />} />
               </Route>
               <Route path="/search" element={<FindTeam />} />
-              <Route path="/alarm" element={<Alarm />} />
+              <Route path="/alarm" element={<Alarm />} 
+              <Route path="/profile" element={<CreateTeam />} />
             </Routes>
           </Router>
         </AxiosInterceptor>

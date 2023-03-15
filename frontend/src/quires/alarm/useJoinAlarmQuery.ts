@@ -2,7 +2,7 @@
 import { instance } from "config";
 import { useQuery } from "react-query";
 import { JoinAlarmItemType } from "types/alarmType";
-import ApiType from "types/apiType";
+import ApiResponseType from "types/ApiResponseType";
 
 interface fetcherPropsType {
   teamId: number;
@@ -13,7 +13,7 @@ export const QUERY_KEY = "/joinAlarm";
 
 const fetcher = ({ teamId, teamMemberInfoId }: fetcherPropsType) =>
   instance
-    .get<ApiType<JoinAlarmItemType[]>>(
+    .get<ApiResponseType<JoinAlarmItemType[]>>(
       `/api/team/${teamId}/join?teamMemberInfoId=${teamMemberInfoId}`,
     )
     .then(({ data }) => data);

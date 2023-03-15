@@ -1,4 +1,5 @@
 import NotiCard from "components/common/NotiCard";
+import { useJoinAlarmAcceptMutation } from "quires/alarm/useJoinAlarmMutation";
 import useJoinAlarmQuery from "quires/alarm/useJoinAlarmQuery";
 import { FC } from "react";
 
@@ -11,10 +12,29 @@ const TEMP_DATA = {
 };
 
 const Alarm: FC = () => {
+  // 가입 신청 알람 fetch query
   const { data: JoinAlarmResponse } = useJoinAlarmQuery({
     teamId: TEMP_DATA.teamId,
     teamMemberInfoId: TEMP_DATA.teamMemberInfoId,
   });
+
+  // 가입 신청 수락 및 거절 mutation
+  const {
+    mutate: acceptJoinTeam,
+    error: acceptJoinTeamError,
+    isLoading: isAcceptJoinTeamLoading,
+  } = useJoinAlarmAcceptMutation(TEMP_DATA.teamId);
+  const {
+    mutate: rejectJoinTeam,
+    error: rejectJoinTeamError,
+    isLoading: isRejectJoinTeamLoading,
+  } = useJoinAlarmAcceptMutation(TEMP_DATA.teamId);
+
+  const handleJoinTeamAlarm = (judge: "accept" | "reject", memberId: number) => {
+    if (isAcceptJoinTeamLoading || isRejectJoinTeamLoading) return;
+    if (judge === "accept") acceptJoinTeam(memberId);
+    if (judge === "reject") rejectJoinTeam(memberId);
+  };
 
   return (
     <div className="main-wrap">
@@ -23,7 +43,16 @@ const Alarm: FC = () => {
         <ul className="alram-list">
           {JoinAlarmResponse?.data.map((joinAlarmItem, idx) => (
             <li key={idx}>
-              <NotiCard applyTime={1} userName={joinAlarmItem.name} />
+              <NotiCard
+                onClickAcceptButton={() =>
+                  handleJoinTeamAlarm("accept", joinAlarmItem.memberId)
+                }
+                onClickRejectButton={() =>
+                  handleJoinTeamAlarm("reject", joinAlarmItem.memberId)
+                }
+                applyTime={1}
+                userName={joinAlarmItem.name}
+              />
             </li>
           ))}
         </ul>

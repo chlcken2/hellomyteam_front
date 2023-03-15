@@ -4,12 +4,16 @@ import Button from "./button";
 interface notifyType {
   applyTime: number;
   userName: string;
+  onClickAcceptButton: () => void;
+  onClickRejectButton: () => void;
 }
-const test = () => {
-  alert("hi");
-};
 
-const NotiCard = ({ applyTime, userName }: notifyType) => {
+const NotiCard = ({
+  applyTime,
+  userName,
+  onClickAcceptButton,
+  onClickRejectButton,
+}: notifyType) => {
   return (
     <div className="noti-card">
       <div>
@@ -22,10 +26,10 @@ const NotiCard = ({ applyTime, userName }: notifyType) => {
       </div>
       <ul className="buttons">
         <li>
-          <Button text="거절" handler={test} />
+          <Button text="거절" handler={onClickAcceptButton} />
         </li>
         <li>
-          <Button text="수락" handler={test} />
+          <Button text="수락" handler={onClickRejectButton} />
         </li>
       </ul>
     </div>

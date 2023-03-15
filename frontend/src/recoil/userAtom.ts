@@ -14,6 +14,7 @@ interface UserType {
 const UserState = atom({
   key: "UserState", // unique ID (with respect to other atoms/selectors)
   default: {} as UserType, // default value (aka initial value)
+
 });
 
 export default UserState;

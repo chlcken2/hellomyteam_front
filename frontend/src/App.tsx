@@ -18,6 +18,7 @@ import UserState from "recoil/userAtom";
 import Alarm from "pages/Alarm/Alarm";
 
 import { AxiosInterceptor, queryClient } from "config";
+import Toast from "components/common/Toast";
 import Nav from "layouts/Nav";
 import Login from "components/Form/Login";
 import Main from "./layouts/Main";
@@ -53,6 +54,7 @@ const App = () => {
       <CookiesProvider>
         <AxiosInterceptor>
           <Router>
+            <Toast type="default" />
             {!confirmLogin && (
               <FormWrap>
                 {login && !hasId ? (
@@ -77,7 +79,7 @@ const App = () => {
                 <Route path="team" element={<Team />} />
               </Route>
               <Route path="/search" element={<FindTeam />} />
-              <Route path="/alarm" element={<Alarm />} 
+              <Route path="/alarm" element={<Alarm />} />
               <Route path="/profile" element={<CreateTeam />} />
             </Routes>
           </Router>

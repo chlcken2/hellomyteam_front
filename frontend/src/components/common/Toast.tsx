@@ -1,24 +1,34 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import ToastState from "recoil/toastAtom";
 
-interface PropsType {
-  message?: string;
-  type: "default" | "error";
-}
+const Toast = () => {
+  const [isDisplay, setIsDisplay] = useState(false);
+  const [toast, setToasts] = useRecoilState(ToastState);
 
-const Toast = ({ message, type }: PropsType) => {
-  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    if (toast.visible) setIsDisplay(true);
 
-  //   useEffect(() => {
-  //     const timer = setTimeout(() => {
-  //       setVisible(false);
-  //     }, 1000);
+    // toast 모달의 정보, 애니메이션을 관리하는 timer
+    const toastTimer = setTimeout(() => {
+      if (toast.visible) setToasts({ ...toast, visible: false });
+    }, 2000);
+    // toast 모달을 dom에서 제거하는 timer
+    const displayTimer = setTimeout(() => {
+      if (isDisplay) setIsDisplay(false);
+    }, 2500);
 
-  //     return () => clearTimeout(timer);
-  //   }, []);
+    return () => {
+      clearTimeout(toastTimer);
+      clearTimeout(displayTimer);
+    };
+  }, [toast]);
+
+  if (!isDisplay) return null;
 
   return (
-    <div className={`toast ${type} ${visible ? "fade-in" : "fade-out"}`}>
-      {type === "default" && (
+    <div className={`toast ${toast.type} ${toast.visible ? "fade-in" : "fade-out"}`}>
+      {toast.type === "default" && (
         <svg
           width="20"
           height="20"
@@ -35,7 +45,7 @@ const Toast = ({ message, type }: PropsType) => {
           />
         </svg>
       )}
-      {type === "error" && (
+      {toast.type === "error" && (
         <svg
           width="20"
           height="20"
@@ -52,9 +62,9 @@ const Toast = ({ message, type }: PropsType) => {
           <circle cx="10" cy="16" r="1" fill="white" />
         </svg>
       )}
-      <p>가입 신청이 완료되었습니다!</p>
+      <p>{toast.message}</p>
     </div>
   );
 };
 
-export default Toast;
+export default memo(Toast);

@@ -434,8 +434,7 @@
   color: #fff;
   padding: 14px 16px;
   border-radius: 8px;
-  opacity: 1;
-  transition: opacity 1s ease-in-out;
+  opacity: 0;
 
   &.default {
     background-color: $green-100;
@@ -461,10 +460,28 @@
   }
 
   &.fade-in {
-    opacity: 1;
+    animation: fade-in 0.5s ease-in-out forwards;
   }
 
   &.fade-out {
-    opacity: 0;
+    animation: fade-out 0.5s ease-in-out forwards;
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-out {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }
 }

@@ -54,7 +54,7 @@ const App = () => {
       <CookiesProvider>
         <AxiosInterceptor>
           <Router>
-            <Toast type="default" />
+            <Toast />
             {!confirmLogin && (
               <FormWrap>
                 {login && !hasId ? (

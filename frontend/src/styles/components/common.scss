@@ -418,3 +418,70 @@
     }
   }
 }
+
+// toast
+.toast {
+  z-index: 10;
+  width: fit-content;
+  max-width: 80vw;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  color: #fff;
+  padding: 14px 16px;
+  border-radius: 8px;
+  opacity: 0;
+
+  &.default {
+    background-color: $green-100;
+  }
+
+  &.error {
+    background-color: $red-100;
+  }
+
+  @media screen and (max-width: 600px) {
+    bottom: 80px;
+  }
+
+  svg {
+    margin-right: 8px;
+  }
+
+  p {
+    flex: 1;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  &.fade-in {
+    animation: fade-in 0.5s ease-in-out forwards;
+  }
+
+  &.fade-out {
+    animation: fade-out 0.5s ease-in-out forwards;
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-out {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}

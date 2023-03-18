@@ -115,7 +115,7 @@
 }
 
 .join-form {
-  div {
+  > div {
     margin-bottom: 15px;
   }
 }
@@ -125,6 +125,7 @@ p.error-message {
 }
 
 .join-bg {
+  z-index: 1;
   position: fixed;
   top: 0;
   left: 0;
@@ -283,4 +284,7 @@ header {
     border-radius: 16px;
     height: 52px;
   }
+}
+
+.layout-wrap {
 }

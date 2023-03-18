@@ -71,6 +71,42 @@
 
 // input start
 
+.join-wrap2 {
+  .file-button {
+    .btnStart {
+      padding-bottom: 14px;
+      font-size: 14px;
+    }
+    label {
+      font-size: inherit;
+      line-height: normal;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+    input[type="file"] {
+      position: absolute;
+      width: 0;
+      height: 0;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    p {
+      width: 100%;
+      border: 1px solid $gray-100;
+      border-radius: 8px;
+      outline: none;
+      color: $gray-400;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 50px;
+      padding: 0 4px;
+      height: 50px;
+    }
+  }
+}
 .input-container {
   width: 100%;
 
@@ -384,6 +420,73 @@
       + div {
         opacity: 1;
       }
+    }
+  }
+}
+
+// toast
+.toast {
+  z-index: 10;
+  width: fit-content;
+  max-width: 80vw;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  color: #fff;
+  padding: 14px 16px;
+  border-radius: 8px;
+  opacity: 0;
+
+  &.default {
+    background-color: $green-100;
+  }
+
+  &.error {
+    background-color: $red-100;
+  }
+
+  @media screen and (max-width: 600px) {
+    bottom: 80px;
+  }
+
+  svg {
+    margin-right: 8px;
+  }
+
+  p {
+    flex: 1;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  &.fade-in {
+    animation: fade-in 0.5s ease-in-out forwards;
+  }
+
+  &.fade-out {
+    animation: fade-out 0.5s ease-in-out forwards;
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-out {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
     }
   }
 }

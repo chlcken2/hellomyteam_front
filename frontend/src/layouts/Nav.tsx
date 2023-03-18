@@ -101,7 +101,7 @@ const Nav = () => {
                   />
                 </svg>
               </span>
-              <span>프로필</span>
+              <span>계정</span>
             </span>
           </NavLink>
         </li>

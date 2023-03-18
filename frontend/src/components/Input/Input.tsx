@@ -12,6 +12,7 @@ interface PropsType {
   id?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   placeholder?: string;
+  keyDownHandler?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const Input = ({
@@ -24,6 +25,7 @@ const Input = ({
   id,
   onChange,
   placeholder,
+  keyDownHandler,
 }: PropsType) => {
   const [isError, setIsError] = useState(false);
   const inputContainerClassName = isError ? "input-container error" : "input-container";
@@ -43,6 +45,7 @@ const Input = ({
         type={type}
         value={value}
         onChange={onChange || handleChange}
+        onKeyDown={keyDownHandler}
         placeholder={placeholder}
       />
       {isError && <p>{errorMessage}</p>}

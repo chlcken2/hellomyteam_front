@@ -28,7 +28,7 @@ import Preview from "./components/Form/Preview";
 import "./styles/style.scss";
 import "./styles/base.scss";
 import { instance } from "./config/api";
-import FindTeam from "./layouts/FindTeam";
+import FindTeam from "./pages/FindTeam";
 
 const App = () => {
   const [user, setUser] = useRecoilState(UserState);

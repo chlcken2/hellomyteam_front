@@ -35,6 +35,7 @@ const AxiosInterceptor = (props: Props) => {
     },
 
     async (error) => {
+      console.log(error);
       return await Promise.reject(error);
     },
   );
@@ -46,17 +47,20 @@ const AxiosInterceptor = (props: Props) => {
     },
     async (err) => {
       const originalConfig = err.config;
+      console.log(originalConfig);
+
+      const {
+        config,
+        response: { status },
+      } = err;
 
       console.log("hayoung", err);
-      if (err.response.status === 498) {
+      if (err.response) {
+        const originalRequest = config;
         const { refresh } = cookie;
-        // TODO: 토큰이 만료될때마다 갱신해줌. 창현님이 api 수정하신 후에 로직 추가할 예정
-        console.log(refresh);
-
+        // TODO: 토큰이 만료될때마다 갱신해줌.
         try {
-          const res = await axios({
-            url: "/api/auth/refresh",
-            method: "GET",
+          const res = await axios.get("/api/auth/refresh", {
             headers: {
               Authorization: `Bearer ${refresh}`,
             },
@@ -64,18 +68,22 @@ const AxiosInterceptor = (props: Props) => {
           if (res) {
             const { accessToken, refreshToken } = res.data.data;
             // access - localStorage
-            localStorage.setItem("access", JSON.stringify(accessToken));
+            const a = JSON.stringify(accessToken);
+            localStorage.setItem("access", a);
             // refresh - cookie
             const now = new Date();
             const after1week = new Date();
             after1week.setDate(now.getDate() + 7);
             setCookie("refresh", refreshToken, { path: "/", expires: after1week });
+            // 추가
+            originalRequest.headers.authorization = `${accessToken}`;
+            // 401로 요청 실패했던 요청 새로운 accessToken으로 재요청
+            return axios(originalRequest);
           }
-          return await instance.request(originalConfig);
         } catch (err) {
+          console.dir(err);
           console.log("토큰 갱신 에러");
         }
-        return Promise.reject(err);
       }
       return Promise.reject(err);
     },

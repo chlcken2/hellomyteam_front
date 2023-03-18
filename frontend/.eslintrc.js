@@ -41,6 +41,8 @@ module.exports = {
         mjs: "never",
       },
     ],
+    "import/namespace": "off",
+    "import/default": "off",
     "no-return-await": "off",
     "linebreak-style": 0,
     "import/prefer-default-export": 0,
@@ -59,6 +61,7 @@ module.exports = {
     "no-extra-boolean-cast": 0,
     "react/require-default-props": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "consistent-return": "off",
   },
   settings: {
     "import/resolver": {

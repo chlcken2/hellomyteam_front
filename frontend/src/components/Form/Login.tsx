@@ -36,9 +36,11 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
           after1week.setDate(now.getDate() + 7);
 
           setCookie("refresh", refreshToken, { path: "/", expires: after1week });
+          // 한시간 후에 access 만료됨
+          const plus1hour = Date.now() + 60 * 60 * 1000;
           const item = {
             value: accessToken,
-            expiry: new Date().getTime() + 1,
+            expiry: plus1hour,
           };
           localStorage.setItem("access", JSON.stringify(item));
 
@@ -106,6 +108,7 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
       })
       .catch((err) => console.log(err));
   }, [reset]);
+
   return (
     <div className="join-wrap2">
       <div className="go-back">

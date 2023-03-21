@@ -18,10 +18,6 @@ interface userStateType {
   ];
 }
 
-const UserState = atom<userStateType | null>({
-  key: "UserState", // unique ID (with respect to other atoms/selectors)
-  default: null, // default value (aka initial value)
-  
 interface UserType {
   birthday: string;
   createdDate: string;

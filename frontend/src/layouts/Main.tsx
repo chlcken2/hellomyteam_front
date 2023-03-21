@@ -3,7 +3,7 @@ import axios from "axios";
 import { Routes, Route, Link, NavLink, Outlet } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import LoginState from "recoil/atom";
-import UserState from "recoil/userAtom";
+import UserState from "../recoil/userAtom";
 import "styles/pages/home.scss";
 
 const MENU = [

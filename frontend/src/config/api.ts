@@ -1,7 +1,8 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { useCookies } from "react-cookie";
-
-import React from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getExpiredDate, setLocalStorage } from "utils/setAuthorization";
 
 const createInstance = () => {
   return axios.create({
@@ -14,78 +15,71 @@ const createInstance = () => {
 
 const instance = createInstance();
 
-const AxiosInterceptor = (props: Props) => {
-  const [cookie, setCookie] = useCookies(["refresh"]);
+const AxiosInterceptor = (): null => {
+  const [cookie, setCookie, removeCookie] = useCookies(["refresh"]);
+  const navigate = useNavigate();
 
-  instance.interceptors.request.use(
-    // req할 때마다 header에 access token을 던진다
-    async (config) => {
-      const newConfig = { ...config };
-      const accessToken = JSON.parse(localStorage.getItem("access")).value;
+  useEffect(() => {
+    instance.interceptors.request.use(
+      async (config: AxiosRequestConfig) => {
+        const accessToken = JSON.parse(localStorage.getItem("token")).value;
 
-      if (!accessToken) {
-        config.headers.accessToken = null;
-        return config;
-      }
-      if (config.headers && accessToken) {
-        config.headers.Authorization = `${accessToken}`;
-        return config;
-      }
-      return newConfig;
-    },
-
-    async (error) => {
-      return await Promise.reject(error);
-    },
-  );
-
-  instance.interceptors.response.use(
-    // req할 때마다 header에 access token을 던진다
-    async (config) => {
-      return config;
-    },
-    async (err) => {
-      const originalConfig = err.config;
-
-      console.log("hayoung", err);
-      if (err.response.status === 498) {
-        const { refresh } = cookie;
-        // TODO: 토큰이 만료될때마다 갱신해줌. 창현님이 api 수정하신 후에 로직 추가할 예정
-        console.log(refresh);
-
-        try {
-          const res = await axios({
-            url: "/api/auth/refresh",
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${refresh}`,
-            },
-          });
-          if (res) {
-            const { accessToken, refreshToken } = res.data.data;
-            // access - localStorage
-            localStorage.setItem("access", JSON.stringify(accessToken));
-            // refresh - cookie
-            const now = new Date();
-            const after1week = new Date();
-            after1week.setDate(now.getDate() + 7);
-            setCookie("refresh", refreshToken, { path: "/", expires: after1week });
-          }
-          return await instance.request(originalConfig);
-        } catch (err) {
-          console.log("토큰 갱신 에러");
+        if (!accessToken) {
+          config.headers.accessToken = null;
+          return config;
         }
-        return Promise.reject(err);
-      }
-      return Promise.reject(err);
-    },
-  );
+        if (config.headers && accessToken) {
+          config.headers.Authorization = accessToken;
+          return config;
+        }
+        return config;
+      },
 
-  return props.children;
+      async (error: AxiosError) => {
+        return error;
+      },
+    );
+
+    instance.interceptors.response.use(
+      async (config) => {
+        return config;
+      },
+      async (err: AxiosError) => {
+        const { refresh } = cookie;
+        const { status, config: originalRequest } = err.response;
+        if (status === 401 || status === 403) {
+          try {
+            const res = await axios.get("/api/auth/refresh", {
+              headers: {
+                Authorization: `Bearer ${refresh}`,
+              },
+            });
+
+            const { accessToken, refreshToken } = res.data.data;
+
+            setLocalStorage(accessToken);
+            removeCookie("refresh");
+            setCookie("refresh", refreshToken, { path: "/", expires: getExpiredDate() });
+            originalRequest.headers.authorization = accessToken;
+
+            return axios(originalRequest);
+          } catch (err) {
+            const { response } = err as AxiosError;
+            if (response.status === 490 || response.status === 498) {
+              localStorage.removeItem("token");
+              navigate("/");
+            }
+
+            return err;
+          }
+        }
+
+        return err;
+      },
+    );
+  }, []);
+
+  return null;
 };
-
-interface Props {
-  children: React.ReactElement;
-}
 
 export { AxiosInterceptor, instance };

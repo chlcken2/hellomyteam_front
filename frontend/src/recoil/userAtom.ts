@@ -24,3 +24,4 @@ const UserState = atom<UserType | null>({
 });
 
 export default UserState;
+

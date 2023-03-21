@@ -5,7 +5,7 @@ import { FC } from "react";
 const Home: FC = () => {
   return (
     <div className="home-container">
-      <div className="home-wrapper notice">
+      <div className="home-wrapper sub-notice">
         <section className="section-container">
           <div className="section-top">
             <h2>공지게시판</h2>
@@ -35,7 +35,7 @@ const Home: FC = () => {
           </ul>
         </section>
       </div>
-      <div className="home-wrapper team">
+      <div className="home-wrapper sub-team">
         <section className="section-container">
           <div className="section-top">
             <h2>팀원</h2>
@@ -54,7 +54,7 @@ const Home: FC = () => {
           </div>
         </section>
       </div>
-      <div className="home-wrapper board">
+      <div className="home-wrapper sub-board">
         <section className="section-container">
           <div className="section-top">
             <h2>자유게시판</h2>

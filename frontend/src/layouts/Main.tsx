@@ -5,6 +5,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 import "styles/pages/home.scss";
+import "styles/layouts/main.scss";
 
 const MENU = [
   { path: "", name: "둘러보기" },
@@ -26,18 +27,20 @@ const Main = () => {
   return (
     <div className="main-wrap">
       <h1 className="main-title">우리동네 축구팀</h1>
-      <ul className="main-menu">
-        {MENU.map((menuItem, idx) => (
-          <li
-            key={idx}
-            onClick={() => setOn(idx)}
-            onKeyDown={() => setOn(idx)}
-            className={on === idx ? "active" : ""}
-          >
-            <Link to={`/${menuItem.path}`}>{menuItem.name}</Link>
-          </li>
-        ))}
-      </ul>
+      <div className="main-menu-wrapper">
+        <ul className="main-menu">
+          {MENU.map((menuItem, idx) => (
+            <li
+              key={idx}
+              onClick={() => setOn(idx)}
+              onKeyDown={() => setOn(idx)}
+              className={on === idx ? "active" : ""}
+            >
+              <Link to={`/${menuItem.path}`}>{menuItem.name}</Link>
+            </li>
+          ))}
+        </ul>
+      </div>
       <Outlet />
     </div>
   );

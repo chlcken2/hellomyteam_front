@@ -1,10 +1,10 @@
 import React, { FC, useEffect, useState, useCallback } from "react";
 
-import { QueryClientProvider } from "react-query";
 import { CookiesProvider } from "react-cookie";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 import { useCookies } from "react-cookie"; // useCookies import
+import getMemberInfo from "quires/member/getMemberInfo";
 
 import Home from "pages/Home/Home";
 import Notice from "pages/Home/Notice";
@@ -18,7 +18,7 @@ import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 import Alarm from "pages/Alarm/Alarm";
 
-import { AxiosInterceptor, queryClient } from "config";
+import { AxiosInterceptor } from "config";
 import Toast from "components/common/Toast";
 import Nav from "layouts/Nav";
 import Login from "components/Form/Login";
@@ -32,6 +32,7 @@ import { instance } from "./config/api";
 import FindTeam from "./pages/FindTeam";
 
 const App = () => {
+  const { data: memberInfo } = getMemberInfo();
   const [user, setUser] = useRecoilState(UserState);
   const [login, setLogin] = useState(false);
   const [hasId, setHasId] = useState(false);
@@ -68,55 +69,47 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (localStorage.getItem("access")) {
+    if (JSON.parse(localStorage.getItem("access") || "{}").value) {
       setConfirmLogin(true);
-      instance
-        .get("/api/user/me")
-        .then((res) => {
-          if (res.data.status === "success") {
-            setUser(res.data.data);
-          }
-        })
-        .catch((err) => console.log(err));
+      console.log(memberInfo);
+      setUser(memberInfo.data);
+    } else {
+      setConfirmLogin(false);
     }
   }, []);
   return (
-    <QueryClientProvider client={queryClient}>
-      <CookiesProvider>
-        <AxiosInterceptor>
-          <Router>
-            <Toast />
-            {!confirmLogin && (
-              <FormWrap>
-                {login && !hasId ? (
-                  <Login setHasId={setHasId} setLogin={setLogin} />
-                ) : null}
-                {!login &&
-                  (hasId ? (
-                    <Join setHasId={setHasId} />
-                  ) : (
-                    <Preview setLogin={setLogin} setHasId={setHasId} />
-                  ))}
-              </FormWrap>
-            )}
-            <Nav />
-            <Routes>
-              <Route path="/" element={<Main />}>
-                <Route path="" element={<Home />} />
-                <Route path="notice" element={<Notice />} />
-                <Route path="board" element={<Board />} />
-                <Route path="board/:id" element={<Detail time="1시간" />} />
-                <Route path="board/write" element={<Write />} />
-                <Route path="team" element={<Team />} />
-              </Route>
-              <Route path="/search" element={<FindTeam />} />
-              <Route path="/alarm" element={<Alarm />} />
-              <Route path="/profile" element={<CreateTeam />} />
-            </Routes>
-          </Router>
-        </AxiosInterceptor>
-      </CookiesProvider>
-    </QueryClientProvider>
+    <CookiesProvider>
+      <AxiosInterceptor>
+        <Router>
+          <Toast />
+          {!confirmLogin && (
+            <FormWrap>
+              {login && !hasId ? <Login setHasId={setHasId} setLogin={setLogin} /> : null}
+              {!login &&
+                (hasId ? (
+                  <Join setHasId={setHasId} />
+                ) : (
+                  <Preview setLogin={setLogin} setHasId={setHasId} />
+                ))}
+            </FormWrap>
+          )}
+          <Nav />
+          <Routes>
+            <Route path="/" element={<Main />}>
+              <Route path="" element={<Home />} />
+              <Route path="notice" element={<Notice />} />
+              <Route path="board" element={<Board />} />
+              <Route path="board/:id" element={<Detail time="1시간" />} />
+              <Route path="board/write" element={<Write />} />
+              <Route path="team" element={<Team />} />
+            </Route>
+            <Route path="/search" element={<FindTeam />} />
+            <Route path="/alarm" element={<Alarm />} />
+            <Route path="/profile" element={<CreateTeam />} />
+          </Routes>
+        </Router>
+      </AxiosInterceptor>
+    </CookiesProvider>
   );
 };
 

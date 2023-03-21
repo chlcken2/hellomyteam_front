@@ -1,7 +1,7 @@
 @import "../abstracts/variables.scss";
 @import "../abstracts/mixins.scss";
 @import "../colors.scss";
-
+@import "../pages/board.scss";
 .normal-white-button {
   @include white-button;
 }
@@ -219,7 +219,7 @@
   line-height: 22px;
 
   max-height: 260px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .select-menu-item {

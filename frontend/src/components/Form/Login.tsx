@@ -1,4 +1,5 @@
 import axios from "axios";
+import getMemberInfo from "quires/member/getMemberInfo";
 import React, { FC, Dispatch, SetStateAction, useState, useEffect } from "react";
 import { useCookies } from "react-cookie"; // useCookies import
 import LoginState from "recoil/atom";
@@ -99,14 +100,11 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
   }, [reset]);
 
   useEffect(() => {
-    instance
-      .get("/api/user/me")
-      .then((res) => {
-        if (res.data.status === "success") {
-          setConfirmLogin(true);
-        }
-      })
-      .catch((err) => console.log(err));
+    const { data } = getMemberInfo();
+    if (data) {
+      setConfirmLogin(true);
+    }
+    console.log(data);
   }, [reset]);
 
   return (

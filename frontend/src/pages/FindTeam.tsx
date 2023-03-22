@@ -12,7 +12,9 @@ const FindTeam = () => {
   const [value, setValue] = useState<string>("");
   const user = useRecoilValue(UserState);
 
-  const { data, refetch } = useQuery("/find/team", () => findTeamAPI(value));
+  const { data: findTeamData, refetch } = useQuery("/find/team", () =>
+    findTeamAPI(value),
+  );
 
   const { mutate } = useMutation((teamId: number) => joinTeamAPI(user.id, teamId));
 
@@ -34,8 +36,8 @@ const FindTeam = () => {
         />
       </div>
       <div className="team-card-container">
-        {data &&
-          data.map((el) => {
+        {findTeamData &&
+          findTeamData.map((el) => {
             return (
               <TeamCard
                 title={el.teamName}

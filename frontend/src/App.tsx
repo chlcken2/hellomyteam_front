@@ -37,7 +37,7 @@ const App = () => {
   const [confirmLogin, setConfirmLogin] = useRecoilState(LoginState);
 
   useEffect(() => {
-    if (localStorage.getItem("access")) {
+    if (localStorage.getItem("token")) {
       setConfirmLogin(true);
       instance
         .get("/api/user/me")
@@ -49,41 +49,39 @@ const App = () => {
         .catch((err) => console.log(err));
     }
   }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <CookiesProvider>
-        <AxiosInterceptor>
-          <Router>
-            <Toast />
-            {!confirmLogin && (
-              <FormWrap>
-                {login && !hasId ? (
-                  <Login setHasId={setHasId} setLogin={setLogin} />
-                ) : null}
-                {!login &&
-                  (hasId ? (
-                    <Join setHasId={setHasId} />
-                  ) : (
-                    <Preview setLogin={setLogin} setHasId={setHasId} />
-                  ))}
-              </FormWrap>
-            )}
-            <Nav />
-            <Routes>
-              <Route path="/" element={<Main />}>
-                <Route path="" element={<Home />} />
-                <Route path="notice" element={<Notice />} />
-                <Route path="board" element={<Board />} />
-                <Route path="board/:id" element={<Detail time="1시간" />} />
-                <Route path="board/write" element={<Write />} />
-                <Route path="team" element={<Team />} />
-              </Route>
-              <Route path="/search" element={<FindTeam />} />
-              <Route path="/alarm" element={<Alarm />} />
-              <Route path="/profile" element={<CreateTeam />} />
-            </Routes>
-          </Router>
-        </AxiosInterceptor>
+        <Router>
+          <AxiosInterceptor />
+          <Toast />
+          {!confirmLogin && (
+            <FormWrap>
+              {login && !hasId ? <Login setHasId={setHasId} setLogin={setLogin} /> : null}
+              {!login &&
+                (hasId ? (
+                  <Join setHasId={setHasId} />
+                ) : (
+                  <Preview setLogin={setLogin} setHasId={setHasId} />
+                ))}
+            </FormWrap>
+          )}
+          <Nav />
+          <Routes>
+            <Route path="/" element={<Main />}>
+              <Route path="" element={<Home />} />
+              <Route path="notice" element={<Notice />} />
+              <Route path="board" element={<Board />} />
+              <Route path="board/:id" element={<Detail time="1시간" />} />
+              <Route path="board/write" element={<Write />} />
+              <Route path="team" element={<Team />} />
+            </Route>
+            <Route path="/search" element={<FindTeam />} />
+            <Route path="/alarm" element={<Alarm />} />
+            <Route path="/profile" element={<CreateTeam />} />
+          </Routes>
+        </Router>
       </CookiesProvider>
     </QueryClientProvider>
   );

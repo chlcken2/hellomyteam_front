@@ -1,5 +1,6 @@
-import React, { FC, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { FC, useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import getTeamInfo from "quires/team/getTeamInfo";
 import Button from "components/common/button";
 import Select from "components/common/Select";
 import Input from "components/Input/Input";
@@ -9,22 +10,22 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftjsToHtml from "draftjs-to-html";
 import { useRecoilValue } from "recoil";
 import UserState from "recoil/userAtom";
-import { instance } from "config/api";
+import { instance } from "config";
 
 const Write: FC = () => {
   interface teamType {
     teamName: string;
     teamId: number;
   }
-
-  const useUser = useRecoilValue(UserState);
+  const { teamId } = useParams();
+  const user = useRecoilValue(UserState);
   const [title, setTitle] = useState("");
   const img = process.env.PUBLIC_URL;
   const option = [
     { label: "공지게시판", value: "공지게시판" },
     { label: "자유게시판", value: "자유게시판" },
   ];
-
+  const [boardNum, setBoardNum] = useState(0);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [htmlString, setHtmlString] = useState("");
 
@@ -40,22 +41,34 @@ const Write: FC = () => {
 
   const handleSubmit = async (e: React.MouseEvent) => {
     e.preventDefault();
+    const memberId = user.id;
 
-    const memberId = useUser.id;
-    const teamId: teamType[] = [];
-
-    // 로그인 후 가입한 팀 id와 팀 이름 가져오기
-    await instance
-      .get(`/api/user/teams/${memberId}`)
-      .then((res) => {
-        res.data.data.forEach((el: teamType) => {
-          teamId.push(el);
+    user.teamInfo.forEach((el) => {
+      // teamId
+      if (el.teamId === Number(teamId)) {
+        instance.get(`/api/teams/${teamId}/members/${memberId}`).then((res) => {
+          setBoardNum(res.data.data);
         });
-      })
-      .catch((err) => console.log(err));
-
-    console.log(teamId);
+      }
+    });
   };
+
+  useEffect(() => {
+    if (boardNum !== 0) {
+      instance
+        .post("/api/board", {
+          boardCategory: "FREE_BOARD",
+          boardStatus: "NORMAL",
+          contents: "하영팀테스트 내용",
+          teamMemberInfoId: boardNum,
+          title: "하영팀테스트",
+        })
+        .then((res) => {
+          alert("게시판 내용 저장에 성공했습니다");
+          console.log(res);
+        });
+    }
+  }, [boardNum]);
 
   return (
     <div className="board write">

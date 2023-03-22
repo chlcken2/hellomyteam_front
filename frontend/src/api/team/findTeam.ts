@@ -9,25 +9,19 @@ interface APIResponseType<T> {
 
 export const findTeamAPI = async (teamName: string) => {
   if (!teamName) return null;
-  const { data } = await instance.get<APIResponseType<findTeamTypes[]>>(
-    `/api/team/find?teamName=${teamName}`,
-    {
-      headers: { Authorization: JSON.parse(localStorage.getItem("access")).value },
-    },
+  const data = await instance.get<APIResponseType<findTeamTypes[]>>(
+    `/api/teams/{team-identifier}?team-identifier=${Number(teamName)}`,
   );
-  return data.data;
+  if (data) {
+    return data.data.data;
+  }
+  return null;
 };
 
 export const joinTeamAPI = async (memberId: number, teamId: number) => {
-  const { data } = await instance.post<APIResponseType<joinTeamTypes>>(
-    "/api/team/join",
-    {
-      memberId,
-      teamId,
-    },
-    {
-      headers: { Authorization: JSON.parse(localStorage.getItem("access")).value },
-    },
-  );
+  const { data } = await instance.post<APIResponseType<joinTeamTypes>>("/api/team/join", {
+    memberId,
+    teamId,
+  });
   return data.data;
 };

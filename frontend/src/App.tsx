@@ -69,7 +69,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (JSON.parse(localStorage.getItem("access") || "{}").value) {
+    if (localStorage.getItem("token")) {
       setConfirmLogin(true);
       console.log(memberInfo);
       setUser(memberInfo.data);
@@ -77,6 +77,7 @@ const App = () => {
       setConfirmLogin(false);
     }
   }, []);
+
   return (
     <CookiesProvider>
       <AxiosInterceptor>

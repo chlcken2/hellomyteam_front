@@ -6,6 +6,7 @@ import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 import { useRecoilState } from "recoil";
 import { AxiosInterceptor, instance } from "../../config/api";
+import { setLocalStorage, getExpiredDate } from "../../utils/setAuthorization";
 
 interface IHas {
   setHasId: Dispatch<SetStateAction<boolean>>;
@@ -32,6 +33,7 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
         })
         .then((res) => {
           const { accessToken, refreshToken } = res.data.data;
+<<<<<<< HEAD
           const now = new Date();
           const after1week = new Date();
           after1week.setDate(now.getDate() + 7);
@@ -45,6 +47,12 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
           };
           localStorage.setItem("access", JSON.stringify(item));
 
+=======
+          setCookie("refresh", refreshToken, { path: "/", expires: getExpiredDate() });
+          setLocalStorage(accessToken);
+        })
+        .then(() => {
+>>>>>>> develop
           instance
             .get("/api/user/me")
             .then((res) => {

@@ -7,7 +7,7 @@ export const QUERY_KEY = "/teams/memberId";
 
 const fetcher = (memberId: number) =>
   instance
-    .get<ApiResponseType<joinTeamTypes>>(`/api/user/teams/${memberId}`)
+    .get<ApiResponseType<joinTeamTypes[]>>(`/api/user/teams/${memberId}`)
     .then(({ data }) => data);
 
 /**

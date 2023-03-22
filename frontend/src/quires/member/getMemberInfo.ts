@@ -12,8 +12,9 @@ const fetcher = () =>
  * 유저의 인포(user/me)
  * @returns
  */
-const getMemberInfo = () => {
-  return useQuery(QUERY_KEY, fetcher);
+const getMemberInfo = (user: boolean) => {
+  // 유저정보를 동기적으로 불러온다. enable로
+  return useQuery(QUERY_KEY, fetcher, { enabled: user });
 };
 
 export default getMemberInfo;

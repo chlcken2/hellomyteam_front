@@ -1,11 +1,9 @@
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
-import getMemberInfo from "quires/member/getMemberInfo";
-import getTeamInfo from "quires/team/getTeamInfo";
-
 import { Routes, Route, Link, NavLink, Outlet } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import LoginState from "recoil/atom";
+import getTeamInfo from "quires/team/getTeamInfo";
 import UserState from "../recoil/userAtom";
 import "styles/pages/home.scss";
 
@@ -18,30 +16,37 @@ const MENU = [
 ];
 
 const Main = () => {
-  const { data: memberInfo } = getMemberInfo();
-  const { data: teamInfo } = getTeamInfo(memberInfo?.data.id);
   const [on, setOn] = useState<number>(0);
+  const [confirmLogin, setConfirmLogin] = useRecoilState(LoginState);
   const useUser = useRecoilValue(UserState);
-  const [showTeam, setShowTeam] = useState(false);
-  const [teamList, setTeamList] = useState([]);
+  const [user, setUser] = useState(0);
+  const [show, setShow] = useState(false);
+  const { data: team, isLoading: load } = getTeamInfo(user);
 
+  const handleTeams = () => {
+    setShow(!show);
+  };
   useEffect(() => {
-    // 로그인 후 가입한 팀 id와 팀 이름 가져오기
-    console.log(teamInfo);
+    if (useUser) {
+      console.log(useUser);
+      setUser(useUser.id);
+    }
   }, [useUser]);
-
+  console.log(team);
   return (
     <div className="main-wrap">
-      <div className="team">
-        <ul>
-          {/* {teamInfo?.data.map((el: joinTeamTypes, i: number) => {
-            return <li key={i}>{el.teamName}</li>;
-          })} */}
-        </ul>
-      </div>
       <h1 className="main-title">
-        <button onClick={() => setShowTeam(true)}>우리동네 축구팀</button>
+        <button onClick={handleTeams}>우리동네 축구팀</button>
       </h1>
+      {show && (
+        <div className="main-teams">
+          <ul>
+            {team?.data.map((el, idx) => {
+              return <li key={idx}>{el.teamName}</li>;
+            })}
+          </ul>
+        </div>
+      )}
       <ul className="main-menu">
         {MENU.map((menuItem, idx) => (
           <li

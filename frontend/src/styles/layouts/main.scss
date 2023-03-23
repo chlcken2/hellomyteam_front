@@ -49,6 +49,7 @@
   }
 
   .main-menu {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,6 +61,19 @@
       justify-content: flex-start;
     }
 
+    .active-item-background {
+      display: none;
+      position: absolute;
+      height: 40px;
+      border-radius: 8px;
+      background-color: $blue-200;
+      transition: 0.5s ease-in-out;
+
+      @media screen and (max-width: 600px) {
+        display: block;
+      }
+    }
+
     li {
       text-align: center;
       width: 25%;
@@ -67,6 +81,7 @@
       line-height: 24px;
       border-radius: 8px;
       white-space: nowrap;
+      z-index: 1;
 
       a {
         width: 100%;
@@ -74,9 +89,12 @@
         display: block;
         color: $gray-400;
         cursor: pointer;
+        transition: 0s;
       }
+
       &.active {
         background-color: $blue-200;
+
         a {
           color: #000;
           font-weight: 600;
@@ -88,6 +106,14 @@
         font-weight: 600;
         font-size: 14px;
         line-height: 22px;
+
+        a {
+          transition: color 0.5s ease-in-out;
+        }
+
+        &.active {
+          background-color: transparent;
+        }
       }
     }
   }

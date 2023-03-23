@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { FC, Dispatch, SetStateAction, useState, useEffect } from "react";
+import getMemberInfo from "quires/member/getMemberInfo";
 import { useCookies } from "react-cookie"; // useCookies import
 import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
@@ -20,12 +21,18 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
   const [cookies, setCookie, removeCookie] = useCookies(["refresh"]);
   const [confirmLogin, setConfirmLogin] = useRecoilState(LoginState);
   const [user, setUser] = useRecoilState(UserState);
+  const [loginBoolean, setLoginBoolean] = useState(false);
+  const {
+    data: info,
+    isLoading: load,
+    error: errorMessage,
+  } = getMemberInfo(loginBoolean);
 
-  const submit = (e: any) => {
+  const submit = async (e: any) => {
     e.preventDefault();
 
     if (Object.keys(error).length === 0) {
-      axios
+      await axios
         .post("/api/auth/login", {
           email: text.email,
           password: text.pw1,
@@ -34,20 +41,16 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
           const { accessToken, refreshToken } = res.data.data;
           setCookie("refresh", refreshToken, { path: "/", expires: getExpiredDate() });
           setLocalStorage(accessToken);
-        })
-        .then(() => {
-          instance
-            .get("/api/user/me")
-            .then((res) => {
-              if (res.data.status === "success") {
-                setUser(res.data.data);
-              }
-            })
-            .catch((err) => console.log(err));
+          setLoginBoolean(true);
+          // 토큰이 있을경우만 유저정보 불러옴. enable로 동기화.
+          if (accessToken) {
+            setUser(info.data);
+          }
           setConfirmLogin(true);
         })
+
         .catch((err) => {
-          alert(err.response.data.message);
+          console.log(err);
         });
     } else {
       alert("올바른 이메일 or 비밀번호를 입력하세요");
@@ -91,14 +94,10 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
   }, [reset]);
 
   useEffect(() => {
-    instance
-      .get("/api/user/me")
-      .then((res) => {
-        if (res.data.status === "success") {
-          setConfirmLogin(true);
-        }
-      })
-      .catch((err) => console.log(err));
+    if (info) {
+      console.log(info);
+      setConfirmLogin(true);
+    }
   }, [reset]);
   return (
     <div className="join-wrap2">

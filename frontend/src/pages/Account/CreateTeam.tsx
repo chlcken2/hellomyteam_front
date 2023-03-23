@@ -20,7 +20,7 @@ const CreateTeam: FC = () => {
   const handler = async (e: React.MouseEvent) => {
     e.preventDefault();
     try {
-      const save = await instance.post("/api/team/create", {
+      const save = await instance.post("/api/team", {
         detailIntro: text,
         memberId: user.id,
         oneIntro: text,
@@ -60,11 +60,6 @@ const CreateTeam: FC = () => {
                     onChange={(e) => setFile(e.target.files[0].name)}
                   />
                 </div>
-                {/* <Input
-                  label="로고*"
-                  value="눌러서 로고를 선택해주세요"
-                  setValue={setText}
-                /> */}
                 <Select
                   label="선호전술*"
                   placeholder="선호전술"

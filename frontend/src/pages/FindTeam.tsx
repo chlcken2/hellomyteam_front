@@ -25,7 +25,7 @@ const FindTeam = () => {
   };
 
   return (
-    <div className="main-wrap">
+    <div className="main-wrap find-team">
       <h1 className="main-title">팀 찾기</h1>
       <div className="input-container">
         <Input

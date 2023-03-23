@@ -1,6 +1,12 @@
 import { atom } from "recoil";
 
-interface userStateType {
+interface termsAndCondType {
+  id: number;
+  termsOfServiceYn: string;
+  privacyYn: string;
+}
+
+interface UserType {
   createdDate: string;
   modifiedDate: string;
   id: number;
@@ -9,35 +15,18 @@ interface userStateType {
   birthday: string;
   memberStatus: string;
   joinPurpose: string;
-  termsAndCond: [
-    {
-      id: number;
-      termsOfServiceYn: string;
-      privacyYn: string;
-    },
-  ];
+  termsAndCond: termsAndCondType[];
+  teamInfo?: teamInfoType[];
 }
 
-const UserState = atom<userStateType | null>({
-  key: "UserState", // unique ID (with respect to other atoms/selectors)
-  default: null, // default value (aka initial value)
+interface teamInfoType {
+  teamName: string;
+  teamId: number;
+}
+// 사용자 정보 + 사용자가 가입한 팀 정보
+const UserState = atom<UserType | null>({
+  key: "UserState",
+  default: null,
 });
-
-// interface UserType {
-//   birthday: string;
-//   createdDate: string;
-//   email: string;
-//   id: number;
-//   joinPurpose: string;
-//   memberStatus: string;
-//   modifiedDate: string;
-//   name: string;
-//   termsAndCond: any[];
-// }
-
-// const UserState = atom({
-//   key: "UserState", // unique ID (with respect to other atoms/selectors)
-//   default: {} as UserType, // default value (aka initial value)
-// });
 
 export default UserState;

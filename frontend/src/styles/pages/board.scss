@@ -1,0 +1,16 @@
+.board {
+  &.write {
+    .input-wrap {
+      display: flex;
+      gap: 20px;
+      > div {
+        &:first-child {
+          width: 30% !important;
+        }
+        &:last-child {
+          width: 70%;
+        }
+      }
+    }
+  }
+}

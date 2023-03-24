@@ -19,14 +19,15 @@ const Write: FC = () => {
     teamName: string;
     teamId: number;
   }
-  const { mutate } = setBoardWriteMutation();
+  const { mutate, isLoading: load, isError: error } = setBoardWriteMutation();
   const { teamId } = useParams();
   const user = useRecoilValue(UserState);
   const [title, setTitle] = useState("");
+  const [boardName, setBoardName] = useState(null);
   const img = process.env.PUBLIC_URL;
   const option = [
-    { label: "공지게시판", value: "공지게시판" },
-    { label: "자유게시판", value: "자유게시판" },
+    { label: "자유게시판", value: "FREE_BOARD" },
+    { label: "공지게시판", value: "NOTICE_BOARD" },
   ];
   const [boardNum, setBoardNum] = useState(0);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -60,25 +61,12 @@ const Write: FC = () => {
   useEffect(() => {
     if (boardNum !== 0) {
       mutate({
-        boardCategory: "FREE_BOARD",
+        boardCategory: boardName.value,
         boardStatus: "NORMAL",
-        contents: "하영팀테스트2 내용",
+        contents: htmlString,
         teamMemberInfoId: boardNum,
-        title: "하영팀테스트2",
+        title,
       });
-
-      // instance
-      //   .post("/api/board", {
-      //     boardCategory: "FREE_BOARD",
-      //     boardStatus: "NORMAL",
-      //     contents: "하영팀테스트 내용",
-      //     teamMemberInfoId: boardNum,
-      //     title: "하영팀테스트",
-      //   })
-      //   .then((res) => {
-      //     alert("게시판 내용 저장에 성공했습니다");
-      //     console.log(res);
-      //   });
     }
   }, [boardNum]);
 
@@ -91,9 +79,9 @@ const Write: FC = () => {
         <h2>게시글 작성</h2>
         <div className="input-wrap">
           <Select
-            placeholder="공지게시판"
+            placeholder="자유게시판"
             options={option}
-            onChange={() => console.log("hi")}
+            onChange={(e) => setBoardName(e)}
           />
           <Input value={title} setValue={setTitle} />
         </div>

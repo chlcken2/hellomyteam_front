@@ -1,12 +1,10 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Button from "components/common/button";
+import { instance } from "config";
 
-interface propType {
-  time: string;
-}
-
-const Detail: FC<propType> = ({ time }) => {
+instance.get("/api/board/136").then((res) => console.log(res));
+const Detail: FC = () => {
   const img = process.env.PUBLIC_URL;
   return (
     <div className="board">
@@ -21,7 +19,7 @@ const Detail: FC<propType> = ({ time }) => {
           </span>
           <div>
             <h3>Beson</h3>
-            <p>{time} 전</p>
+            <p>1시간 전</p>
           </div>
         </div>
         <div className="board-detail">

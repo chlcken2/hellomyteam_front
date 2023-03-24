@@ -10,13 +10,16 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftjsToHtml from "draftjs-to-html";
 import { useRecoilValue } from "recoil";
 import UserState from "recoil/userAtom";
+import { teamMemberId } from "quires/team/getTeamId";
 import { instance } from "config";
+import { setBoardWriteMutation } from "quires/board/setBoardQuery";
 
 const Write: FC = () => {
   interface teamType {
     teamName: string;
     teamId: number;
   }
+  const { mutate } = setBoardWriteMutation();
   const { teamId } = useParams();
   const user = useRecoilValue(UserState);
   const [title, setTitle] = useState("");
@@ -46,27 +49,36 @@ const Write: FC = () => {
     user.teamInfo.forEach((el) => {
       // teamId
       if (el.teamId === Number(teamId)) {
-        instance.get(`/api/teams/${teamId}/members/${memberId}`).then((res) => {
+        teamMemberId(Number(teamId), memberId).then((res) => {
           setBoardNum(res.data.data);
         });
+        return false;
       }
     });
   };
 
   useEffect(() => {
     if (boardNum !== 0) {
-      instance
-        .post("/api/board", {
-          boardCategory: "FREE_BOARD",
-          boardStatus: "NORMAL",
-          contents: "하영팀테스트 내용",
-          teamMemberInfoId: boardNum,
-          title: "하영팀테스트",
-        })
-        .then((res) => {
-          alert("게시판 내용 저장에 성공했습니다");
-          console.log(res);
-        });
+      mutate({
+        boardCategory: "FREE_BOARD",
+        boardStatus: "NORMAL",
+        contents: "하영팀테스트2 내용",
+        teamMemberInfoId: boardNum,
+        title: "하영팀테스트2",
+      });
+
+      // instance
+      //   .post("/api/board", {
+      //     boardCategory: "FREE_BOARD",
+      //     boardStatus: "NORMAL",
+      //     contents: "하영팀테스트 내용",
+      //     teamMemberInfoId: boardNum,
+      //     title: "하영팀테스트",
+      //   })
+      //   .then((res) => {
+      //     alert("게시판 내용 저장에 성공했습니다");
+      //     console.log(res);
+      //   });
     }
   }, [boardNum]);
 

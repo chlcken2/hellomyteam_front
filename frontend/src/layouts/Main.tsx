@@ -44,7 +44,7 @@ const Main = () => {
   // 팀글쓰기로 빠짐
   const handleTeamWrite = (teamId: number) => {
     if (currentTeamTitle === "헬로마이팀") return alert("팀을 선택하세요");
-    navi(`/board/${teamId}/write`);
+    return navi(`/board/${teamId}/write`);
   };
   // 타이틀바꾸기
   const handleMember = (name: string, id: number) => {

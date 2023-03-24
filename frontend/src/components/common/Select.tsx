@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import Label from "./Label";
 
 /* options props 예시
@@ -27,6 +27,7 @@ interface PropsTypes {
   options: OptionType[];
   onChange: (selectedOption: OptionType) => void;
   width?: number;
+  defaultValue?: any;
 }
 
 const Select = ({
@@ -38,12 +39,17 @@ const Select = ({
   options,
   onChange,
   width,
+  defaultValue,
 }: PropsTypes) => {
   const selectRef = useRef<HTMLDivElement>(null);
 
   const [currentValue, setCurrentValue] = useState<OptionType>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isError, setIsError] = useState(false);
+  const defaultLabel = useMemo(() => {
+    if (!defaultValue) return null;
+    return options.find((option) => option.value === defaultValue).label || null;
+  }, [defaultValue]);
 
   const selectContainerClassName = isError
     ? "select-container error"
@@ -88,7 +94,9 @@ const Select = ({
           onClick={onClickSelectControl}
           role="presentation"
         >
-          <div className="select-value">{currentValue?.label || placeholder}</div>
+          <div className="select-value">
+            {currentValue?.label || defaultLabel || placeholder}
+          </div>
           <div className="select-indicator">
             <img src="/select/arrow.svg" alt="arrow" />
           </div>
@@ -103,7 +111,7 @@ const Select = ({
                   onClick={() => onClickSelectItem(idx)}
                   role="presentation"
                 >
-                  {option.value}
+                  {option.label}
                 </li>
               ))}
             </ul>

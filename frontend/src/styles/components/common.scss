@@ -107,26 +107,9 @@
     }
   }
 }
+
 .input-container {
   width: 100%;
-
-  input {
-    width: 100%;
-    border: 1px solid $gray-100;
-    border-radius: 8px;
-    padding: 15px 16px;
-    outline: none;
-    color: $gray-400;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 22px;
-    &::placeholder {
-      color: $gray-300;
-    }
-    &:focus {
-      border-color: $main-blue-100;
-    }
-  }
 
   p {
     display: inline-block;
@@ -138,8 +121,48 @@
   }
 
   &.error {
-    input {
-      border-color: $red-100;
+    .input-wrapper {
+      box-shadow: 0 0 0 1px $red-100 inset;
+    }
+  }
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-shadow: 0 0 0 1px $gray-100 inset;
+  border-radius: 8px;
+  padding: 13px 16px;
+  background-color: #fff;
+  overflow: hidden;
+
+  svg {
+    display: none;
+    margin-left: 4px;
+  }
+
+  input {
+    flex: 1;
+    border: 0;
+    outline: none;
+    color: $black;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+    padding: 0;
+
+    &::placeholder {
+      color: $gray-200;
+    }
+  }
+
+  &:focus-within {
+    box-shadow: 0 0 0 1px $main-blue-100 inset;
+
+    svg {
+      display: block;
     }
   }
 }
@@ -163,7 +186,7 @@
   &.error {
     .select-control {
       color: $red-100;
-      border-color: $red-100;
+      box-shadow: 0 0 0 1px $red-100 inset;
     }
   }
 }
@@ -178,9 +201,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid $gray-100;
+  box-shadow: 0 0 0 1px $gray-100 inset;
   border-radius: 8px;
-  padding: 15px 16px;
+  padding: 13px 16px;
   outline: none;
   color: $gray-400;
   font-size: 14px;
@@ -189,7 +212,7 @@
   background-color: #ffffff;
 
   &.active {
-    border-color: $main-blue-100;
+    box-shadow: 0 0 0 1px $main-blue-100 inset;
   }
 }
 
@@ -202,8 +225,8 @@
   position: absolute;
   width: 100%;
   z-index: 2;
-  padding: 15px 16px;
-  border: 1px solid $gray-100;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px $gray-100 inset;
   background-color: #ffffff;
   border-radius: 8px;
 }
@@ -218,15 +241,16 @@
   font-weight: 500;
   line-height: 22px;
 
-  max-height: 260px;
+  max-height: 240px;
   overflow-y: auto;
 }
 
 .select-menu-item {
-  padding: 15px 16px;
+  padding: 13px 16px;
 
   &:hover {
-    background-color: $main-blue-50;
+    background-color: $main-blue-100;
+    color: $white;
   }
 }
 

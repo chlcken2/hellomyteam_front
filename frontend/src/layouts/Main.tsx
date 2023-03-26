@@ -112,8 +112,6 @@ const Main = () => {
     };
   }, []);
 
-  console.log(team);
-
   return (
     <div className="main-wrap">
       <div className="main-buttons">

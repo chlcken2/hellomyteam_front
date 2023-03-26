@@ -1,7 +1,7 @@
 import { instance } from "config";
 import { useMutation, useQueryClient, useQuery } from "react-query";
 
-import { joinTeamTypes } from "types/UserTypes";
+import { joinTeamTypes, boardDetailTypes } from "types/UserTypes";
 import ApiResponseType from "types/ApiResponseType";
 
 export const QUERY_KEY = "/api/board";
@@ -22,18 +22,18 @@ const fetcher = ({
   title,
 }: boardWriteType) =>
   instance
-    .post<ApiResponseType<joinTeamTypes[]>>("/api/board", {
+    .post<ApiResponseType<boardDetailTypes>>("/api/board", {
       boardCategory,
       boardStatus,
       contents,
       teamMemberInfoId,
       title,
     })
-    .then(({ data }) => console.log(data));
+    .then(({ data }) => data);
 
 /**
  * 게시판 글 생성하기
- * @param
+ * @param onSuccess: API Rsponse의 Cache를 초기화
  */
 export const setBoardWriteMutation = () => {
   const queryClient = useQueryClient();

@@ -286,6 +286,9 @@
     }
   }
   .board-detail {
+    > p {
+      padding-bottom: 30px;
+    }
     .img-wrap {
       max-height: 300px;
       img {

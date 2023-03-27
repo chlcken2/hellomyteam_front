@@ -21,7 +21,7 @@
 }
 
 @mixin comment {
-  width: 904px;
+  width: 100%;
   background: $blue-100;
   display: flex;
   border-radius: 8px;
@@ -56,7 +56,7 @@
       display: flex;
       textarea {
         margin-right: 23px;
-        width: 782px;
+        width: 100%;
         height: 88px;
         background: inherit;
         border: none;

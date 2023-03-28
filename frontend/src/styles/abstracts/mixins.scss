@@ -27,6 +27,10 @@
   border-radius: 8px;
   padding: 24px 32px;
 
+  @media screen and (max-width: 600px) {
+    padding: 20px 24px;
+  }
+
   &.isWriter {
     &:hover {
       background-color: $blue-100;
@@ -43,6 +47,10 @@
 
   &.isReply {
     padding: 24px 32px 24px 80px;
+
+    @media screen and (max-width: 600px) {
+      padding: 24px 20px 24px 68px;
+    }
 
     .comment-avatar {
       min-width: 32px;
@@ -101,7 +109,7 @@
         }
       }
       p {
-        line-height: 21px;
+        line-height: 22px;
         font-size: 14px;
         color: $gray-400;
         width: 100%;

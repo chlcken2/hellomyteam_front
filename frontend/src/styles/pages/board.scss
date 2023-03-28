@@ -48,6 +48,10 @@
       width: 100%;
     }
   }
+
+  @media screen and (max-width: 600px) {
+    margin-top: 48px;
+  }
 }
 
 .reply-regist-form {
@@ -55,6 +59,10 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+
+  @media screen and (max-width: 600px) {
+    padding: 24px 20px 24px 68px;
+  }
 }
 
 .reply-regist-input-wrapper {

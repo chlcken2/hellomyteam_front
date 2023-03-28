@@ -1,13 +1,13 @@
 import { instance } from "config";
 import { useQuery } from "react-query";
-import { setCommentListTypes } from "types/UserTypes";
+import { getCommentListTypes } from "types/UserTypes";
 import ApiResponseType from "types/ApiResponseType";
 
-export const QUERY_KEY = "/board/boardId";
+export const QUERY_KEY = "/board/:boardId/comment";
 
 const fetcher = (boardId: number) =>
   instance
-    .get<ApiResponseType<setCommentListTypes>>(
+    .get<ApiResponseType<getCommentListTypes[]>>(
       `/api/board/${boardId}/comment
     `,
     )

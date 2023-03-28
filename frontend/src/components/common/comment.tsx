@@ -125,12 +125,7 @@ const Comment = ({
           <div className="comment-date">{date}</div>
         </div>
         <div className="comment-box">
-          <textarea
-            onKeyDown={onEnterPress}
-            readOnly={editTrriger.readOnlyAttr}
-            value={text}
-            onChange={editHandler}
-          />
+          <textarea onKeyDown={onEnterPress} value={text} onChange={editHandler} />
           {myComment && commentButtonHandler()}
         </div>
         <div className="comment-footer">

@@ -22,7 +22,7 @@ const Detail: FC = () => {
   };
   const editComplete = (e: any) => e.target.value;
   // comment 가져오는 query 작성
-  const { data: getComment } = getComments(Number(155));
+  const { data: commentData } = getComments(Number(157));
   // 디테일
   useEffect(() => {
     if (detail) {
@@ -34,10 +34,7 @@ const Detail: FC = () => {
       });
     }
   }, [detail]);
-  // 댓글조회
-  useEffect(() => {
-    if (getComment) console.log(getComment);
-  }, [getComment]);
+
   return (
     <>
       <div className="board">
@@ -61,14 +58,25 @@ const Detail: FC = () => {
           </div>
         </div>
       </div>
-      <Comment
-        myComment
-        writer="이하영"
-        text={text}
-        date="2023-03-25"
-        editHandler={textHandler}
-        editCompleteHanler={editComplete}
-      />
+      <div className="comment-container">
+        <div className="title">
+          댓글 <span>7개</span>
+        </div>
+        <ul>
+          {commentData?.data?.map((comment) => (
+            <li key={comment.commentId}>
+              <Comment
+                myComment
+                writer={comment.writer}
+                text={comment.content}
+                date={comment.createdDate}
+                editHandler={textHandler}
+                editCompleteHanler={editComplete}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
       <div className="reply">
         <span>
           <img src="/common/join-1.png" alt="유저 프로필 이미지" />

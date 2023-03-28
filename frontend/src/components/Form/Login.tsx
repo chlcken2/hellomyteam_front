@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie"; // useCookies import
 import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 import { useRecoilState } from "recoil";
-import { AxiosInterceptor, instance } from "../../config/api";
+import { instance } from "../../config/api";
 import { setLocalStorage, getExpiredDate } from "../../utils/setAuthorization";
 
 interface IHas {

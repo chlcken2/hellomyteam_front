@@ -7,6 +7,7 @@ import Input from "components/Input/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";
 import {
   useDeleteCommentMutation,
+  useEditCommentMutation,
   useRegistCommentMutation,
 } from "quires/comment/useCommentMutation";
 
@@ -20,12 +21,8 @@ const Detail: FC = () => {
     title: "test",
     contents: "test",
   });
-  const [text, setText] = useState("dd");
   const [commentText, setCommentText] = useState("");
-  const textHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setText(e.target.value);
-  };
-  const editComplete = (e: any) => e.target.value;
+
   // comment 가져오는 query 작성
   const { data: commentData } = useGetCommentsQuery(Number(param.id));
   const {
@@ -42,12 +39,12 @@ const Detail: FC = () => {
 
   const handleRegistComment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isRegistCommentLoading) return alert("댓글 등록중입니다.");
+    if (isRegistCommentLoading) return alert("댓글 등록 중입니다.");
     registComment({ content: commentText, teamMemberInfoId: 142 });
   };
 
   const handleDeleteComment = (commentId: number) => {
-    if (isDeleteCommentLoading) return alert("댓글 삭제중입니다.");
+    if (isDeleteCommentLoading) return alert("댓글 삭제 중입니다.");
     deleteCommentData(commentId);
   };
 
@@ -103,12 +100,9 @@ const Detail: FC = () => {
           {commentData?.data?.map((comment) => (
             <li key={comment.commentId}>
               <Comment
+                boardId={Number(param.id)}
                 myComment
-                writer={comment.writer}
-                text={comment.content}
-                date={comment.createdDate}
-                editHandler={textHandler}
-                editCompleteHanler={editComplete}
+                comment={comment}
                 deleteHandler={() => handleDeleteComment(comment.commentId)}
               />
             </li>

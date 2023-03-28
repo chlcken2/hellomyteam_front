@@ -11,7 +11,19 @@ interface RegistCommentFetcherPropsType {
   teamMemberInfoId: number;
 }
 
+interface EditCommentFetcherPropsType {
+  commentId: number;
+  content: string;
+  teamMemberInfoId: number;
+}
+
 interface RegistCommentMutationPropsType {
+  content: string;
+  teamMemberInfoId: number;
+}
+
+interface EditCommentMutationPropsType {
+  commentId: number;
   content: string;
   teamMemberInfoId: number;
 }
@@ -30,6 +42,16 @@ const registCommentFetcher = ({
     },
   );
 
+const editCommentFetcher = ({
+  commentId,
+  content,
+  teamMemberInfoId,
+}: EditCommentFetcherPropsType) =>
+  instance.put<ApiResponseType<RegistCommentResponseType>>(`/api/comment/${commentId}`, {
+    teamMemberInfoId,
+    content,
+  });
+
 const deleteCommentFetcher = (commentId: number) =>
   instance.delete<ApiResponseType<string>>(`/api/comment/${commentId}`);
 
@@ -40,6 +62,18 @@ export const useRegistCommentMutation = (boardId: number) => {
   return useMutation(
     ({ content, teamMemberInfoId }: RegistCommentMutationPropsType) =>
       registCommentFetcher({ boardId, content, teamMemberInfoId }),
+    {
+      onSuccess: () => queryClient.invalidateQueries([GET_COMMENTS_QUERY_KEY, boardId]),
+    },
+  );
+};
+
+export const useEditCommentMutation = (boardId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    ({ content, teamMemberInfoId, commentId }: EditCommentMutationPropsType) =>
+      editCommentFetcher({ commentId, content, teamMemberInfoId }),
     {
       onSuccess: () => queryClient.invalidateQueries([GET_COMMENTS_QUERY_KEY, boardId]),
     },

@@ -139,12 +139,13 @@
   overflow: hidden;
 
   svg {
-    display: none;
-    margin-left: 4px;
+    cursor: pointer;
+    margin-left: 16px;
   }
 
   input {
     flex: 1;
+    width: 100%;
     border: 0;
     outline: none;
     color: $black;
@@ -160,11 +161,11 @@
 
   &:focus-within {
     box-shadow: 0 0 0 1px $main-blue-100 inset;
-
-    svg {
-      display: block;
-    }
   }
+}
+
+.children-wrapper {
+  margin-left: 16px;
 }
 
 // input end

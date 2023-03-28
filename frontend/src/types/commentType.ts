@@ -7,6 +7,7 @@ export interface CommentType {
   likeCount: number;
   commentStatus: "DELETE_USER" | "NORMAL";
   teamMemberInfoId: number;
+  children: CommentType[];
 }
 
 export interface RegistCommentResponseType extends CommentType {

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useRef } from "react";
+import React, { FC, useEffect, useState, useRef, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import Button from "components/common/button";
 import Comment from "components/common/comment";
@@ -7,7 +7,6 @@ import Input from "components/Input/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";
 import {
   useDeleteCommentMutation,
-  useEditCommentMutation,
   useRegistCommentMutation,
 } from "quires/comment/useCommentMutation";
 
@@ -25,6 +24,19 @@ const Detail: FC = () => {
 
   // comment 가져오는 query 작성
   const { data: commentData } = useGetCommentsQuery(Number(param.id));
+  const commentCount = useMemo(() => {
+    let count = 0;
+    if (commentData?.data) {
+      for (let i = 0; i < commentData?.data.length; i++) {
+        count++;
+        for (let j = 0; j < commentData?.data[i].children.length; j++) {
+          count++;
+        }
+      }
+    }
+    return count;
+  }, [commentData]);
+
   const {
     data: registCommentData,
     mutate: registComment,
@@ -40,7 +52,7 @@ const Detail: FC = () => {
   const handleRegistComment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isRegistCommentLoading) return alert("댓글 등록 중입니다.");
-    registComment({ content: commentText, teamMemberInfoId: 142 });
+    registComment({ content: commentText, teamMemberInfoId: 148 });
   };
 
   const handleDeleteComment = (commentId: number) => {
@@ -94,17 +106,32 @@ const Detail: FC = () => {
       </div>
       <div className="comment-container">
         <div className="title">
-          댓글 <span>{commentData?.data?.length || 0}개</span>
+          댓글 <span>{commentCount}개</span>
         </div>
         <ul>
           {commentData?.data?.map((comment) => (
             <li key={comment.commentId}>
               <Comment
                 boardId={Number(param.id)}
-                myComment
+                myComment={detail?.data?.writer === comment.writer}
                 comment={comment}
                 deleteHandler={() => handleDeleteComment(comment.commentId)}
               />
+              {comment.children.length > 0 && (
+                <ul className="reply-list">
+                  {comment.children.map((reply) => (
+                    <li key={reply.commentId}>
+                      <Comment
+                        boardId={Number(param.id)}
+                        myComment={detail?.data?.writer === reply.writer}
+                        isReply
+                        comment={reply}
+                        deleteHandler={() => handleDeleteComment(comment.commentId)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>

@@ -36,9 +36,18 @@
   .comment-avatar {
     margin-right: 12px;
     background: $gray-300;
-    min-width: 42px;
-    height: 42px;
-    border-radius: 42px;
+    min-width: 40px;
+    height: 40px;
+    border-radius: 40px;
+  }
+
+  &.isReply {
+    padding: 24px 32px 24px 80px;
+
+    .comment-avatar {
+      min-width: 32px;
+      height: 32px;
+    }
   }
 
   .comment-main-box {

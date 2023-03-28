@@ -21,6 +21,8 @@ const Detail: FC = () => {
     contents: "test",
   });
   const [commentText, setCommentText] = useState("");
+  const [replyCommentId, setReplyCommentId] = useState<null | number>(null);
+  const [replyText, setReplyText] = useState("");
 
   // comment 가져오는 query 작성
   const { data: commentData } = useGetCommentsQuery(Number(param.id));
@@ -43,6 +45,14 @@ const Detail: FC = () => {
     isLoading: isRegistCommentLoading,
     error: registCommentError,
   } = useRegistCommentMutation(Number(param.id));
+
+  const {
+    data: registReplyData,
+    mutate: registReply,
+    isLoading: isRegistReplyLoading,
+    error: registReplyError,
+  } = useRegistCommentMutation(Number(param.id));
+
   const {
     mutate: deleteCommentData,
     isLoading: isDeleteCommentLoading,
@@ -55,6 +65,14 @@ const Detail: FC = () => {
     registComment({ content: commentText, teamMemberInfoId: 148 });
   };
 
+  const handleRegistReply = () => {
+    if (isRegistReplyLoading) return alert("답글 등록 중입니다.");
+    registReply({
+      content: replyText,
+      teamMemberInfoId: 148,
+      parentId: replyCommentId,
+    });
+  };
   const handleDeleteComment = (commentId: number) => {
     if (isDeleteCommentLoading) return alert("댓글 삭제 중입니다.");
     deleteCommentData(commentId);
@@ -73,11 +91,18 @@ const Detail: FC = () => {
   }, [detail]);
 
   useEffect(() => {
-    if (registCommentData && registCommentData.status === 200) {
+    if (registCommentData && registCommentData.data?.status === "success") {
       setCommentText("");
       commentRegistFormRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [registCommentData]);
+
+  useEffect(() => {
+    if (registReplyData && registReplyData.data?.status === "success") {
+      setReplyCommentId(null);
+      setReplyText("");
+    }
+  }, [registReplyData]);
 
   console.log(commentData?.data);
 
@@ -112,18 +137,49 @@ const Detail: FC = () => {
           {commentData?.data?.map((comment) => (
             <li key={comment.commentId}>
               <Comment
+                onClickWriteReplyButton={() => {
+                  setReplyText("");
+                  setReplyCommentId(comment.commentId);
+                }}
                 boardId={Number(param.id)}
-                myComment={detail?.data?.writer === comment.writer}
+                myComment={comment.teamMemberInfoId === 148}
                 comment={comment}
                 deleteHandler={() => handleDeleteComment(comment.commentId)}
               />
+              {replyCommentId && replyCommentId === comment.commentId && (
+                <div className="reply-regist-form">
+                  <div className="reply-regist-input-wrapper">
+                    <span />
+                    <Input value={replyText} setValue={setReplyText} />
+                  </div>
+                  <div className="comment-button-box">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setReplyText("");
+                        setReplyCommentId(null);
+                      }}
+                      className="cancel-button"
+                    >
+                      취소
+                    </button>
+                    <button
+                      onClick={handleRegistReply}
+                      type="submit"
+                      className="regist-button"
+                    >
+                      등록
+                    </button>
+                  </div>
+                </div>
+              )}
               {comment.children.length > 0 && (
                 <ul className="reply-list">
                   {comment.children.map((reply) => (
                     <li key={reply.commentId}>
                       <Comment
                         boardId={Number(param.id)}
-                        myComment={detail?.data?.writer === reply.writer}
+                        myComment={comment.teamMemberInfoId === 148}
                         isReply
                         comment={reply}
                         deleteHandler={() => handleDeleteComment(comment.commentId)}

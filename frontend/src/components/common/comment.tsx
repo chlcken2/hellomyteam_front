@@ -1,3 +1,4 @@
+import Input from "components/Input/Input";
 import { useEditCommentMutation } from "quires/comment/useCommentMutation";
 import { memo, useState, useRef, useEffect } from "react";
 import { CommentType } from "types/commentType";
@@ -11,10 +12,18 @@ interface PropsTyeps {
   comment: CommentType;
   myComment: boolean;
   isReply?: boolean;
+  onClickWriteReplyButton?: () => void;
   deleteHandler?: (e?: ButtonEventTypes) => void;
 }
 
-const Comment = ({ boardId, myComment, isReply, comment, deleteHandler }: PropsTyeps) => {
+const Comment = ({
+  boardId,
+  myComment,
+  isReply,
+  comment,
+  onClickWriteReplyButton,
+  deleteHandler,
+}: PropsTyeps) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -128,8 +137,13 @@ const Comment = ({ boardId, myComment, isReply, comment, deleteHandler }: PropsT
         <div className="comment-footer">
           <div className="comment-button-box">
             <button className="comment-like">좋아요 {comment.likeCount}</button>
-            {!isReply && <button className="comment-to-comment">답글쓰기</button>}
+            {!isReply && onClickWriteReplyButton && (
+              <button onClick={onClickWriteReplyButton} className="comment-to-comment">
+                답글쓰기
+              </button>
+            )}
           </div>
+
           {myComment &&
             comment.commentStatus !== "DELETE_USER" &&
             (isEdit ? (

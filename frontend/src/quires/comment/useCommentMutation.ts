@@ -9,6 +9,7 @@ interface RegistCommentFetcherPropsType {
   boardId: number;
   content: string;
   teamMemberInfoId: number;
+  parentId: number;
 }
 
 interface EditCommentFetcherPropsType {
@@ -18,6 +19,7 @@ interface EditCommentFetcherPropsType {
 }
 
 interface RegistCommentMutationPropsType {
+  parentId?: number;
   content: string;
   teamMemberInfoId: number;
 }
@@ -33,12 +35,14 @@ const registCommentFetcher = ({
   boardId,
   content,
   teamMemberInfoId,
+  parentId,
 }: RegistCommentFetcherPropsType) =>
   instance.post<ApiResponseType<RegistCommentResponseType>>(
     `/api/board/${boardId}/comment`,
     {
       teamMemberInfoId,
       content,
+      parentId,
     },
   );
 
@@ -60,8 +64,8 @@ export const useRegistCommentMutation = (boardId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    ({ content, teamMemberInfoId }: RegistCommentMutationPropsType) =>
-      registCommentFetcher({ boardId, content, teamMemberInfoId }),
+    ({ content, teamMemberInfoId, parentId }: RegistCommentMutationPropsType) =>
+      registCommentFetcher({ boardId, content, teamMemberInfoId, parentId }),
     {
       onSuccess: () => queryClient.invalidateQueries([GET_COMMENTS_QUERY_KEY, boardId]),
     },

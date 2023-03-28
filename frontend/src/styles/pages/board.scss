@@ -49,3 +49,59 @@
     }
   }
 }
+
+.reply-regist-form {
+  padding: 24px 32px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.reply-regist-input-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  margin-bottom: 16px;
+
+  span {
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
+    background-color: $green-100;
+  }
+}
+
+.comment-button-box {
+  display: flex;
+  column-gap: 8px;
+
+  .cancel-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 32px;
+    border-radius: 8px;
+    color: $gray-400;
+    background-color: $white;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    border: 1px solid $gray-100;
+  }
+  .regist-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 32px;
+    border-radius: 8px;
+    color: $white;
+    background-color: $main-blue-100;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    border: none;
+  }
+}

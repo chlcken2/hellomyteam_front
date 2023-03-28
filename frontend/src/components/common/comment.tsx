@@ -1,30 +1,33 @@
 import Input from "components/Input/Input";
-import { useEditCommentMutation } from "quires/comment/useCommentMutation";
+import {
+  useDeleteCommentMutation,
+  useEditCommentMutation,
+} from "quires/comment/useCommentMutation";
 import { memo, useState, useRef, useEffect } from "react";
 import { CommentType } from "types/commentType";
 import { formatDate } from "utils/common";
 import "../../styles/components/common.scss";
 
-type ButtonEventTypes = React.MouseEvent<HTMLButtonElement>;
-
 interface PropsTyeps {
+  isPostWriter: boolean;
   boardId: number;
   comment: CommentType;
   myComment: boolean;
   isReply?: boolean;
   onClickWriteReplyButton?: () => void;
-  deleteHandler?: (e?: ButtonEventTypes) => void;
 }
 
 const Comment = ({
+  isPostWriter,
   boardId,
   myComment,
   isReply,
   comment,
   onClickWriteReplyButton,
-  deleteHandler,
 }: PropsTyeps) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const isDeleted = comment.commentStatus === "DELETE_USER";
+
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editText, setEditText] = useState("");
@@ -36,6 +39,12 @@ const Comment = ({
     error: editCommentError,
   } = useEditCommentMutation(Number(boardId));
 
+  const {
+    mutate: deleteCommentData,
+    isLoading: isDeleteCommentLoading,
+    error: deleteCommentError,
+  } = useDeleteCommentMutation(Number(boardId));
+
   const handleEditComment = () => {
     if (isEditCommentLoading) return alert("댓글 수정 중입니다.");
     editComment({
@@ -43,6 +52,17 @@ const Comment = ({
       content: editText,
       teamMemberInfoId: comment.teamMemberInfoId,
     });
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    if (isDeleteCommentLoading) return alert("댓글 삭제 중입니다.");
+
+    const message = `${isReply ? "답글" : "댓글"}을 삭제하시겠습니까?`;
+    const result = window.confirm(message);
+
+    if (result) deleteCommentData(commentId);
+
+    setIsOpenMenu(false);
   };
 
   const kebabMenu = () => {
@@ -88,8 +108,7 @@ const Comment = ({
         <button
           className="comment-edit"
           onClick={() => {
-            deleteHandler();
-            setIsOpenMenu(false);
+            handleDeleteComment(comment.commentId);
           }}
         >
           삭제
@@ -105,33 +124,36 @@ const Comment = ({
   };
 
   useEffect(() => {
+    if (editCommentData?.data.status === "success") {
+      setIsEdit(false);
+    }
+  }, [editCommentData]);
+
+  useEffect(() => {
     document.addEventListener("mousedown", handleMenu);
     return () => {
       document.removeEventListener("mousedown", handleMenu);
     };
   });
 
-  useEffect(() => {
-    if (editCommentData?.data.status === "success") {
-      setIsEdit(false);
-    }
-  }, [editCommentData]);
-
   return (
-    <div className={`comment-wrap ${myComment && "isWriter"} ${isReply && "isReply"}`}>
+    <div
+      className={`comment-wrap ${myComment && !isDeleted && "isWriter"} ${
+        isReply && "isReply"
+      }`}
+    >
       <div className="comment-avatar" />
       <div className="comment-main-box">
         <div className="comment-header">
           <div className="comment-writer">{comment.writer}</div>
+          {isPostWriter && <div className="comment-post-writer-mark">작성자</div>}
           <div className="comment-date">{formatDate(comment.createdDate)}</div>
         </div>
         <div className="comment-box">
           {isEdit ? (
             <textarea value={editText} onChange={(e) => setEditText(e.target.value)} />
           ) : (
-            <p className={`${comment.commentStatus === "DELETE_USER" && "isDelete"}`}>
-              {comment.content}
-            </p>
+            <p className={`${isDeleted && "isDelete"}`}>{comment.content}</p>
           )}
         </div>
         <div className="comment-footer">
@@ -145,7 +167,7 @@ const Comment = ({
           </div>
 
           {myComment &&
-            comment.commentStatus !== "DELETE_USER" &&
+            isDeleted &&
             (isEdit ? (
               <div className="comment-button-box">
                 <button onClick={() => setIsEdit(false)} className="cancel-button">

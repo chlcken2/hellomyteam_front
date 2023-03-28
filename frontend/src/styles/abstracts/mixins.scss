@@ -54,12 +54,27 @@
     width: 100%;
     .comment-header {
       display: flex;
+      align-items: center;
       margin-bottom: 8px;
+      column-gap: 8px;
+
       .comment-writer {
         color: #1d1d1d;
         font-size: 16px;
         font-weight: 600;
-        margin-right: 8px;
+      }
+      .comment-post-writer-mark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $gray-400;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 16px;
+        width: 48px;
+        height: 24px;
+        border: 1px solid $gray-200;
+        border-radius: 4px;
       }
       .comment-date {
         font-size: 14px;

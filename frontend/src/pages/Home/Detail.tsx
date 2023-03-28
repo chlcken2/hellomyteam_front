@@ -5,34 +5,54 @@ import Comment from "components/common/comment";
 import getBoardDetail from "quires/board/getBoardDetail";
 import Input from "components/Input/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";
-import {
-  useDeleteCommentMutation,
-  useRegistCommentMutation,
-} from "quires/comment/useCommentMutation";
+import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
+
+// 댓글 테스트를 위한 teamMemberInfoId, 로그인한 계정의 teamMemberrInfoId입력
+const TEMP_TEAM_MEMBER_INFO_ID = 148;
 
 const Detail: FC = () => {
   const param = useParams();
-  const commentRegistFormRef = useRef<HTMLFormElement>(null);
   const img = process.env.PUBLIC_URL;
+
+  /* Board Part Start */
+
   const { data: detail } = getBoardDetail(Number(param.id));
   const [info, setInfo] = useState({
     name: "test",
     title: "test",
     contents: "test",
   });
+
+  useEffect(() => {
+    if (detail) {
+      console.log(detail.data);
+      setInfo({
+        name: detail.data.writer,
+        title: detail.data.title,
+        contents: detail.data.contents,
+      });
+    }
+  }, [detail]);
+
+  /* Board Part End */
+
+  /* Comment part Start */
+
+  const commentRegistFormRef = useRef<HTMLFormElement>(null);
+
   const [commentText, setCommentText] = useState("");
   const [replyCommentId, setReplyCommentId] = useState<null | number>(null);
   const [replyText, setReplyText] = useState("");
 
-  // comment 가져오는 query 작성
   const { data: commentData } = useGetCommentsQuery(Number(param.id));
+
   const commentCount = useMemo(() => {
     let count = 0;
     if (commentData?.data) {
-      for (let i = 0; i < commentData?.data.length; i++) {
-        count++;
-        for (let j = 0; j < commentData?.data[i].children.length; j++) {
-          count++;
+      for (let i = 0; i < commentData.data.length; i++) {
+        if (commentData.data[i].commentStatus === "NORMAL") count++;
+        for (let j = 0; j < commentData.data[i].children.length; j++) {
+          if (commentData.data[i].children[j].commentStatus === "NORMAL") count++;
         }
       }
     }
@@ -53,42 +73,20 @@ const Detail: FC = () => {
     error: registReplyError,
   } = useRegistCommentMutation(Number(param.id));
 
-  const {
-    mutate: deleteCommentData,
-    isLoading: isDeleteCommentLoading,
-    error: deleteCommentError,
-  } = useDeleteCommentMutation(Number(param.id));
-
   const handleRegistComment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isRegistCommentLoading) return alert("댓글 등록 중입니다.");
-    registComment({ content: commentText, teamMemberInfoId: 148 });
+    registComment({ content: commentText, teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID });
   };
 
   const handleRegistReply = () => {
     if (isRegistReplyLoading) return alert("답글 등록 중입니다.");
     registReply({
       content: replyText,
-      teamMemberInfoId: 148,
+      teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID,
       parentId: replyCommentId,
     });
   };
-  const handleDeleteComment = (commentId: number) => {
-    if (isDeleteCommentLoading) return alert("댓글 삭제 중입니다.");
-    deleteCommentData(commentId);
-  };
-
-  // 디테일
-  useEffect(() => {
-    if (detail) {
-      console.log(detail.data);
-      setInfo({
-        name: detail.data.writer,
-        title: detail.data.title,
-        contents: detail.data.contents,
-      });
-    }
-  }, [detail]);
 
   useEffect(() => {
     if (registCommentData && registCommentData.data?.status === "success") {
@@ -104,10 +102,11 @@ const Detail: FC = () => {
     }
   }, [registReplyData]);
 
-  console.log(commentData?.data);
+  /* Comment Part End */
 
   return (
     <>
+      {/* Boad Part Start */}
       <div className="board">
         <Link to="/board" className="back-button">
           <img src={`${img}/common/ChevronLeftOutline.png`} alt="" />
@@ -129,6 +128,9 @@ const Detail: FC = () => {
           </div>
         </div>
       </div>
+      {/* Boad Part End */}
+
+      {/* Comment Part Start */}
       <div className="comment-container">
         <div className="title">
           댓글 <span>{commentCount}개</span>
@@ -137,14 +139,14 @@ const Detail: FC = () => {
           {commentData?.data?.map((comment) => (
             <li key={comment.commentId}>
               <Comment
+                isPostWriter={detail?.data.writer === comment.writer}
                 onClickWriteReplyButton={() => {
                   setReplyText("");
                   setReplyCommentId(comment.commentId);
                 }}
                 boardId={Number(param.id)}
-                myComment={comment.teamMemberInfoId === 148}
+                myComment={comment.teamMemberInfoId === TEMP_TEAM_MEMBER_INFO_ID}
                 comment={comment}
-                deleteHandler={() => handleDeleteComment(comment.commentId)}
               />
               {replyCommentId && replyCommentId === comment.commentId && (
                 <div className="reply-regist-form">
@@ -178,11 +180,11 @@ const Detail: FC = () => {
                   {comment.children.map((reply) => (
                     <li key={reply.commentId}>
                       <Comment
+                        isPostWriter={detail?.data.writer === reply.writer}
                         boardId={Number(param.id)}
-                        myComment={comment.teamMemberInfoId === 148}
+                        myComment={reply.teamMemberInfoId === TEMP_TEAM_MEMBER_INFO_ID}
                         isReply
                         comment={reply}
-                        deleteHandler={() => handleDeleteComment(comment.commentId)}
                       />
                     </li>
                   ))}
@@ -202,6 +204,7 @@ const Detail: FC = () => {
           <Input value={commentText} setValue={setCommentText} />
         </form>
       </div>
+      {/* Comment Part End */}
     </>
   );
 };

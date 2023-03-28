@@ -1,8 +1,47 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import { useCookies } from "react-cookie";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { getExpiredDate, setLocalStorage } from "utils/setAuthorization";
+import { getCookie, getExpiredDate, setLocalStorage } from "utils/setAuthorization";
+
+let isRefreshing = false;
+let subscribers: ((token: string) => void)[] = [];
+
+const subscribeTokenRefresh = (callback: (token: string) => void) => {
+  subscribers.push(callback);
+};
+
+const onRrefreshed = (token: string) => {
+  subscribers.forEach((callback) => callback(token));
+};
+
+const getRefreshToken = async (): Promise<string | void> => {
+  try {
+    const cookie = getCookie("refresh");
+    const res = await axios.get("/api/auth/refresh", {
+      headers: {
+        Authorization: `Bearer ${cookie}`,
+      },
+    });
+
+    const { accessToken, refreshToken } = res.data.data;
+
+    isRefreshing = false;
+
+    onRrefreshed(accessToken);
+    subscribers = [];
+    setLocalStorage(accessToken);
+    document.cookie = `refresh=${refreshToken}; path=/; max-age=${getExpiredDate()}`;
+
+    return accessToken;
+  } catch (err) {
+    const {
+      response: { status },
+    } = err as AxiosError;
+    if (status === 490 || status === 498) {
+      localStorage.removeItem("token");
+    }
+    isRefreshing = false;
+    subscribers = [];
+  }
+};
 
 const createInstance = () => {
   return axios.create({
@@ -15,71 +54,52 @@ const createInstance = () => {
 
 const instance = createInstance();
 
-const AxiosInterceptor = (): null => {
-  const [cookie, setCookie, removeCookie] = useCookies(["refresh"]);
-  const navigate = useNavigate();
+instance.interceptors.request.use(
+  async (config) => {
+    const accessToken = JSON.parse(localStorage.getItem("token")).value;
 
-  useEffect(() => {
-    instance.interceptors.request.use(
-      async (config: AxiosRequestConfig) => {
-        const accessToken = JSON.parse(localStorage.getItem("token")).value;
+    if (!accessToken) {
+      config.headers.accessToken = null;
+      return config;
+    }
+    if (config.headers && accessToken) {
+      config.headers.Authorization = accessToken;
+      return config;
+    }
+    return config;
+  },
 
-        if (!accessToken) {
-          config.headers.accessToken = null;
-          return config;
-        }
-        if (config.headers && accessToken) {
-          config.headers.Authorization = accessToken;
-          return config;
-        }
-        return config;
-      },
+  async (error: AxiosError) => {
+    return error;
+  },
+);
 
-      async (error: AxiosError) => {
-        return error;
-      },
-    );
+instance.interceptors.response.use(
+  async (config) => {
+    return config;
+  },
+  async (err: AxiosError) => {
+    const { status, config: originalRequest } = err.response;
+    if (status === 401 || status === 403) {
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          subscribeTokenRefresh((token: string) => {
+            originalRequest.headers.Authorization = token;
+            resolve(axios(originalRequest));
+          });
+        });
+      }
+      isRefreshing = true;
+      const accessToken = await getRefreshToken();
 
-    instance.interceptors.response.use(
-      async (config) => {
-        return config;
-      },
-      async (err: AxiosError) => {
-        const { refresh } = cookie;
-        const { status, config: originalRequest } = err.response;
-        if (status === 401 || status === 403) {
-          try {
-            const res = await axios.get("/api/auth/refresh", {
-              headers: {
-                Authorization: `Bearer ${refresh}`,
-              },
-            });
+      if (typeof accessToken === "string") {
+        originalRequest.headers.Authorization = accessToken;
+        return axios(originalRequest);
+      }
+    }
 
-            const { accessToken, refreshToken } = res.data.data;
+    return Promise.reject(err);
+  },
+);
 
-            setLocalStorage(accessToken);
-            removeCookie("refresh");
-            setCookie("refresh", refreshToken, { path: "/", expires: getExpiredDate() });
-            originalRequest.headers.authorization = accessToken;
-
-            return axios(originalRequest);
-          } catch (err) {
-            const { response } = err as AxiosError;
-            if (response.status === 490 || response.status === 498) {
-              localStorage.removeItem("token");
-              navigate("/");
-            }
-
-            return err;
-          }
-        }
-
-        return err;
-      },
-    );
-  }, []);
-
-  return null;
-};
-
-export { AxiosInterceptor, instance };
+export { instance };

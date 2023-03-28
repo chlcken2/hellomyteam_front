@@ -1,6 +1,7 @@
 import { useEditCommentMutation } from "quires/comment/useCommentMutation";
 import { memo, useState, useRef, useEffect } from "react";
 import { CommentType } from "types/commentType";
+import { formatDate } from "utils/common";
 import "../../styles/components/common.scss";
 
 type ButtonEventTypes = React.MouseEvent<HTMLButtonElement>;
@@ -19,13 +20,19 @@ const Comment = ({ boardId, myComment, comment, deleteHandler }: PropsTyeps) => 
   const [editText, setEditText] = useState("");
 
   const {
-    mutate: editCommentData,
+    data: editCommentData,
+    mutate: editComment,
     isLoading: isEditCommentLoading,
     error: editCommentError,
   } = useEditCommentMutation(Number(boardId));
 
   const handleEditComment = () => {
     if (isEditCommentLoading) return alert("댓글 수정 중입니다.");
+    editComment({
+      commentId: comment.commentId,
+      content: editText,
+      teamMemberInfoId: comment.teamMemberInfoId,
+    });
   };
 
   const kebabMenu = () => {
@@ -94,13 +101,19 @@ const Comment = ({ boardId, myComment, comment, deleteHandler }: PropsTyeps) => 
     };
   });
 
+  useEffect(() => {
+    if (editCommentData?.data.status === "success") {
+      setIsEdit(false);
+    }
+  }, [editCommentData]);
+
   return (
     <div className={`comment-wrap ${myComment && "isWriter"}`}>
       <div className="comment-avatar" />
       <div className="comment-main-box">
         <div className="comment-header">
           <div className="comment-writer">{comment.writer}</div>
-          <div className="comment-date">{comment.createdDate}</div>
+          <div className="comment-date">{formatDate(comment.createdDate)}</div>
         </div>
         <div className="comment-box">
           {isEdit ? (
@@ -123,7 +136,9 @@ const Comment = ({ boardId, myComment, comment, deleteHandler }: PropsTyeps) => 
                 <button onClick={() => setIsEdit(false)} className="cancel-button">
                   취소
                 </button>
-                <button className="regist-button">수정</button>
+                <button onClick={handleEditComment} className="regist-button">
+                  수정
+                </button>
               </div>
             ) : (
               <div ref={menuRef}>

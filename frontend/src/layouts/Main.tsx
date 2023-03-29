@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import getTeamInfo from "quires/team/getTeamInfo";
+import { teamMemberId } from "quires/team/getTeamId";
 import Button from "components/common/button";
 import UserState from "../recoil/userAtom";
 import "styles/pages/home.scss";
@@ -51,6 +52,12 @@ const Main = () => {
     setCurrentTeamTitle(name);
     setCurrentTeamId(id);
     setShowTeamsModal(false);
+
+    // 2023-03-29: teamMemberInfoId Atom에 추가함
+    if (isGetTeamInfoLoading) return alert("로딩중입니다");
+    teamMemberId(id, useUser.id).then((res) => {
+      setUseUser({ ...useUser, teamMemberInfoId: res.data.data, selectedTeamId: id });
+    });
   };
 
   // recoil에 담긴 User의 정보가 있을시에, 사용자의 id값을 리액트 쿼리에 보냄

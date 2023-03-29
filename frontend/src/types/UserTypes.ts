@@ -35,6 +35,20 @@ export interface boardDetailTypes {
   likeCount: number;
 }
 
+export interface boardListTypes {
+  boardCategory: string;
+  boardStatus: string;
+  commentCount: number;
+  contents: string;
+  createdDate: string;
+  id: number;
+  likeCount: number;
+  modifiedDate: string;
+  title: string;
+  viewCount: number;
+  writer: string;
+}
+
 /**
  * write comment
  */

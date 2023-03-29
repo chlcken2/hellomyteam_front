@@ -117,6 +117,21 @@ const Main = () => {
       <div className="main-buttons">
         <h1 className="main-title">
           <button onClick={handleTeamsModal}>{currentTeamTitle}</button>
+          {showTeamsModal && (
+            <div className="main-teams">
+              <ul>
+                {team?.data.map((el, idx) => {
+                  return (
+                    <li key={idx}>
+                      <button onClick={() => handleMember(el.teamName, el.teamId)}>
+                        {el.teamName}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </h1>
         <ul>
           <li>
@@ -128,21 +143,7 @@ const Main = () => {
           </li>
         </ul>
       </div>
-      {showTeamsModal && (
-        <div className="main-teams">
-          <ul>
-            {team?.data.map((el, idx) => {
-              return (
-                <li key={idx}>
-                  <button onClick={() => handleMember(el.teamName, el.teamId)}>
-                    {el.teamName}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
+
       <div ref={menuRef} className="main-menu-wrapper">
         <ul className="main-menu">
           <div

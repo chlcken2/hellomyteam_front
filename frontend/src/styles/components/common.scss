@@ -33,7 +33,7 @@
   width: 100%;
 }
 
-.my-comment-wrap {
+.comment-wrap {
   @include comment;
 }
 
@@ -110,6 +110,7 @@
 
 .input-container {
   width: 100%;
+  flex: 1;
 
   p {
     display: inline-block;

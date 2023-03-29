@@ -1,58 +1,211 @@
-import React, { FC } from "react";
-import { Link } from "react-router-dom";
+import React, { FC, useEffect, useState, useRef, useMemo } from "react";
+import { Link, useParams } from "react-router-dom";
 import Button from "components/common/button";
+import Comment from "components/common/comment";
+import getBoardDetail from "quires/board/getBoardDetail";
+import Input from "components/Input/Input";
+import useGetCommentsQuery from "quires/comment/useCommentQuery";
+import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
 
-interface propType {
-  time: string;
-}
+// 댓글 테스트를 위한 teamMemberInfoId, 로그인한 계정의 teamMemberrInfoId입력
+const TEMP_TEAM_MEMBER_INFO_ID = 148;
 
-const Detail: FC<propType> = ({ time }) => {
+const Detail: FC = () => {
+  const param = useParams();
   const img = process.env.PUBLIC_URL;
+
+  /* Board Part Start */
+
+  const { data: detail } = getBoardDetail(Number(param.id));
+  const [info, setInfo] = useState({
+    name: "test",
+    title: "test",
+    contents: "test",
+  });
+
+  useEffect(() => {
+    if (detail) {
+      console.log(detail.data);
+      setInfo({
+        name: detail.data.writer,
+        title: detail.data.title,
+        contents: detail.data.contents,
+      });
+    }
+  }, [detail]);
+
+  /* Board Part End */
+
+  /* Comment part Start */
+
+  const commentRegistFormRef = useRef<HTMLFormElement>(null);
+
+  const [commentText, setCommentText] = useState("");
+  const [replyCommentId, setReplyCommentId] = useState<null | number>(null);
+  const [replyText, setReplyText] = useState("");
+
+  const { data: commentData } = useGetCommentsQuery(Number(param.id));
+
+  const commentCount = useMemo(() => {
+    let count = 0;
+    if (commentData?.data) {
+      for (let i = 0; i < commentData.data.length; i++) {
+        if (commentData.data[i].commentStatus === "NORMAL") count++;
+        for (let j = 0; j < commentData.data[i].children.length; j++) {
+          if (commentData.data[i].children[j].commentStatus === "NORMAL") count++;
+        }
+      }
+    }
+    return count;
+  }, [commentData]);
+
+  const {
+    data: registCommentData,
+    mutate: registComment,
+    isLoading: isRegistCommentLoading,
+    error: registCommentError,
+  } = useRegistCommentMutation(Number(param.id));
+
+  const {
+    data: registReplyData,
+    mutate: registReply,
+    isLoading: isRegistReplyLoading,
+    error: registReplyError,
+  } = useRegistCommentMutation(Number(param.id));
+
+  const handleRegistComment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isRegistCommentLoading) return alert("댓글 등록 중입니다.");
+    registComment({ content: commentText, teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID });
+  };
+
+  const handleRegistReply = () => {
+    if (isRegistReplyLoading) return alert("답글 등록 중입니다.");
+    registReply({
+      content: replyText,
+      teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID,
+      parentId: replyCommentId,
+    });
+  };
+
+  useEffect(() => {
+    if (registCommentData && registCommentData.data?.status === "success") {
+      setCommentText("");
+      commentRegistFormRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [registCommentData]);
+
+  useEffect(() => {
+    if (registReplyData && registReplyData.data?.status === "success") {
+      setReplyCommentId(null);
+      setReplyText("");
+    }
+  }, [registReplyData]);
+
+  /* Comment Part End */
+
   return (
-    <div className="board">
-      <Link to="/board" className="back-button">
-        <img src={`${img}/common/ChevronLeftOutline.png`} alt="" />
-      </Link>
-      <div className="board-content">
-        <h2>백엔드 배포</h2>
-        <div className="user">
-          <span>
-            <img src={`${img}/common/join-1.png`} alt="" />
-          </span>
-          <div>
-            <h3>Beson</h3>
-            <p>{time} 전</p>
+    <>
+      {/* Boad Part Start */}
+      <div className="board">
+        <Link to="/board" className="back-button">
+          <img src={`${img}/common/ChevronLeftOutline.png`} alt="" />
+        </Link>
+        <div className="board-content">
+          <h2>{info.title}</h2>
+          <div className="user">
+            <span>
+              <img src={`${img}/common/join-1.png`} alt="" />
+            </span>
+            <div>
+              <h3>{info.name}</h3>
+              <p>1시간 전</p>
+            </div>
+          </div>
+          <div className="board-detail">
+            <p dangerouslySetInnerHTML={{ __html: info.contents }} />
+            <Button text="좋아요" handler={() => console.log("test")} />
           </div>
         </div>
-        <div className="board-detail">
-          <span className="img-wrap">
-            <img src={`${img}/common/join-2.png`} alt="dd" />
-          </span>
-          <p>
-            보내는 풍부하게 평화스러운 별과 없는 부패뿐이다. 위하여 무엇을 맺어, 인생을
-            동력은 날카로우나 쓸쓸하랴? 꽃이 맺어, 생명을 얼음에 쓸쓸한 끓는 힘있다.
-            동산에는 있을 있는 우리 황금시대다. 피부가 인간은 옷을 같으며, 장식하는 같지
-            있는 그것은 그들은 이것이다. 청춘의 오직 같이 역사를 그들은 우리 심장의 품고
-            그림자는 것이다. 안고, 소담스러운 기관과 오직 없으면, 아니더면, 있으랴? 얼음에
-            동산에는 목숨이 들어 맺어, 있는 대한 열락의 뿐이다. 그들은 품으며, 아니더면,
-            우리 대고, 날카로우나 무엇을 밥을 피다. 인생의 고동을 인간이 청춘의 것이다.
-            청춘의 현저하게 그것은 바이며, 간에 있는 청춘은 낙원을 방황하여도, 쓸쓸하랴?
-            노년에게서 있는 위하여, 하였으며, 청춘에서만 평화스러운 내는 말이다. 소금이라
-            피고 싹이 밝은 꾸며 있다. 되는 생생하며, 청춘 맺어, 이것은 위하여서. 얼음이
-            장식하는 고동을 운다. 기관과 그들의 군영과 시들어 고행을 사랑의 예수는
-            봄바람이다. 없는 피가 구할 피어나기 생명을 커다란 봄바람이다. 같지 그들의
-            천고에 그들에게 천자만홍이 무엇이 말이다. 없으면 사람은 얼음에 석가는 만물은
-            가치를 소담스러운 뜨고, 지혜는 칼이다. 이상이 것은 목숨이 철환하였는가? 기관과
-            원질이 청춘은 찬미를 부패뿐이다. 원대하고, 위하여서 너의 가치를 이 이상은
-            그러므로 같은 피어나는 뿐이다. 못하다 보이는 예수는 것이다. 자신과 생의 지혜는
-            꽃이 고행을 대한 천하를 날카로우나 힘차게 끓는다. 품으며, 위하여서 같은 없는
-            봄바람이다. 구할 안고, 거선의 이것을 석가는 있는가? 역사를 얼음과 끓는 인생의
-            사막이다.
-          </p>
-          <Button text="좋아요 1개" handler={() => console.log("test")} />
-        </div>
       </div>
-    </div>
+      {/* Boad Part End */}
+
+      {/* Comment Part Start */}
+      <div className="comment-container">
+        <div className="title">
+          댓글 <span>{commentCount}개</span>
+        </div>
+        <ul>
+          {commentData?.data?.map((comment) => (
+            <li key={comment.commentId}>
+              <Comment
+                isPostWriter={detail?.data.writer === comment.writer}
+                onClickWriteReplyButton={() => {
+                  setReplyText("");
+                  setReplyCommentId(comment.commentId);
+                }}
+                boardId={Number(param.id)}
+                myComment={comment.teamMemberInfoId === TEMP_TEAM_MEMBER_INFO_ID}
+                comment={comment}
+              />
+              {replyCommentId && replyCommentId === comment.commentId && (
+                <div className="reply-regist-form">
+                  <div className="reply-regist-input-wrapper">
+                    <span />
+                    <Input value={replyText} setValue={setReplyText} />
+                  </div>
+                  <div className="comment-button-box">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setReplyText("");
+                        setReplyCommentId(null);
+                      }}
+                      className="cancel-button"
+                    >
+                      취소
+                    </button>
+                    <button
+                      onClick={handleRegistReply}
+                      type="submit"
+                      className="regist-button"
+                    >
+                      등록
+                    </button>
+                  </div>
+                </div>
+              )}
+              {comment.children.length > 0 && (
+                <ul className="reply-list">
+                  {comment.children.map((reply) => (
+                    <li key={reply.commentId}>
+                      <Comment
+                        isPostWriter={detail?.data.writer === reply.writer}
+                        boardId={Number(param.id)}
+                        myComment={reply.teamMemberInfoId === TEMP_TEAM_MEMBER_INFO_ID}
+                        isReply
+                        comment={reply}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+        <form
+          ref={commentRegistFormRef}
+          className="comment-regist-form"
+          onSubmit={(e) => handleRegistComment(e)}
+        >
+          <span>
+            <img src="/common/join-1.png" alt="유저 프로필 이미지" />
+          </span>
+          <Input value={commentText} setValue={setCommentText} />
+        </form>
+      </div>
+      {/* Comment Part End */}
+    </>
   );
 };
 

@@ -18,6 +18,7 @@ const MENU = [
 ];
 
 const Main = () => {
+  const path = process.env.PUBLIC_URL;
   const navi = useNavigate();
   const { pathname } = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -33,6 +34,7 @@ const Main = () => {
   const [userId, setUserId] = useState(0);
   const [currentTeamTitle, setCurrentTeamTitle] = useState("헬로마이팀");
   const [currentTeamId, setCurrentTeamId] = useState(0);
+  const [logo, setLogo] = useState(`${path}/common/logo.png`);
 
   // User가 가입한 team list fetch
   const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(userId);
@@ -48,7 +50,8 @@ const Main = () => {
     return navi(`/board/${teamId}/write`);
   };
   // 타이틀바꾸기
-  const handleMember = (name: string, id: number) => {
+  const handleMember = (name: string, id: number, imageUrl: string) => {
+    setLogo(imageUrl);
     setCurrentTeamTitle(name);
     setCurrentTeamId(id);
     setShowTeamsModal(false);
@@ -119,18 +122,26 @@ const Main = () => {
     };
   }, []);
 
+  console.log(team);
   return (
     <div className="main-wrap">
       <div className="main-buttons">
         <h1 className="main-title">
-          <button onClick={handleTeamsModal}>{currentTeamTitle}</button>
+          <button onClick={handleTeamsModal}>
+            <span>
+              <img src={logo} alt="로고" />
+            </span>
+            <p>{currentTeamTitle}</p>
+          </button>
           {showTeamsModal && (
             <div className="main-teams">
               <ul>
                 {team?.data.map((el, idx) => {
                   return (
                     <li key={idx}>
-                      <button onClick={() => handleMember(el.teamName, el.teamId)}>
+                      <button
+                        onClick={() => handleMember(el.teamName, el.teamId, el?.imageUrl)}
+                      >
                         {el.teamName}
                       </button>
                     </li>

@@ -62,6 +62,7 @@ module.exports = {
     "react/require-default-props": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "consistent-return": "off",
+    "no-plusplus": "off",
   },
   settings: {
     "import/resolver": {

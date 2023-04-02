@@ -29,11 +29,15 @@
 
 ### 📚 저희는 이렇게 프로젝트 해요
 
+<hr/>
+
 1. 커밋하기 전, Pull Request를 통해서 팀원들의 코드를 파악하고 논의해요.
-   <img src="https://github.com/iafan1229/threejs/blob/master/pr.png?raw=true"/>
+<br>
+<img src="https://github.com/iafan1229/threejs/blob/master/pr.png?raw=true" width="800"/>
 
 2. 노션에 작업상황을 공유하면서 팀원들과 협업하고 체계적으로 프로젝트 해요.
-   <img src="https://github.com/iafan1229/threejs/blob/master/sprint.png?raw=true"/>
+<br>
+<img src="https://github.com/iafan1229/threejs/blob/master/sprint.png?raw=true" width="800"/>
 
 ### ⛏ 작업 시작일 & 작업 진척도
 

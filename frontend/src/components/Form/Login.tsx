@@ -5,9 +5,8 @@ import { useCookies } from "react-cookie"; // useCookies import
 import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 import { useRecoilState } from "recoil";
-import getTeamInfo from "quires/team/getTeamInfo";
-import { teamMemberId } from "quires/team/getTeamId";
-import { AxiosInterceptor, instance } from "../../config/api";
+import { instance } from "../../config/api";
+
 import { setLocalStorage, getExpiredDate } from "../../utils/setAuthorization";
 
 interface IHas {
@@ -30,9 +29,6 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
     error: errorMessage,
   } = getMemberInfo(loginBoolean);
 
-  // User가 가입한 team list fetch
-  const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(info?.data.id);
-
   const submit = async (e: any) => {
     e.preventDefault();
 
@@ -51,7 +47,6 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
           if (accessToken) {
             // 클릭된 유저를 로컬스토리지에 담아서 전달
             setConfirmLogin(true);
-            setUser({ ...info.data, teamInfo: team.data });
           }
         })
 

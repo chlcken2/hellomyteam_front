@@ -4,7 +4,7 @@ import Input from "components/Input/Input";
 import Select from "components/common/Select";
 import Button from "components/common/button";
 import { useRecoilValue } from "recoil";
-import { AxiosInterceptor, instance } from "../../config/api";
+import { instance } from "../../config/api";
 import UserState from "../../recoil/userAtom";
 
 const CreateTeam: FC = () => {

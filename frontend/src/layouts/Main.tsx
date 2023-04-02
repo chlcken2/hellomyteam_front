@@ -31,7 +31,7 @@ const Main = () => {
 
   const [useUser, setUseUser] = useRecoilState(UserState);
   const [showTeamsModal, setShowTeamsModal] = useState(false);
-  // User가 가입한 team list fetch
+  // User가 가입한 team list fetch (param - memberId)
   const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(useUser?.id);
 
   // 모바일 탭바의 menuItem 배경 인터렉션관련 스타일 state

@@ -18,7 +18,6 @@ import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 import Alarm from "pages/Alarm/Alarm";
 
-import { AxiosInterceptor, queryClient } from "config";
 import Toast from "components/common/Toast";
 import Nav from "layouts/Nav";
 import Login from "components/Form/Login";
@@ -53,7 +52,6 @@ const App = () => {
   return (
     <CookiesProvider>
       <Router>
-        <AxiosInterceptor />
         <Toast />
         {!confirmLogin && (
           <FormWrap>

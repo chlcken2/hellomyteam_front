@@ -14,6 +14,8 @@ const Board: FC = () => {
     "FREE_BOARD",
   );
 
+  console.log(list);
+  console.log(user);
   return (
     <div>
       <section className="section-container">
@@ -56,20 +58,23 @@ const Board: FC = () => {
               imageURL="https://imagedelivery.net/R2WiK4wfRK3oBXTwjgzQfA/21a6cc15-e13e-4e6e-1a80-38ec12630b00/blogThumbnail"
             />
           </li> */}
-          {list?.data.map((el, idx) => {
-            return (
-              <Link to={`/board/${el.id}`} key={idx}>
-                <PostItem
-                  title={el.title}
-                  content={el.contents.replace(reg, "")}
-                  commentCount={el.commentCount}
-                  likeCount={el.likeCount}
-                  createdAt={el.createdDate}
-                  author={el.writer}
-                />
-              </Link>
-            );
-          })}
+          {!listLoad &&
+            list?.data.map((el, idx) => {
+              return (
+                <Link to={`/board/${el.id}`} key={idx}>
+                  <PostItem
+                    title={el.title}
+                    content={el.contents.replace(reg, "")}
+                    commentCount={el.commentCount}
+                    likeCount={el.likeCount}
+                    createdAt={`${el.createdDate.split("T")[0]} ${
+                      el.createdDate.split("T")[1]
+                    }`}
+                    author={el.writer}
+                  />
+                </Link>
+              );
+            })}
         </ul>
         <div className="pagination-wrapper">페이지네이션</div>
       </section>

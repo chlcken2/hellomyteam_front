@@ -5,6 +5,8 @@ import { useCookies } from "react-cookie"; // useCookies import
 import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 import { useRecoilState } from "recoil";
+import getTeamInfo from "quires/team/getTeamInfo";
+import { teamMemberId } from "quires/team/getTeamId";
 import { AxiosInterceptor, instance } from "../../config/api";
 import { setLocalStorage, getExpiredDate } from "../../utils/setAuthorization";
 
@@ -28,6 +30,9 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
     error: errorMessage,
   } = getMemberInfo(loginBoolean);
 
+  // User가 가입한 team list fetch
+  const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(info?.data.id);
+
   const submit = async (e: any) => {
     e.preventDefault();
 
@@ -44,9 +49,10 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
           setLoginBoolean(true);
           // 토큰이 있을경우만 유저정보 불러옴. enable로 동기화.
           if (accessToken) {
-            setUser(info.data);
+            // 클릭된 유저를 로컬스토리지에 담아서 전달
+            setConfirmLogin(true);
+            setUser({ ...info.data, teamInfo: team.data });
           }
-          setConfirmLogin(true);
         })
 
         .catch((err) => {
@@ -96,9 +102,16 @@ const Login: FC<IHas> = ({ setHasId, setLogin }) => {
   useEffect(() => {
     if (info) {
       console.log(info);
-      setConfirmLogin(true);
     }
   }, [reset]);
+
+  useEffect(() => {
+    if (info?.data) {
+      console.log(info);
+      setUser({ ...info.data });
+    }
+  }, [info]);
+
   return (
     <div className="join-wrap2">
       <div className="go-back">

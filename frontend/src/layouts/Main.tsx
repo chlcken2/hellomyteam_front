@@ -8,6 +8,12 @@ import UserState from "../recoil/userAtom";
 import "styles/pages/home.scss";
 import "styles/layouts/main.scss";
 
+interface titleType {
+  name: string;
+  logo: string;
+  teamId: number;
+}
+
 const BREAK_POINT = 1000;
 const MENU = [
   { path: "", name: "둘러보기" },
@@ -25,19 +31,34 @@ const Main = () => {
 
   const [useUser, setUseUser] = useRecoilState(UserState);
   const [showTeamsModal, setShowTeamsModal] = useState(false);
+  // User가 가입한 team list fetch
+  const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(useUser?.id);
 
   // 모바일 탭바의 menuItem 배경 인터렉션관련 스타일 state
   const [menuItemBackgroundStyle, setMenuItemBackgroundStyle] = useState({
     width: 0,
     offsetLeft: 0,
   });
-  const [userId, setUserId] = useState(0);
-  const [currentTeamTitle, setCurrentTeamTitle] = useState("헬로마이팀");
+  const [userId, setUserId] = useState(() => {
+    const title = localStorage.getItem("arrayData");
+    return title !== null ? JSON.parse(title)[0].teamId : 0;
+  });
+  const [currentTeamTitle, setCurrentTeamTitle] = useState(() => {
+    const title = localStorage.getItem("arrayData");
+    return title !== null ? JSON.parse(title)[0].name : "헬로마이팀";
+  });
   const [currentTeamId, setCurrentTeamId] = useState(0);
-  const [logo, setLogo] = useState(`${path}/common/logo.png`);
+  const [logo, setLogo] = useState(() => {
+    const title = localStorage.getItem("arrayData");
+    return title !== null ? JSON.parse(title)[0].logo : `${path}/common/logo.png`;
+  });
 
-  // User가 가입한 team list fetch
-  const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(userId);
+  const [localTitle, setLocalTitle] = useState(() => {
+    const savedData = localStorage.getItem("arrayData");
+    return savedData !== null
+      ? JSON.parse(savedData)
+      : team.data.map((el) => el.teamName);
+  });
 
   // 토글보이기
   const handleTeamsModal = () => {
@@ -56,23 +77,38 @@ const Main = () => {
     setCurrentTeamId(id);
     setShowTeamsModal(false);
 
-    // 2023-03-29: teamMemberInfoId Atom에 추가함
+    // 2023-04-02 localStorage에 최근 정보 저장
+    const arrayData = JSON.parse(localStorage.getItem("arrayData")) || [];
+    const filtered = arrayData.filter((el: titleType) => el.name !== name);
+    filtered.unshift({ name, logo: imageUrl, teamId: id });
+    localStorage.setItem("arrayData", JSON.stringify(filtered));
+
+    setLocalTitle(filtered);
+    console.log(filtered);
+    // 2023-04-02: teamMemberInfoId Atom에 추가함
     if (isGetTeamInfoLoading) return alert("로딩중입니다");
-    teamMemberId(id, useUser.id).then((res) => {
-      setUseUser({ ...useUser, teamMemberInfoId: res.data.data, selectedTeamId: id });
+    teamMemberId(id, filtered[0].teamId).then((res) => {
+      setUseUser({
+        ...useUser,
+        teamMemberInfoId: res.data.data,
+        selectedTeamId: filtered[0].teamId,
+      });
     });
   };
 
   // recoil에 담긴 User의 정보가 있을시에, 사용자의 id값을 리액트 쿼리에 보냄
   useEffect(() => {
     if (useUser) {
+      console.log(useUser);
       setUserId(useUser.id);
     }
   }, [useUser]);
 
   // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
   useEffect(() => {
+    if (isGetTeamInfoLoading) return;
     if (team?.data) {
+      console.log(team);
       setUseUser({ ...useUser, teamInfo: [...team.data] });
     }
   }, [team]);
@@ -122,7 +158,23 @@ const Main = () => {
     };
   }, []);
 
-  console.log(team);
+  useEffect(() => {
+    if (isGetTeamInfoLoading) return;
+    if (localStorage.getItem("arrayData")) return;
+    if (team.data) {
+      // 로컬스토리지에서 배열 데이터 가져오기
+      const arrayData = JSON.parse(localStorage.getItem("arrayData")) || [];
+      team.data.forEach((el, idx) => {
+        // 가져온 배열에 새로운 데이터 추가 또는 기존 데이터 수정
+        arrayData[idx] = { name: el.teamName, logo: el.imageUrl, teamId: el.teamId };
+        // 수정된 배열 다시 로컬스토리지에 저장
+        localStorage.setItem("arrayData", JSON.stringify(arrayData));
+      });
+    }
+  }, [team]);
+
+  console.log(useUser);
+
   return (
     <div className="main-wrap">
       <div className="main-buttons">
@@ -136,13 +188,11 @@ const Main = () => {
           {showTeamsModal && (
             <div className="main-teams">
               <ul>
-                {team?.data.map((el, idx) => {
+                {localTitle?.map((el: titleType, idx: number) => {
                   return (
                     <li key={idx}>
-                      <button
-                        onClick={() => handleMember(el.teamName, el.teamId, el?.imageUrl)}
-                      >
-                        {el.teamName}
+                      <button onClick={() => handleMember(el.name, el.teamId, el?.logo)}>
+                        {el.name}
                       </button>
                     </li>
                   );

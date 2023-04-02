@@ -19,6 +19,7 @@ export interface userTypes {
 export interface joinTeamTypes {
   teamName: string;
   teamId: number;
+  imageUrl: string;
 }
 
 export interface boardDetailTypes {
@@ -33,6 +34,20 @@ export interface boardDetailTypes {
   viewCount: number;
   commentCount: number;
   likeCount: number;
+}
+
+export interface boardListTypes {
+  boardCategory: string;
+  boardStatus: string;
+  commentCount: number;
+  contents: string;
+  createdDate: string;
+  id: number;
+  likeCount: number;
+  modifiedDate: string;
+  title: string;
+  viewCount: number;
+  writer: string;
 }
 
 /**

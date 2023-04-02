@@ -29,6 +29,8 @@
 
 ### 📚 저희는 이렇게 프로젝트 해요
 
+<hr/>
+
 1. 커밋하기 전, Pull Request를 통해서 팀원들의 코드를 파악하고 논의해요.
 <br>
 <img src="https://github.com/iafan1229/threejs/blob/master/pr.png?raw=true" width="800"/>

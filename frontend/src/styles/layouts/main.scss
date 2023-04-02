@@ -123,16 +123,61 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  h1,
+  h1.main-title {
+    > button {
+      display: flex;
+      gap: 15px;
+      border: none;
+      background: transparent;
+      font-size: 32px;
+      font-weight: 700;
+      span {
+        overflow: hidden;
+        display: block;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        img {
+          width: 100%;
+        }
+      }
+    }
+  }
 }
 
 .main-teams {
   z-index: 7;
   position: absolute;
-  width: 300px;
-  height: 300px;
+  width: 288px;
+  height: auto;
+  padding: 20px;
   background: $gray-100;
   text-align: center;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: #fff;
+  box-shadow: 0px 2px 4px rgba(14, 31, 53, 0.06), 0px 6px 12px rgba(14, 31, 53, 0.08),
+    0px 12px 20px rgba(14, 31, 53, 0.06);
+  border-radius: 8px;
+  ul {
+    li {
+      color: $gray-400;
+      button {
+        color: $gray-400;
+      }
+      span {
+        overflow: hidden;
+        display: block;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        img {
+          width: 100%;
+        }
+      }
+    }
+  }
 }

@@ -95,7 +95,7 @@ const Write: FC = () => {
     if (boardNum !== 0) {
       mutate({
         // TODO: 옵셔널 체이닝 이유 찾기
-        boardCategory: boardName?.value,
+        boardCategory: boardName ? boardName.value : "FREE_BOARD",
         boardStatus: "NORMAL",
         contents: htmlString,
         teamMemberInfoId: boardNum,
@@ -106,8 +106,9 @@ const Write: FC = () => {
 
   useEffect(() => {
     if (writeData) {
-      const { id } = writeData.data;
-      navi(`/board/${id}`);
+      // const { id } = writeData.data;
+      alert("글 저장에 성공했습니다");
+      navi(`/board`);
     }
   }, [writeData, htmlString]);
 
@@ -122,6 +123,7 @@ const Write: FC = () => {
           <Select
             placeholder="자유게시판"
             options={option}
+            defaultValue="FREE_BOARD"
             onChange={(e) => setBoardName(e)}
           />
           <Input value={title} setValue={setTitle} />

@@ -17,6 +17,8 @@ interface UserType {
   joinPurpose: string;
   termsAndCond: termsAndCondType[];
   teamInfo?: teamInfoType[];
+  teamMemberInfoId?: number;
+  selectedTeamId?: number;
 }
 
 interface teamInfoType {
@@ -25,7 +27,7 @@ interface teamInfoType {
 }
 // 사용자 정보 + 사용자가 가입한 팀 정보
 const UserState = atom<UserType | null>({
-  key: "UserState",
+  key: "UserInfo",
   default: null,
 });
 

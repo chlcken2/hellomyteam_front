@@ -11,10 +11,10 @@ interface fetcherPropsType {
 
 // fetcher part
 const JoinAlarmAcceptfetcher = ({ teamId, memberId }: fetcherPropsType) =>
-  instance.post<ApiResponseType<string>>(`/api/team/${teamId}/member/accept`, memberId);
+  instance.post<ApiResponseType<string>>(`/api/teams/${teamId}/members/${memberId}/accept`);
 
 const JoinAlarmRejectfetcher = ({ teamId, memberId }: fetcherPropsType) =>
-  instance.post<ApiResponseType<string>>(`/api/team/${teamId}/member/reject`, memberId);
+  instance.post<ApiResponseType<string>>(`/api/teams/${teamId}/members/${memberId}/reject`);
 
 // mutation part
 export const useJoinAlarmAcceptMutation = (teamId: number) => {

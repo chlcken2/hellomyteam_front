@@ -14,7 +14,7 @@ export const QUERY_KEY = "/joinAlarm";
 const fetcher = ({ teamId, teamMemberInfoId }: fetcherPropsType) =>
   instance
     .get<ApiResponseType<JoinAlarmItemType[]>>(
-      `/api/team/${teamId}/join?teamMemberInfoId=${teamMemberInfoId}`,
+      `/api/teams/${teamId}/team-member/${teamMemberInfoId}/notifications`,
     )
     .then(({ data }) => data);
 

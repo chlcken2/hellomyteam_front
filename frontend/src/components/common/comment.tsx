@@ -136,15 +136,12 @@ const Comment = ({
   });
 
   return (
-    <div
-      className={`comment-wrap ${myComment && !isDeleted && "isWriter"} ${
-        isReply && "isReply"
-      }`}
-    >
+    <div className={`comment-wrap ${isReply && "isReply"}`}>
       <div className="comment-avatar" />
       <div className="comment-main-box">
         <div className="comment-header">
           <div className="comment-writer">{comment.writer}</div>
+          {myComment && <div className="comment-post-writer-mark">내댓글</div>}
           {isPostWriter && <div className="comment-post-writer-mark">작성자</div>}
           <div className="comment-date">{formatDate(comment.createdDate)}</div>
         </div>

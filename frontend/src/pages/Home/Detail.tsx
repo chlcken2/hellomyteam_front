@@ -6,9 +6,8 @@ import getBoardDetail from "quires/board/getBoardDetail";
 import Input from "components/Input/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";
 import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
-
-// 댓글 테스트를 위한 teamMemberInfoId, 로그인한 계정의 teamMemberrInfoId입력
-const TEMP_TEAM_MEMBER_INFO_ID = 148;
+import { useRecoilState } from "recoil";
+import UserState from "recoil/userAtom";
 
 const Detail: FC = () => {
   const param = useParams();
@@ -40,11 +39,12 @@ const Detail: FC = () => {
 
   const commentRegistFormRef = useRef<HTMLFormElement>(null);
 
+  const [user] = useRecoilState(UserState);
   const [commentText, setCommentText] = useState("");
   const [replyCommentId, setReplyCommentId] = useState<null | number>(null);
   const [replyText, setReplyText] = useState("");
 
-  const { data: commentData } = useGetCommentsQuery(Number(param.id));
+  const { data: commentData } = useGetCommentsQuery(Number(param.id), 0, 30);
 
   const commentCount = useMemo(() => {
     let count = 0;
@@ -76,14 +76,17 @@ const Detail: FC = () => {
   const handleRegistComment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isRegistCommentLoading) return alert("댓글 등록 중입니다.");
-    registComment({ content: commentText, teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID });
+    if (!user.teamMemberInfoId) return alert("팀을 선택해주세요.");
+    registComment({ content: commentText, teamMemberInfoId: user.teamMemberInfoId });
   };
 
   const handleRegistReply = () => {
     if (isRegistReplyLoading) return alert("답글 등록 중입니다.");
+    if (!user.teamMemberInfoId) return alert("팀을 선택해주세요.");
+
     registReply({
       content: replyText,
-      teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID,
+      teamMemberInfoId: user.teamMemberInfoId,
       parentId: replyCommentId,
     });
   };
@@ -103,6 +106,8 @@ const Detail: FC = () => {
   }, [registReplyData]);
 
   /* Comment Part End */
+
+  console.log(user, "user");
 
   return (
     <>
@@ -145,7 +150,10 @@ const Detail: FC = () => {
                   setReplyCommentId(comment.commentId);
                 }}
                 boardId={Number(param.id)}
-                myComment={comment.teamMemberInfoId === TEMP_TEAM_MEMBER_INFO_ID}
+                myComment={
+                  user?.teamMemberInfoId &&
+                  comment.teamMemberInfoId === user.teamMemberInfoId
+                }
                 comment={comment}
               />
               {replyCommentId && replyCommentId === comment.commentId && (
@@ -182,7 +190,10 @@ const Detail: FC = () => {
                       <Comment
                         isPostWriter={detail?.data.writer === reply.writer}
                         boardId={Number(param.id)}
-                        myComment={reply.teamMemberInfoId === TEMP_TEAM_MEMBER_INFO_ID}
+                        myComment={
+                          user?.teamMemberInfoId &&
+                          reply.teamMemberInfoId === user.teamMemberInfoId
+                        }
                         isReply
                         comment={reply}
                       />

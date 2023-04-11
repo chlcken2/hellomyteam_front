@@ -166,7 +166,7 @@ const Comment = ({
           </div>
 
           {myComment &&
-            isDeleted &&
+            !isDeleted &&
             (isEdit ? (
               <div className="comment-button-box">
                 <button onClick={() => setIsEdit(false)} className="cancel-button">

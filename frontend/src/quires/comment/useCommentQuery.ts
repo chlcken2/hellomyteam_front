@@ -6,17 +6,17 @@ import { CommentType } from "types/commentType";
 export const GET_COMMENTS_QUERY_KEY = "/board/:boardId/comment";
 
 // fetcher part
-const fetcher = (boardId: number) =>
+const fetcher = (boardId: number, page: number, size: number) =>
   instance
     .get<ApiResponseType<CommentType[]>>(
-      `/api/board/${boardId}/comment
+      `/api/boards/${boardId}/comment?commentNum=${0}&commentSize=${30}
     `,
     )
     .then(({ data }) => data);
 
 // mutation part
-const useGetCommentsQuery = (boardId: number) => {
-  return useQuery([GET_COMMENTS_QUERY_KEY, boardId], () => fetcher(boardId));
+const useGetCommentsQuery = (boardId: number, page: number, size: number) => {
+  return useQuery([GET_COMMENTS_QUERY_KEY, boardId], () => fetcher(boardId, page, size));
 };
 
 export default useGetCommentsQuery;

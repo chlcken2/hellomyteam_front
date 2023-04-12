@@ -138,7 +138,9 @@ const Comment = ({
 
   return (
     <div className={`comment-wrap ${isReply && "isReply"}`}>
-      <div className="comment-avatar" />
+      <div className="comment-avatar">
+        <img src="/common/logo.png" alt="logo" />
+      </div>
       <div className="comment-main-box">
         <div className="comment-header">
           <div className="comment-writer">{comment.writer}</div>
@@ -156,7 +158,7 @@ const Comment = ({
         <div className="comment-footer">
           <div className="comment-button-box">
             <button className="comment-like">좋아요 {comment.likeCount}</button>
-            {!isReply && onClickWriteReplyButton && (
+            {!isReply && !isDeleted && onClickWriteReplyButton && (
               <button onClick={onClickWriteReplyButton} className="comment-to-comment">
                 답글쓰기
               </button>

@@ -74,10 +74,10 @@ const Detail: FC = () => {
     error: registReplyError,
   } = useRegistCommentMutation(Number(param.id));
 
-  const handleRegistComment = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleRegistComment = () => {
     if (isRegistCommentLoading) return alert("댓글 등록 중입니다.");
     if (!user.teamMemberInfoId) return alert("팀을 선택해주세요.");
+    if (commentText.length === 0) return alert("내용을 입력해주세요.");
     registComment({ content: commentText, teamMemberInfoId: user.teamMemberInfoId });
   };
 
@@ -107,8 +107,6 @@ const Detail: FC = () => {
   }, [registReplyData]);
 
   /* Comment Part End */
-
-  console.log(commentData, "commentData");
 
   return (
     <>
@@ -184,8 +182,20 @@ const Detail: FC = () => {
           ))}
         </ul>
         <div ref={commentRegistFormRef} className="comment-regist-form">
-          <span />
-          <CommentTextarea value={commentText} setValue={setCommentText} />
+          <span>
+            <img src="/common/logo.png" alt="logo" />
+          </span>
+          <div className="comment-content">
+            <CommentTextarea value={commentText} setValue={setCommentText} isComment />
+            <div className="comment-button-box">
+              <button onClick={() => setCommentText("")} className="cancel-button">
+                취소
+              </button>
+              <button onClick={handleRegistComment} className="regist-button">
+                등록
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       {/* Comment Part End */}

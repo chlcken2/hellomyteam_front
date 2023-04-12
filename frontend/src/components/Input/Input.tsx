@@ -1,5 +1,5 @@
 import Label from "components/common/Label";
-import { memo, useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import "styles/components/common.scss";
 
 interface PropsType {
@@ -14,6 +14,7 @@ interface PropsType {
   placeholder?: string;
   keyDownHandler?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   children?: React.ReactNode;
+  innerRef?: React.MutableRefObject<HTMLInputElement>;
 }
 
 const Input = ({
@@ -28,6 +29,7 @@ const Input = ({
   placeholder,
   keyDownHandler,
   children,
+  innerRef,
 }: PropsType) => {
   const [isViewPassword, setIsViewPassword] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -46,6 +48,7 @@ const Input = ({
       <Label id={id} isError={isError} isRequierd={isRequierd} label={label} />
       <div className="input-wrapper">
         <input
+          ref={innerRef}
           id={id}
           type={isViewPassword ? "text" : type}
           value={value}
@@ -86,4 +89,4 @@ const Input = ({
   );
 };
 
-export default memo(Input);
+export default forwardRef(Input);

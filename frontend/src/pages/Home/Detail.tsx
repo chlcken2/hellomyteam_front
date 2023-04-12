@@ -1,13 +1,14 @@
 import React, { FC, useEffect, useState, useRef, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import Button from "components/common/button";
-import Comment from "components/common/comment";
+import Comment from "components/Comment/Comment";
 import getBoardDetail from "quires/board/getBoardDetail";
 import Input from "components/Input/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";
 import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
 import { useRecoilState } from "recoil";
 import UserState from "recoil/userAtom";
+import ReplyInput from "components/Comment/ReplyInput";
 
 const Detail: FC = () => {
   const param = useParams();
@@ -42,7 +43,6 @@ const Detail: FC = () => {
   const [user] = useRecoilState(UserState);
   const [commentText, setCommentText] = useState("");
   const [replyCommentId, setReplyCommentId] = useState<null | number>(null);
-  const [replyText, setReplyText] = useState("");
 
   const { data: commentData } = useGetCommentsQuery(Number(param.id), 0, 30);
 
@@ -80,9 +80,10 @@ const Detail: FC = () => {
     registComment({ content: commentText, teamMemberInfoId: user.teamMemberInfoId });
   };
 
-  const handleRegistReply = () => {
+  const handleRegistReply = (replyText: string) => {
     if (isRegistReplyLoading) return alert("답글 등록 중입니다.");
     if (!user.teamMemberInfoId) return alert("팀을 선택해주세요.");
+    if (replyText.length === 0) return alert("내용을 입력해주세요.");
 
     registReply({
       content: replyText,
@@ -101,7 +102,6 @@ const Detail: FC = () => {
   useEffect(() => {
     if (registReplyData && registReplyData.data?.status === "success") {
       setReplyCommentId(null);
-      setReplyText("");
     }
   }, [registReplyData]);
 
@@ -146,7 +146,6 @@ const Detail: FC = () => {
               <Comment
                 isPostWriter={detail?.data.writer === comment.writer}
                 onClickWriteReplyButton={() => {
-                  setReplyText("");
                   setReplyCommentId(comment.commentId);
                 }}
                 boardId={Number(param.id)}
@@ -157,31 +156,10 @@ const Detail: FC = () => {
                 comment={comment}
               />
               {replyCommentId && replyCommentId === comment.commentId && (
-                <div className="reply-regist-form">
-                  <div className="reply-regist-input-wrapper">
-                    <span />
-                    <Input value={replyText} setValue={setReplyText} />
-                  </div>
-                  <div className="comment-button-box">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setReplyText("");
-                        setReplyCommentId(null);
-                      }}
-                      className="cancel-button"
-                    >
-                      취소
-                    </button>
-                    <button
-                      onClick={handleRegistReply}
-                      type="submit"
-                      className="regist-button"
-                    >
-                      등록
-                    </button>
-                  </div>
-                </div>
+                <ReplyInput
+                  handleRegistReply={handleRegistReply}
+                  setReplyCommentId={setReplyCommentId}
+                />
               )}
               {comment.children.length > 0 && (
                 <ul className="reply-list">

@@ -6,6 +6,7 @@ import { memo, useState, useRef, useEffect } from "react";
 import { CommentType } from "types/commentType";
 import { formatDate } from "utils/common";
 import "../../styles/components/common.scss";
+import CommentTextarea from "./CommentTextarea";
 
 interface PropsTyeps {
   isPostWriter: boolean;
@@ -147,7 +148,7 @@ const Comment = ({
         </div>
         <div className="comment-box">
           {isEdit ? (
-            <textarea value={editText} onChange={(e) => setEditText(e.target.value)} />
+            <CommentTextarea value={editText} setValue={setEditText} />
           ) : (
             <p className={`${isDeleted && "isDelete"}`}>{comment.content}</p>
           )}

@@ -86,22 +86,7 @@
 
     .comment-box {
       margin-bottom: 8px;
-      textarea {
-        margin-right: 23px;
-        width: 100%;
-        height: 114px;
-        background: $white;
-        padding: 12px;
-        border: 1px solid $gray-100;
-        border-radius: 8px;
-        line-height: 21px;
-        font-size: 14px;
-        color: $gray-400;
-        resize: none;
-        &:focus {
-          outline: none;
-        }
-      }
+      white-space: pre-wrap;
       p {
         line-height: 22px;
         font-size: 14px;

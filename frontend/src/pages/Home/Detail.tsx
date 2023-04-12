@@ -107,7 +107,7 @@ const Detail: FC = () => {
 
   /* Comment Part End */
 
-  console.log(user, "user");
+  console.log(commentData, "commentData");
 
   return (
     <>

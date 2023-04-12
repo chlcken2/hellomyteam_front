@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "styles/pages/board.scss";
 
 interface PropsType {
@@ -17,7 +17,12 @@ const CommentTextarea = ({ setValue, value, isFocus }: PropsType) => {
 
   const adjustHeight = () => {
     const textarea = textareaRef.current;
+    textarea.style.height = "auto";
     textarea.style.height = `${textarea.scrollHeight + 2}px`;
+    // window.scrollTo({
+    //   top: textareaRef.current.offsetTop - 160,
+    //   behavior: "smooth",
+    // });
   };
 
   useEffect(() => {
@@ -34,6 +39,7 @@ const CommentTextarea = ({ setValue, value, isFocus }: PropsType) => {
       ref={textareaRef}
       value={value}
       onChange={handleChange}
+      rows={1}
     />
   );
 };

@@ -9,6 +9,7 @@ import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
 import { useRecoilState } from "recoil";
 import UserState from "recoil/userAtom";
 import ReplyInput from "components/Comment/ReplyInput";
+import CommentTextarea from "components/Comment/CommentTextarea";
 
 const Detail: FC = () => {
   const param = useParams();
@@ -38,7 +39,7 @@ const Detail: FC = () => {
 
   /* Comment part Start */
 
-  const commentRegistFormRef = useRef<HTMLFormElement>(null);
+  const commentRegistFormRef = useRef<HTMLDivElement>(null);
 
   const [user] = useRecoilState(UserState);
   const [commentText, setCommentText] = useState("");
@@ -182,16 +183,10 @@ const Detail: FC = () => {
             </li>
           ))}
         </ul>
-        <form
-          ref={commentRegistFormRef}
-          className="comment-regist-form"
-          onSubmit={(e) => handleRegistComment(e)}
-        >
-          <span>
-            <img src="/common/join-1.png" alt="유저 프로필 이미지" />
-          </span>
-          <Input value={commentText} setValue={setCommentText} />
-        </form>
+        <div ref={commentRegistFormRef} className="comment-regist-form">
+          <span />
+          <CommentTextarea value={commentText} setValue={setCommentText} />
+        </div>
       </div>
       {/* Comment Part End */}
     </>

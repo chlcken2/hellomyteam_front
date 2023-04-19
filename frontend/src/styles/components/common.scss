@@ -56,6 +56,7 @@
 // label start
 
 .label-wrapper {
+  display: inline-block;
   color: $gray-400;
   font-weight: 500;
   font-size: 14px;
@@ -155,6 +156,11 @@
     line-height: 22px;
     padding: 0;
 
+    &:read-only {
+      color: $gray-300;
+      background: $gray-100;
+    }
+
     &::placeholder {
       color: $gray-200;
     }
@@ -162,6 +168,40 @@
 
   &:focus-within {
     box-shadow: 0 0 0 1px $main-blue-100 inset;
+  }
+
+  .email-certification-wrap {
+    > span {
+      font-size: 12px;
+      margin-right: 16px;
+      color: $green-100;
+    }
+    > button {
+      font-size: 14px;
+      height: 16px;
+      background: inherit;
+      border: none;
+      padding: 0px;
+      color: $main-blue-100;
+    }
+  }
+
+  .email-certification-wrap-expiration {
+    @extend .email-certification-wrap;
+    > span {
+      color: $red-100;
+    }
+    > button {
+      pointer-events: none;
+      color: $gray-200;
+    }
+  }
+
+  &.read-only {
+    background: $gray-100;
+    &:focus-within {
+      box-shadow: none;
+    }
   }
 }
 
@@ -277,6 +317,7 @@
       cursor: pointer;
       padding: 0;
       color: $gray-400;
+      font-size: 14px;
       a {
         text-decoration: underline;
         color: $gray-400;
@@ -289,8 +330,8 @@
       margin-right: 10px;
       display: inline-block;
       vertical-align: text-top;
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       border: 2px solid $gray-200;
       border-radius: 2px;
       vertical-align: middle;
@@ -300,6 +341,9 @@
     &:checked + label:before {
       background: $main-blue-100;
       border: 2px solid $main-blue-100;
+      background-image: url("../../../public/icons/checked-white.svg");
+      background-repeat: no-repeat;
+      background-position: 50%;
     }
 
     // Disabled state label.
@@ -317,16 +361,6 @@
     // Checkmark. Could be replaced with an image
     &:checked + label:after {
       content: "";
-      width: 6px;
-      height: 10px;
-      border: solid #fff;
-      border-width: 0 2px 2px 0;
-      -webkit-transform: rotate(45deg);
-      -ms-transform: rotate(45deg);
-      transform: rotate(45deg);
-      position: absolute;
-      left: 7px;
-      top: 2px;
     }
   }
 

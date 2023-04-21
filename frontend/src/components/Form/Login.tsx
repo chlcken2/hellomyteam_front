@@ -3,7 +3,7 @@ import { useCookies } from "react-cookie"; // useCookies import
 import LoginState from "recoil/atom";
 import { useSetRecoilState } from "recoil";
 import { setLocalStorage, getExpiredDate } from "../../utils/setAuthorization";
-import Input from "../Input/Input";
+import Input from "../common/Input";
 import useLoginMutation from "../../quires/certification/useLoginMutation";
 
 interface IHas {

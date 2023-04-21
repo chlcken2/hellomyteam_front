@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useState, useRef, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
-import Button from "components/common/button";
-import Comment from "components/common/comment";
+import Button from "components/common/Button";
+import Comment from "components/common/Comment";
 import getBoardDetail from "quires/board/getBoardDetail";
-import Input from "components/Input/Input";
+import Input from "components/common/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";
 import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
 

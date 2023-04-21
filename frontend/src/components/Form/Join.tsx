@@ -1,4 +1,4 @@
-import Input from "components/Input/Input";
+import Input from "components/common/Input";
 import Select, { OptionType } from "components/common/Select";
 import useEmailCertificationQuery from "quires/certification/useEmailCertifictionQuery";
 import useEmailMatchQuery from "quires/certification/useEmailMatchQuery";
@@ -98,7 +98,7 @@ const Join = ({ setHasId }: IHas) => {
     termsOfServiceYn: isChecked && "YES",
   });
 
-  const [isNext, setIsNext] = useState<boolean>(false);
+  const [isNext, setIsNext] = useState<boolean>(true);
 
   const onClickNext = (e: any) => {
     e.preventDefault();

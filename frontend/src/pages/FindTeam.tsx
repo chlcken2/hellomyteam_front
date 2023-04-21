@@ -1,22 +1,14 @@
 import TeamCard from "components/common/TeamCard";
-import Input from "components/Input/Input";
+import Input from "components/common/Input";
 import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
 import "../styles/components/common.scss";
-import { findTeamAPI, joinTeamAPI } from "api/team/findTeam";
-import { useRecoilValue } from "recoil";
-import UserState from "recoil/userAtom";
 import "../styles/pages/findTeam.scss";
+import useGetTeamListQuery from "quires/team/useTeamList";
 
 const FindTeam = () => {
   const [value, setValue] = useState<string>("");
-  const user = useRecoilValue(UserState);
 
-  const { data: findTeamData, refetch } = useQuery("/find/team", () =>
-    findTeamAPI(value),
-  );
-
-  const { mutate } = useMutation((teamId: number) => joinTeamAPI(user.id, teamId));
+  const { data: TeamListResponse, refetch } = useGetTeamListQuery(0, 40, "SHUFFLE");
 
   const onEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -36,8 +28,8 @@ const FindTeam = () => {
         />
       </div>
       <div className="team-card-container">
-        {findTeamData &&
-          findTeamData.map((el) => {
+        {TeamListResponse &&
+          TeamListResponse.data.content.map((el) => {
             return (
               <TeamCard
                 title={el.teamName}
@@ -45,7 +37,7 @@ const FindTeam = () => {
                 num={el.memberCount}
                 imageUrl={el.imageUrl}
                 key={el.teamId}
-                joinHandler={() => mutate(el.teamId)}
+                teamId={el.teamId}
               />
             );
           })}

@@ -1,4 +1,5 @@
 import { instance } from "config";
+import getMemberInfo from "quires/member/getMemberInfo";
 import { useQuery } from "react-query";
 import ApiResponseType from "types/ApiResponseType";
 
@@ -54,8 +55,12 @@ const useGetTeamListQuery = (
   pageSize: number,
   pageSort: "SHUFFLE" | "ASC" | "DESC",
 ) =>
-  useQuery(QUERY_KEY, () =>
-    TeamListFetcher(pageNum, pageSize, pageSort).then((data) => data.data),
+  useQuery(
+    QUERY_KEY,
+    () => TeamListFetcher(pageNum, pageSize, pageSort).then((data) => data.data),
+    {
+      enabled: !!getMemberInfo(true).data,
+    },
   );
 
 export default useGetTeamListQuery;

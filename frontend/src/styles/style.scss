@@ -151,14 +151,16 @@ p.error-message {
 }
 
 header {
+  z-index: 2;
   position: fixed;
   top: 0;
   left: 0;
   width: 110px;
   height: 100vh;
   background: #fff;
+
   ul {
-    padding: 0 16px;
+    padding: 0px 16px;
     padding-top: 40px;
     li {
       display: flex;

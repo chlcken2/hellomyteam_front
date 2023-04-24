@@ -1,10 +1,11 @@
 import DefaultAvatar from "components/common/DefaultAvatar";
 import ImageCropper from "components/common/ImageCropper";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 const Profile: FC = () => {
   const [profileImage, setProfileImage] = useState<string>(null);
   const [bannerImage, setBannerImage] = useState<string>(null);
+  const [bannerColor, setBannerColor] = useState<string>(null);
 
   const uploadProfileImage = (image: string) => {
     setProfileImage(image);
@@ -14,9 +15,72 @@ const Profile: FC = () => {
     setBannerImage(image);
   };
 
+  const getAverageColor = (): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.src = profileImage;
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+
+        if (!context) {
+          return;
+        }
+
+        const { width, height } = img;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        context.drawImage(img, 0, 0, width, height);
+
+        const imageData = context.getImageData(0, 0, width, height);
+        const rgb = getRGB(imageData.data);
+
+        resolve(rgb);
+      };
+
+      img.onerror = (err) => {
+        reject(err);
+      };
+    });
+  };
+
+  const getRGB = (imageData: Uint8ClampedArray) => {
+    let r = 0;
+    let g = 0;
+    let b = 0;
+
+    for (let i = 0; i < imageData.length; i += 4) {
+      r += imageData[i];
+      g += imageData[i + 1];
+      b += imageData[i + 2];
+    }
+
+    const pixelCount = imageData.length / 4;
+    const avgR = Math.floor(r / pixelCount);
+    const avgG = Math.floor(g / pixelCount);
+    const avgB = Math.floor(b / pixelCount);
+
+    return `rgb(${avgR}, ${avgG}, ${avgB})`;
+  };
+
+  useEffect(() => {
+    if (profileImage && !bannerImage) {
+      getAverageColor().then((color) => {
+        setBannerColor(color);
+      });
+    }
+  }, [profileImage, bannerImage]);
+
   return (
     <div className="profile-container">
-      <div className="profile-banner">
+      <div
+        className="profile-banner"
+        style={bannerColor ? { backgroundColor: bannerColor } : null}
+      >
         {bannerImage && (
           <img src={bannerImage} alt="banner" className="profile-banner-img" />
         )}

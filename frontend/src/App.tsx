@@ -72,7 +72,7 @@ const App = () => {
             <Route path="board/:id" element={<Detail />} />
             <Route path="board/:teamId/write" element={<Write />} />
             <Route path="team" element={<Team />} />
-            <Route path="profile" element={<Profile />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
           <Route path="/search" element={<FindTeam />} />
           <Route path="/alarm" element={<Alarm />} />

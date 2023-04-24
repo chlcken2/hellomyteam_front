@@ -1,14 +1,52 @@
-import axios from "axios";
-import { DEV_BASE_URL } from "constants/urls";
-import { useToken, useUser } from "hooks";
-import { useCookies } from "react-cookie";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { getCookie, getExpiredDate, setLocalStorage } from "utils/setAuthorization";
 
-import React from "react";
+let isRefreshing = false;
+let subscribers: ((token: string) => void)[] = [];
+
+const subscribeTokenRefresh = (callback: (token: string) => void) => {
+  subscribers.push(callback);
+};
+
+const onRrefreshed = (token: string) => {
+  subscribers.forEach((callback) => callback(token));
+};
+
+const getRefreshToken = async (): Promise<string | void> => {
+  try {
+    const cookie = getCookie("refresh");
+    const res = await axios.get("/api/auth/refresh", {
+      headers: {
+        Authorization: `Bearer ${cookie}`,
+      },
+    });
+
+    const { accessToken, refreshToken } = res.data.data;
+
+    isRefreshing = false;
+
+    onRrefreshed(accessToken);
+    subscribers = [];
+    setLocalStorage(accessToken);
+    document.cookie = `refresh=${refreshToken}; path=/; max-age=${getExpiredDate()}`;
+
+    return accessToken;
+  } catch (err) {
+    const {
+      response: { status },
+    } = err as AxiosError;
+    if (status === 490 || status === 498) {
+      localStorage.removeItem("token");
+    }
+    isRefreshing = false;
+    subscribers = [];
+  }
+};
 
 const createInstance = () => {
   return axios.create({
     baseURL: "http://localhost:3000",
-    timeout: 2000,
+    timeout: 9000,
     withCredentials: true,
     headers: { "Content-Type": "application/json" },
   });
@@ -16,44 +54,52 @@ const createInstance = () => {
 
 const instance = createInstance();
 
-const AxiosInterceptor = (props: Props) => {
-  const [cookie, setCookie] = useCookies(["refresh"]);
+instance.interceptors.request.use(
+  async (config) => {
+    const accessToken = JSON.parse(localStorage.getItem("token"));
 
-  instance.interceptors.request.use(
-    // token refresh
-    async (config) => {
-      const newConfig = { ...config };
-      const accessToken = JSON.parse(localStorage.getItem("access")).value;
-      const { user } = useUser();
-      if (user) {
-        if (accessToken) {
-          newConfig.headers.Authorization = `${accessToken}`;
-        } else {
-          const { refresh } = cookie.refresh;
-          const refreshInstance = createInstance();
-          await refreshInstance.post("/api/auth/refresh", { refresh }).then((data) => {
-            console.log(`hayoung${data}`);
-            const newAccess = data.data.access;
-            // const expires = new Date();
-            // expires.setMinutes(expires.getMinutes() + 25);
-            // setCookie("refresh", newAccess, { expires });
-            newConfig.headers.Authorization = `${newAccess}`;
+    if (!accessToken) {
+      config.headers.accessToken = null;
+      return config;
+    }
+    if (config.headers && accessToken) {
+      config.headers.Authorization = accessToken;
+      return config;
+    }
+    return config;
+  },
+
+  async (error: AxiosError) => {
+    return error;
+  },
+);
+
+instance.interceptors.response.use(
+  async (config) => {
+    return config;
+  },
+  async (err: AxiosError) => {
+    const { status, config: originalRequest } = err.response;
+    if (status === 401 || status === 403) {
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          subscribeTokenRefresh((token: string) => {
+            originalRequest.headers.Authorization = token;
+            resolve(axios(originalRequest));
           });
-        }
+        });
       }
-      return newConfig;
-    },
+      isRefreshing = true;
+      const accessToken = await getRefreshToken();
 
-    async (error) => {
-      return await Promise.reject(error);
-    },
-  );
+      if (typeof accessToken === "string") {
+        originalRequest.headers.Authorization = accessToken;
+        return axios(originalRequest);
+      }
+    }
 
-  return props.children;
-};
+    return Promise.reject(err);
+  },
+);
 
-interface Props {
-  children: React.ReactElement;
-}
-
-export { AxiosInterceptor, instance };
+export { instance };

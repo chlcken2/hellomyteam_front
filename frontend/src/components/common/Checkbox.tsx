@@ -6,21 +6,17 @@ interface CheckBoxType {
   error?: boolean;
   id: string;
   checkBoxText?: string;
+  isChecked: boolean;
+  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CheckBox = ({ error, id, checkBoxText }: CheckBoxType) => {
+const CheckBox = ({ error, id, checkBoxText, isChecked, setIsChecked }: CheckBoxType) => {
   const [isError, setIsError] = useState(false);
   const inputContainerClassName = isError ? "check-input error" : "check-input";
 
-  const [isCheck, setIsCheck] = useState(false);
-
   const changeCheck = (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
     const target = e.target as HTMLInputElement;
-    if (target.checked) {
-      setIsCheck(true);
-    } else {
-      setIsCheck(false);
-    }
+    setIsChecked(target.checked);
   };
   useEffect(() => {
     setIsError(error);
@@ -32,7 +28,7 @@ const CheckBox = ({ error, id, checkBoxText }: CheckBoxType) => {
         id={id}
         type="checkbox"
         onClick={(e) => changeCheck(e)}
-        checked={isCheck}
+        checked={isChecked}
         readOnly
       />
       {checkBoxText ? (

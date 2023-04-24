@@ -1,147 +1,89 @@
-import axios from "axios";
-import React, { FC, Dispatch, SetStateAction, useState, useEffect } from "react";
+import { Dispatch, SetStateAction, useState, useEffect, ChangeEvent } from "react";
 import { useCookies } from "react-cookie"; // useCookies import
 import LoginState from "recoil/atom";
-import { useRecoilState } from "recoil";
-import { AxiosInterceptor, instance } from "../../config/api";
+import { useSetRecoilState } from "recoil";
+import { setLocalStorage, getExpiredDate } from "../../utils/setAuthorization";
+import Input from "../common/Input";
+import useLoginMutation from "../../quires/certification/useLoginMutation";
 
 interface IHas {
   setHasId: Dispatch<SetStateAction<boolean>>;
   setLogin: Dispatch<SetStateAction<boolean>>;
 }
-interface IError {
-  email?: string;
-  pw1?: string;
-}
 
-const Login: FC<IHas> = ({ setHasId, setLogin }) => {
-  const [cookies, setCookie, removeCookie] = useCookies(["refresh"]);
-  const [confirmLogin, setConfirmLogin] = useRecoilState(LoginState);
-
-  const submit = (e: any) => {
-    e.preventDefault();
-
-    if (Object.keys(error).length === 0) {
-      axios
-        .post("/api/auth/login", {
-          email: text.email,
-          password: text.pw1,
-        })
-        .then((res) => {
-          const { accessToken, refreshToken } = res.data.data;
-          const now = new Date();
-          const after1week = new Date();
-          after1week.setDate(now.getDate() + 7);
-
-          setCookie("refresh", refreshToken, { path: "/", expires: after1week });
-          const item = {
-            value: accessToken,
-            expiry: new Date().getTime() + 1,
-          };
-          localStorage.setItem("access", JSON.stringify(item));
-          setConfirmLogin(true);
-        })
-        .catch((err) => {
-          alert(err.response.data.message);
-        });
-    } else {
-      alert("올바른 이메일 or 비밀번호를 입력하세요");
-    }
-  };
-
+const Login = ({ setHasId, setLogin }: IHas) => {
+  const [cookies, setCookie] = useCookies(["refresh"]);
+  const setConfirmLogin = useSetRecoilState(LoginState);
   const img = process.env.PUBLIC_URL;
-  const [name, setName] = useState(true);
   const [text, setText] = useState({
     email: "",
-    pw1: "",
-    pw2: "",
+    password: "",
   });
 
-  const [error, setError] = useState<IError>({});
-  const [disable1, setDisable1] = useState(true);
-  const [reset, setReset] = useState(false);
-  useEffect(() => {
-    const reg =
-      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-    const err: IError = {};
-    if (!reg.test(text.email)) {
-      err.email = "이메일 형식에 맞게 입력하세요.";
-    }
-    if (text.pw1.length < 5) {
-      err.pw1 = "5글자 이상 입력하세요.";
-    }
-    setError(err);
-    if (text.email || text.pw1) {
-      setReset(true);
-    } else {
-      setReset(false);
-    }
-  }, [text]);
-  useEffect(() => {
-    if (reset) {
-      setDisable1(false);
-    } else {
-      setDisable1(true);
-    }
-  }, [reset]);
+  const {
+    data: loginResponse,
+    mutate: loginMutate,
+    isError: loginError,
+  } = useLoginMutation({
+    email: text.email,
+    password: text.password,
+  });
 
   useEffect(() => {
-    instance
-      .get("/api/user/me")
-      .then((res) => {
-        if (res.data.status === "success") {
-          setConfirmLogin(true);
-        }
-      })
-      .catch((err) => console.log(err));
-  }, [reset]);
+    if (loginError) return alert("올바른 이메일 or 비밀번호를 입력하세요");
+    if (!loginResponse) return;
+
+    const { accessToken, refreshToken } = loginResponse.data.data;
+    setCookie("refresh", refreshToken, { path: "/", expires: getExpiredDate() });
+    setLocalStorage(accessToken);
+    setConfirmLogin(true);
+  }, [loginResponse, loginError]);
+
+  const loginDisabled = () => {
+    if (text.email.length > 5 && text.password.length > 5) {
+      return false;
+    }
+    return true;
+  };
   return (
-    <div className="join-wrap2">
-      <div className="go-back">
-        <button
-          onClick={() => {
-            setHasId(false);
-            setLogin(false);
-          }}
-        >
-          <img src={`${img}/common/ChevronLeftOutline.png`} alt="dd" />
-        </button>
-        <form action="" className="join-form">
-          <h1>로그인</h1>
-          <div>
-            <label htmlFor="email">이메일*</label>
-            <input
-              type="text"
-              id="email"
-              name="email"
-              value={text.email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const { name, value } = e.target;
-                setText({ ...text, [name]: value });
-              }}
-            />
-            {reset && <p className="error-message">{error.email}</p>}
-          </div>
-          <div>
-            <label htmlFor="pw1">비밀번호*</label>
-            <input
-              type="password"
-              id="pw1"
-              name="pw1"
-              value={text.pw1}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const { name, value } = e.target;
-                setText({ ...text, [name]: value });
-              }}
-            />
-            {reset && <p className="error-message">{error.pw1}</p>}
-          </div>
-
-          <button className="join-button" onClick={(e) => submit(e)} disabled={disable1}>
-            다음으로
-          </button>
-        </form>
+    <div className="join-wrap">
+      <button
+        onClick={() => {
+          setHasId(false);
+          setLogin(false);
+        }}
+      >
+        <img src={`${img}/common/ChevronLeftOutline.png`} alt="dd" />
+      </button>
+      <div className="guide-text">
+        <h1>로그인</h1>
       </div>
+      <div className="join-form">
+        <Input
+          value={text.email}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            const { value } = e.target;
+            setText({ ...text, email: value });
+          }}
+          label="이메일"
+        />
+        <Input
+          value={text.password}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            const { value } = e.target;
+            setText({ ...text, password: value });
+          }}
+          type="password"
+          label="비밀번호"
+        />
+      </div>
+      <button
+        className="next-button"
+        onClick={() => loginMutate()}
+        disabled={loginDisabled()}
+      >
+        로그인
+      </button>
     </div>
   );
 };

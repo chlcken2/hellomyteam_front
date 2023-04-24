@@ -1,309 +1,418 @@
-import axios from "axios";
-import React, { FC, Dispatch, SetStateAction, useState, useEffect } from "react";
-import FormWrap from "./FormWrap";
+import Input from "components/common/Input";
+import Select, { OptionType } from "components/common/Select";
+import useEmailCertificationQuery from "quires/certification/useEmailCertifictionQuery";
+import useEmailMatchQuery from "quires/certification/useEmailMatchQuery";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+  useRef,
+  FormEvent,
+  KeyboardEvent,
+  useCallback,
+  ChangeEvent,
+} from "react";
+import "styles/components/common.scss";
+import Checkbox from "components/common/Checkbox";
+import useSignupMutation from "quires/certification/useSignupMutation";
 
 interface IHas {
   setHasId: Dispatch<SetStateAction<boolean>>;
 }
-interface IError {
-  email?: string;
-  pw1?: string;
-  pw2?: string;
-  name?: string;
-  birth?: string;
-  purpose?: string;
-  privacyYn?: string;
-  termsOfServiceYn?: string;
+interface EmailType {
+  text: string;
+  verify: boolean;
+  certification: boolean;
 }
-interface IError2 {
-  name?: string;
-  birth?: string;
-  purpose?: string;
-  privacyYn?: string;
-  termsOfServiceYn?: string;
+
+interface CertificationType {
+  show: boolean;
+  number: string;
+  timer: number;
+  timeout: boolean;
 }
-const Join: FC<IHas> = ({ setHasId }) => {
-  const img = process.env.PUBLIC_URL;
-  const [name, setName] = useState<boolean>(true);
-  const [text, setText] = useState({
-    email: "",
-    pw1: "",
-    pw2: "",
+
+interface PrivacyType {
+  name: string;
+  birthday: string;
+}
+
+const img = process.env.PUBLIC_URL;
+const TIMER_UNIT = 300;
+const verifyEng = /[a-zA-Z]/;
+const verifyNum = /[0-9]/;
+const verifyName = /^[가-힣]{2,6}$|[a-zA-Z]{2,6}$/;
+const verifyBirthday = /([0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1,2][0-9]|3[0,1]))/;
+const SELECT_LIST = [
+  { label: "팀 관리", value: "TEAM_MANAGEMENT" },
+  { label: "팀 생성", value: "TEAM_CREATE" },
+];
+
+const Join = ({ setHasId }: IHas) => {
+  const emailRef = useRef<HTMLInputElement>(null);
+  const certificationRef = useRef<HTMLInputElement>(null);
+
+  const [email, setEmail] = useState<EmailType>({
+    text: "",
+    verify: false,
+    certification: false,
   });
-  const [text2, setText2] = useState({
+  const [emailMatch, setEmailMatch] = useState<CertificationType>({
+    show: false,
+    number: "",
+    timer: TIMER_UNIT,
+    timeout: false,
+  });
+  const [password, setPassword] = useState<string>("");
+  const [passwordCheck, setPasswordCheck] = useState<string>("");
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [privacy, setPrivacy] = useState<PrivacyType>({
     name: "",
-    birth: "",
-    purpose: "TEAM_CREATE",
-    privacyYn: "NO",
-    termsOfServiceYn: "NO",
+    birthday: "",
   });
-  const [error, setError] = useState<IError>({});
-  const [error2, setError2] = useState<IError>({});
-  const [disable1, setDisable1] = useState(true);
-  const [disable2, setDisable2] = useState(true);
-  const [isCheck, setIsCheck] = useState(false);
-  const [reset, setReset] = useState(false);
-  const [reset2, setReset2] = useState(false);
-  /* 리스트 출력 기능 */
-  const submit = (e: any) => {
-    e.preventDefault();
+  const [memberPurpose, setMemberPurpose] = useState<OptionType>({
+    label: "팀 관리",
+    value: "TEAM_MANAGEMENT",
+  });
 
-    if (Object.keys(error).length === 0) {
-      setName(false);
-      setReset(false);
-    } else {
-      console.log(error);
-    }
-  };
+  const {
+    data: EmailCertificationResponse,
+    refetch: CertificationRefetch,
+    error: EmailCertificationError,
+  } = useEmailCertificationQuery(email.text);
 
-  const submit2 = (e: any) => {
+  const {
+    data: EmailMatchResponse,
+    refetch: EmailMatchRefetch,
+    error: EmailMatchError,
+  } = useEmailMatchQuery(Number(emailMatch.number));
+
+  const { data: signupResponse, mutate: signupMutate } = useSignupMutation({
+    birthday: privacy.birthday,
+    email: email.text,
+    joinPurpose: memberPurpose.value,
+    name: privacy.name,
+    password,
+    privacyYn: isChecked && "YES",
+    termsOfServiceYn: isChecked && "YES",
+  });
+
+  const [isNext, setIsNext] = useState<boolean>(true);
+
+  const onClickNext = (e: any) => {
     e.preventDefault();
-    if (Object.keys(error2).length === 0) {
-      // console.log(`결과물`, text, text2);
-      axios
-        .post("/api/auth/signup", {
-          birthday: text2.birth,
-          email: text.email,
-          joinPurpose: "TEAM_CREATE",
-          name: text2.name,
-          password: text.pw1,
-          privacyYn: "YES",
-          termsOfServiceYn: "YES",
-        })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
-    } else {
-      console.log(error2);
-    }
-  };
-  const changeCheck = (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
-    const target = e.target as HTMLInputElement;
-    if (target.checked) {
-      setIsCheck(true);
-    } else {
-      setIsCheck(false);
-    }
+    setIsNext(false);
   };
 
   useEffect(() => {
-    const reg =
+    if (
+      emailMatch.show &&
+      (!EmailMatchResponse || EmailMatchResponse.data.status !== "success")
+    ) {
+      alert("인증번호가 일치하지 않습니다.");
+    } else {
+      setEmailMatch((prev) => ({ ...prev, show: false }));
+    }
+  }, [EmailMatchResponse]);
+
+  // timer
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (emailMatch.show) {
+      timer = setInterval(() => {
+        setEmailMatch((prev) => ({
+          ...prev,
+          timer: prev.timer - 1,
+        }));
+      }, 1000);
+      if (emailMatch.timer === 0) {
+        setEmailMatch((prev) => ({ ...prev, timeout: true }));
+        clearInterval(timer);
+      }
+      return () => clearInterval(timer);
+    }
+    return () => clearInterval(timer);
+  }, [emailMatch.timer, emailMatch.show]);
+
+  const minutes = () => {
+    const unit = String(Math.floor(emailMatch.timer / 60));
+    return `0${unit}`;
+  };
+
+  const seconds = () => {
+    const unit = String(emailMatch.timer % 60);
+    return `${unit.length < 2 ? 0 + unit : unit}`;
+  };
+
+  // verify
+  const handleEmailChagne = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const verifyEmail =
       /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-    const err: IError = {};
-    if (!reg.test(text.email)) {
-      err.email = "이메일 형식에 맞게 입력하세요.";
-    }
-    if (text.pw1.length < 5) {
-      err.pw1 = "5글자 이상 입력하세요.";
-    }
-    if (text.pw2.length < 5) {
-      err.pw2 = "5글자 이상 입력하세요";
-    }
-    setError(err);
-    if (text.email || text.pw1 || text.pw2) {
-      setReset(true);
+    if (!verifyEmail.test(email.text)) {
+      setEmail((prev) => ({ ...prev, text: e.target.value, verify: true }));
     } else {
-      setReset(false);
+      setEmail((prev) => ({ ...prev, verify: false, text: e.target.value }));
     }
-  }, [text]);
+  };
 
-  useEffect(() => {
-    console.log(isCheck);
-    if (isCheck) {
-      setText2((current) => {
-        const newText = { ...current };
-        text2.privacyYn = "YES";
-        return newText;
-      });
+  // handler
+  const handleEmailMatchOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailMatch((prev) => ({ ...prev, number: e.target.value }));
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace") {
+      return;
+    }
+    if (!/[0-9]/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handlePrivacy = (e: ChangeEvent<HTMLInputElement>, type: "name" | "birthday") => {
+    if (e.target.value.length > 6) {
+      return;
+    }
+    setPrivacy((prev) => ({ ...prev, [type]: e.target.value }));
+  };
+
+  const handleMemberPurposChange = (e: null | OptionType) => {
+    if (!e) {
+      return;
+    }
+    setMemberPurpose(e);
+  };
+
+  const handleCompleteSignup = () => {
+    signupMutate();
+  };
+
+  // API request
+  const requestVerification = () => {
+    setEmailMatch((prev) => ({
+      ...prev,
+      number: "",
+      timer: TIMER_UNIT,
+      timeout: false,
+      show: true,
+    }));
+
+    setTimeout(() => {
+      certificationRef.current.focus();
+    }, 100);
+
+    alert("이메일로 인증번호를 전송했습니다. \n인증번호를 입력해주세요.");
+    CertificationRefetch();
+    setEmail((prev) => ({ ...prev, certification: true }));
+  };
+
+  const requestMatchingNumber = (e: FormEvent<HTMLButtonElement>) => {
+    if (emailMatch.number.length < 6) {
+      alert("인증번호 6자리를 입력해주세요");
     } else {
-      setText2((current) => {
-        const newText = { ...current };
-        text2.privacyYn = "NO";
-        return newText;
-      });
+      EmailMatchRefetch();
     }
-  }, [isCheck]);
+  };
 
-  useEffect(() => {
-    console.log(text2.privacyYn);
-    const err2: IError2 = {};
-    if (text2.name.length < 3) {
-      err2.name = "이름은 세글자 이상 입력하시오";
-    }
-    if (text2.birth.length !== 8) {
-      err2.birth = "생년월일을 올바르게 입력하세요 (ex: 19900103)";
-    }
-    if (text2.privacyYn === "NO") {
-      err2.privacyYn = "서비스 이용약관 및 개인정보 처리방침에 동의하세요.";
-    }
-    setError2(err2);
-
-    if (text2.name || text2.birth === "YES" || text2.privacyYn === "YES") {
-      setReset2(true);
+  // component
+  const emailCertificationButton = useCallback(() => {
+    let ButtonLabel = null;
+    if (EmailMatchResponse && EmailMatchResponse.data.status === "success") {
+      ButtonLabel = <img src="/icons/check-blue.svg" alt="check-blue" />;
     } else {
-      setReset2(false);
+      ButtonLabel = (
+        <button onClick={requestVerification}>
+          {email.certification ? "재전송" : "인증번호 전송"}
+        </button>
+      );
     }
-  }, [text2]);
 
-  useEffect(() => {
-    if (reset) {
-      setDisable1(false);
-    } else {
-      setDisable1(true);
-    }
-  }, [reset]);
+    return <div className="email-certification-wrap">{ButtonLabel}</div>;
+  }, [EmailMatchResponse, emailMatch.show]);
 
-  useEffect(() => {
-    if (reset2) {
-      setDisable2(false);
-    } else {
-      setDisable2(true);
+  const passwordVerify = () => {
+    return (
+      <div className="verify-password">
+        <span className={`${verifyEng.test(password) && "highlight"}`}>영문포함</span>
+        <span className={`${verifyNum.test(password) && "highlight"}`}>숫자포함</span>
+        <span className={`${password.length >= 8 && "highlight"}`}>8자 이상</span>
+      </div>
+    );
+  };
+
+  // button disabled
+  const nextButtonDisabled = () => {
+    if (
+      EmailMatchResponse &&
+      EmailMatchResponse.data.status === "success" &&
+      password === passwordCheck &&
+      passwordCheck.length > 0
+    ) {
+      return false;
     }
-  }, [reset2]);
+    return true;
+  };
+
+  const submitDisabled = () => {
+    if (
+      isChecked &&
+      verifyName.test(privacy.name) &&
+      verifyBirthday.test(privacy.birthday)
+    ) {
+      return false;
+    }
+    return true;
+  };
 
   return (
-    <div>
-      {name ? (
-        <div className="join-wrap2">
-          <div className="go-back">
-            <button onClick={() => setHasId(false)}>
-              <img src={`${img}/common/ChevronLeftOutline.png`} alt="dd" />
-            </button>
-            <form action="" className="join-form">
-              <div>
-                <label htmlFor="email">이메일*</label>
-                <input
-                  type="text"
-                  id="email"
-                  name="email"
-                  value={text.email}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const { name, value } = e.target;
-                    setText({ ...text, [name]: value });
-                  }}
-                />
-                {reset && <p className="error-message">{error.email}</p>}
-              </div>
-              <div>
-                <label htmlFor="pw1">비밀번호*</label>
-                <input
-                  type="password"
-                  id="pw1"
-                  name="pw1"
-                  value={text.pw1}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const { name, value } = e.target;
-                    setText({ ...text, [name]: value });
-                  }}
-                />
-                {reset && <p className="error-message">{error.pw1}</p>}
-              </div>
-              <div>
-                <label htmlFor="pw2">비밀번호 확인*</label>
-                <input
-                  type="password"
-                  id="pw2"
-                  name="pw2"
-                  value={text.pw2}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const { name, value } = e.target;
-                    setText({ ...text, [name]: value });
-                  }}
-                />
-                {reset && <p className="error-message">{error.pw2}</p>}
-              </div>
-              <button
-                className="join-button"
-                onClick={(e) => submit(e)}
-                disabled={disable1}
-              >
-                다음으로
-              </button>
-            </form>
+    <div className="join-wrap">
+      {isNext ? (
+        <>
+          <button onClick={() => setHasId(false)}>
+            <img src={`${img}/common/ChevronLeftOutline.png`} alt="go-back" />
+          </button>
+          <div className="guide-text">
+            <h1>안녕하세요!</h1>
+            <p>
+              회원가입을 위해
+              <span>이메일과 비밀번호를 입력해주세요</span>
+            </p>
           </div>
-        </div>
+          <div className="join-form">
+            <Input
+              value={email.text}
+              onChange={handleEmailChagne}
+              inputRef={emailRef}
+              label="이메일*"
+              errorMessage={email.verify && "이메일 형식 불일치"}
+              readOnly={email.certification && true}
+            >
+              {email.text && !email.verify && emailCertificationButton()}
+            </Input>
+            {emailMatch.show && (
+              <Input
+                value={emailMatch.number}
+                onChange={handleEmailMatchOnChange}
+                inputRef={certificationRef}
+                label="인증번호*"
+                readOnly={emailMatch.timeout}
+                maxLength={6}
+                keyDownHandler={handleKeyDown}
+              >
+                <div
+                  className={
+                    emailMatch.timer === 0
+                      ? "email-certification-wrap-expiration"
+                      : "email-certification-wrap"
+                  }
+                >
+                  <span>
+                    {minutes()}:{seconds()}
+                  </span>
+                  <button onClick={requestMatchingNumber}>인증</button>
+                </div>
+              </Input>
+            )}
+            <div>
+              <Input
+                value={password}
+                setValue={setPassword}
+                label="비밀번호*"
+                type="password"
+              />
+              {password && passwordVerify()}
+            </div>
+            <div>
+              <Input
+                value={passwordCheck}
+                setValue={setPasswordCheck}
+                label="비밀번호 확인*"
+                type="password"
+                errorMessage={`${
+                  password !== passwordCheck && passwordCheck.length > 0
+                    ? "비밀번호 불일치"
+                    : ""
+                }`}
+              />
+              <div className="verify-password">
+                {password === passwordCheck && passwordCheck.length > 0 && (
+                  <span className="highlight">비밀번호 일치</span>
+                )}
+              </div>
+            </div>
+          </div>
+          <button
+            className="next-button"
+            onClick={(e) => onClickNext(e)}
+            disabled={nextButtonDisabled()}
+          >
+            다음으로
+          </button>
+        </>
       ) : (
-        <div className="join-wrap2">
-          <div className="go-back">
-            <button
-              onClick={() => {
-                setName(true);
-                setReset(true);
-              }}
-            >
-              <img src={`${img}/common/ChevronLeftOutline.png`} alt="dd" />
-            </button>
+        <>
+          <button
+            onClick={() => {
+              setIsNext(true);
+            }}
+          >
+            <img src={`${img}/common/ChevronLeftOutline.png`} alt="go-back" />
+          </button>
+          <div className="guide-text">
+            <h1>반가워요 👋</h1>
+            <p>
+              이제 몇가지 정보만 입력해주시면
+              <span>손쉽게 여러분만의 팀을 관리할 수 있어요</span>
+            </p>
           </div>
-          <h1>반가워요 👋</h1>
-          <p>
-            이제 몇가지 정보만 입력해주시면 <br /> 손쉽게 여러분만의 팀을 관리할 수 있어요
-          </p>
-          <form action="" className="join-form">
-            <div>
-              <label htmlFor="name">이름*</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={text2.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const { name, value } = e.target;
-                  setText2({ ...text2, [name]: value });
-                }}
-              />
-              {reset2 && <p className="error-message">{error2.name}</p>}
-            </div>
-            <div>
-              <label htmlFor="birth">생년월일*</label>
-              <input
-                type="text"
-                id="birth"
-                name="birth"
-                value={text2.birth}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const { name, value } = e.target;
-                  setText2({ ...text2, [name]: value });
-                }}
-              />
-              {reset2 && <p className="error-message">{error2.birth}</p>}
-            </div>
-            <div>
-              <label htmlFor="purpose">가입목적*</label>
-              <select
-                name="purpose"
-                id="purpose"
-                value={text2.purpose}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                  const { name, value } = e.target;
-                  setText2({ ...text2, [name]: value });
-                }}
-              >
-                <option value="TEAM_CREATE">팀 관리</option>
-              </select>
-              {reset2 && <p className="error-message">{error2.purpose}</p>}
-            </div>
-            <div className="check-input">
-              <input
-                type="checkbox"
-                name="check"
-                id="check"
-                onClick={(e) => changeCheck(e)}
-                checked={isCheck}
-                readOnly
-              />
-              <label htmlFor="check">
-                서비스 이용약관 및 개인정보 처리방침에 동의합니다.
-              </label>
-              {reset2 && <p className="error-message">{error2.privacyYn}</p>}
-            </div>
-            <button
-              className="join-button"
-              onClick={(e) => submit2(e)}
-              disabled={disable2}
-            >
-              가입 완료
-            </button>
-          </form>
-        </div>
+          <div className="join-form">
+            <Input
+              value={privacy.name}
+              onChange={(e) => handlePrivacy(e, "name")}
+              label="이름*"
+              maxLength={6}
+              errorMessage={`${
+                !verifyName.test(privacy.name) && privacy.name.length > 0
+                  ? "한글, 영문 5글자까지 입력 가능"
+                  : ""
+              }`}
+            />
+            <Input
+              value={privacy.birthday}
+              onChange={(e) => handlePrivacy(e, "birthday")}
+              maxLength={6}
+              label="생년월일(YYMMDD)*"
+              keyDownHandler={handleKeyDown}
+              errorMessage={`${
+                !verifyBirthday.test(privacy.birthday) && privacy.birthday.length > 0
+                  ? "생년월일 형식 불일치"
+                  : ""
+              }`}
+            />
+            <Select
+              placeholder=""
+              label="가입 목적*"
+              options={SELECT_LIST}
+              onChange={handleMemberPurposChange}
+              defaultValue={memberPurpose.value}
+            />
+          </div>
+          <div className="checkbox-wrap">
+            <Checkbox
+              id="agreement-checkbox"
+              isChecked={isChecked}
+              setIsChecked={setIsChecked}
+            />
+          </div>
+          <button
+            className="next-button"
+            disabled={submitDisabled()}
+            onClick={() => handleCompleteSignup()}
+          >
+            가입완료
+          </button>
+        </>
       )}
     </div>
   );

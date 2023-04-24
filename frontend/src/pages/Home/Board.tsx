@@ -1,7 +1,19 @@
+import React, { FC, useEffect, useState, useRef, useMemo } from "react";
+import { Link } from "react-router-dom";
 import PostItem from "components/Home/PostItem";
-import { FC } from "react";
+import getBoardList from "quires/board/getBoardList";
+import UserState from "recoil/userAtom";
+import { useRecoilValue } from "recoil";
 
 const Board: FC = () => {
+  const reg = /<[^>]*>?/g;
+  const user = useRecoilValue(UserState);
+  const { data: list, isLoading: listLoad } = getBoardList(
+    0,
+    user?.selectedTeamId,
+    "FREE_BOARD",
+  );
+
   return (
     <div>
       <section className="section-container">
@@ -33,7 +45,7 @@ const Board: FC = () => {
           </div>
         </div>
         <ul className="post-list">
-          <li>
+          {/* <li>
             <PostItem
               title="여러분은 맥북 청소할때 스피커 부분은 어떻게 청소하시나요?"
               content="액정클리너 같은걸로 닦고있는데 스피커 사이에 낀 손떼는 안지워지더라고요"
@@ -43,49 +55,21 @@ const Board: FC = () => {
               author="juhpark"
               imageURL="https://imagedelivery.net/R2WiK4wfRK3oBXTwjgzQfA/21a6cc15-e13e-4e6e-1a80-38ec12630b00/blogThumbnail"
             />
-          </li>
-          <li>
-            <PostItem
-              title="새로 프로젝트 완성했습니다~!"
-              content="깃허브 활동에 따른 티어와 랭킹을 제공해주는 서비스입니다."
-              commentCount={7}
-              likeCount={7}
-              createdAt="2022.12.12"
-              author="sikang"
-              imageURL="https://imagedelivery.net/R2WiK4wfRK3oBXTwjgzQfA/de760e86-c99d-4bc3-6fd0-2f765756b000/blogThumbnail"
-            />
-          </li>
-          <li>
-            <PostItem
-              title="새로 프로젝트 완성했습니다~!"
-              content="깃허브 활동에 따른 티어와 랭킹을 제공해주는 서비스입니다."
-              commentCount={7}
-              likeCount={7}
-              createdAt="2022.12.12"
-              author="sikang"
-              imageURL="https://imagedelivery.net/R2WiK4wfRK3oBXTwjgzQfA/7bd138f3-42d6-468d-3fca-fd218099c900/blogThumbnail"
-            />
-          </li>
-          <li>
-            <PostItem
-              title="새로 프로젝트 완성했습니다~!"
-              content="깃허브 활동에 따른 티어와 랭킹을 제공해주는 서비스입니다."
-              commentCount={7}
-              likeCount={7}
-              createdAt="2022.12.12"
-              author="sikang"
-            />
-          </li>
-          <li>
-            <PostItem
-              title="새로 프로젝트 완성했습니다~!"
-              content="깃허브 활동에 따른 티어와 랭킹을 제공해주는 서비스입니다."
-              commentCount={7}
-              likeCount={7}
-              createdAt="2022.12.12"
-              author="sikang"
-            />
-          </li>
+          </li> */}
+          {list?.data.map((el, idx) => {
+            return (
+              <Link to={`/board/${el.id}`} key={idx}>
+                <PostItem
+                  title={el.title}
+                  content={el.contents.replace(reg, "")}
+                  commentCount={el.commentCount}
+                  likeCount={el.likeCount}
+                  createdAt={el.createdDate}
+                  author={el.writer}
+                />
+              </Link>
+            );
+          })}
         </ul>
         <div className="pagination-wrapper">페이지네이션</div>
       </section>

@@ -1,19 +1,22 @@
-import Button from "components/common/button";
-import { FC, Dispatch, SetStateAction } from "react";
+import Button from "components/common/Button";
+import { Dispatch, SetStateAction } from "react";
 
 interface IHas {
   setHasId: Dispatch<SetStateAction<boolean>>;
   setLogin: Dispatch<SetStateAction<boolean>>;
 }
 
-const Preview: FC<IHas> = ({ setHasId, setLogin }) => {
+const Preview = ({ setHasId, setLogin }: IHas) => {
   const img = process.env.PUBLIC_URL;
   const handleLogin = () => {
     setHasId(false);
     setLogin(true);
   };
   return (
-    <div className="join-wrap">
+    <div className="preview-wrap">
+      <button>
+        <img src={`${img}/common/ChevronLeftOutline.png`} alt="go-back" />
+      </button>
       <h2>가입 및 로그인</h2>
       <ul className="join-menu">
         <li>

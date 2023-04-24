@@ -17,6 +17,7 @@ module.exports = {
     "plugin:import/typescript",
   ],
   rules: {
+    "no-param-reassign": 0,
     "jsx-a11y/label-has-associated-control": [
       2,
       {
@@ -40,6 +41,8 @@ module.exports = {
         mjs: "never",
       },
     ],
+    "import/namespace": "off",
+    "import/default": "off",
     "no-return-await": "off",
     "linebreak-style": 0,
     "import/prefer-default-export": 0,
@@ -58,6 +61,8 @@ module.exports = {
     "no-extra-boolean-cast": 0,
     "react/require-default-props": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "consistent-return": "off",
+    "no-plusplus": "off",
   },
   settings: {
     "import/resolver": {

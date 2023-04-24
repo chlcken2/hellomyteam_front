@@ -347,7 +347,17 @@
   object-fit: cover;
   background-color: #9795f0;
 
-  button {
+  .profile-banner-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .profile-banner-edit-button {
     position: absolute;
     top: 32px;
     right: 32px;
@@ -391,7 +401,7 @@
     }
   }
 
-  .profile-intro-img {
+  .profile-intro-img-wrapper {
     position: absolute;
     display: flex;
     align-items: center;
@@ -401,12 +411,17 @@
     left: 32px;
     top: -40px;
 
-    img {
-      border-radius: 100px;
-      border: 2px solid $white;
+    .profile-intro-img {
+      img {
+        width: 120px;
+        height: 120px;
+        border-radius: 100px;
+        border: 2px solid $white;
+        background-color: white;
+      }
     }
 
-    button {
+    .profile-intro-img-edit-button {
       position: absolute;
       background-color: $gray-300;
       width: 32px;

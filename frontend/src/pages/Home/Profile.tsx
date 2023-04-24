@@ -1,35 +1,27 @@
 import DefaultAvatar from "components/common/DefaultAvatar";
-import { FC } from "react";
+import ImageCropper from "components/common/ImageCropper";
+import { FC, useState } from "react";
 
 const Profile: FC = () => {
+  const [profileImage, setProfileImage] = useState<string>(null);
+  const [bannerImage, setBannerImage] = useState<string>(null);
+
+  const uploadProfileImage = (image: string) => {
+    setProfileImage(image);
+  };
+
+  const uploadBannerImage = (image: string) => {
+    setBannerImage(image);
+  };
+
   return (
     <div className="profile-container">
       <div className="profile-banner">
-        <button>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M10.0003 14.5833C11.042 14.5833 11.9275 14.2186 12.657 13.4892C13.3864 12.7597 13.7509 11.8744 13.7503 10.8333C13.7503 9.79167 13.3856 8.90611 12.6562 8.17667C11.9267 7.44722 11.0414 7.08278 10.0003 7.08333C8.95866 7.08333 8.0731 7.44806 7.34366 8.1775C6.61422 8.90694 6.24977 9.79222 6.25033 10.8333C6.25033 11.875 6.61505 12.7606 7.34449 13.49C8.07394 14.2194 8.95922 14.5839 10.0003 14.5833ZM10.0003 12.9167C9.41699 12.9167 8.92394 12.7153 8.52116 12.3125C8.11838 11.9097 7.91699 11.4167 7.91699 10.8333C7.91699 10.25 8.11838 9.75694 8.52116 9.35417C8.92394 8.95139 9.41699 8.75 10.0003 8.75C10.5837 8.75 11.0767 8.95139 11.4795 9.35417C11.8823 9.75694 12.0837 10.25 12.0837 10.8333C12.0837 11.4167 11.8823 11.9097 11.4795 12.3125C11.0767 12.7153 10.5837 12.9167 10.0003 12.9167ZM3.33366 17.5C2.87533 17.5 2.48283 17.3367 2.15616 17.01C1.82949 16.6833 1.66644 16.2911 1.66699 15.8333V5.83333C1.66699 5.375 1.83033 4.9825 2.15699 4.65583C2.48366 4.32917 2.87588 4.16611 3.33366 4.16667H5.95866L7.50033 2.5H12.5003L14.042 4.16667H16.667C17.1253 4.16667 17.5178 4.33 17.8445 4.65667C18.1712 4.98333 18.3342 5.37556 18.3337 5.83333V15.8333C18.3337 16.2917 18.1703 16.6842 17.8437 17.0108C17.517 17.3375 17.1248 17.5006 16.667 17.5H3.33366ZM16.667 15.8333V5.83333H13.292L11.7712 4.16667H8.22949L6.70866 5.83333H3.33366V15.8333H16.667Z"
-              fill="white"
-            />
-          </svg>
-        </button>
-      </div>
-      <div className="profile-info-container">
-        <div className="profile-intro-img">
-          <DefaultAvatar
-            width={120}
-            height={120}
-            alt="avatar"
-            type="USER"
-            uniqueNum={0}
-          />
-          <button>
+        {bannerImage && (
+          <img src={bannerImage} alt="banner" className="profile-banner-img" />
+        )}
+        <ImageCropper aspectRatio={4.0625 / 1} onCrop={uploadBannerImage}>
+          <button className="profile-banner-edit-button">
             <svg
               width="20"
               height="20"
@@ -43,6 +35,39 @@ const Profile: FC = () => {
               />
             </svg>
           </button>
+        </ImageCropper>
+      </div>
+      <div className="profile-info-container">
+        <div className="profile-intro-img-wrapper">
+          <div className="profile-intro-img">
+            {profileImage ? (
+              <img src={profileImage} alt="profile" />
+            ) : (
+              <DefaultAvatar
+                width={120}
+                height={120}
+                alt="avatar"
+                type="USER"
+                uniqueNum={0}
+              />
+            )}
+          </div>
+          <ImageCropper aspectRatio={1 / 1} onCrop={uploadProfileImage}>
+            <button className="profile-intro-img-edit-button">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.0003 14.5833C11.042 14.5833 11.9275 14.2186 12.657 13.4892C13.3864 12.7597 13.7509 11.8744 13.7503 10.8333C13.7503 9.79167 13.3856 8.90611 12.6562 8.17667C11.9267 7.44722 11.0414 7.08278 10.0003 7.08333C8.95866 7.08333 8.0731 7.44806 7.34366 8.1775C6.61422 8.90694 6.24977 9.79222 6.25033 10.8333C6.25033 11.875 6.61505 12.7606 7.34449 13.49C8.07394 14.2194 8.95922 14.5839 10.0003 14.5833ZM10.0003 12.9167C9.41699 12.9167 8.92394 12.7153 8.52116 12.3125C8.11838 11.9097 7.91699 11.4167 7.91699 10.8333C7.91699 10.25 8.11838 9.75694 8.52116 9.35417C8.92394 8.95139 9.41699 8.75 10.0003 8.75C10.5837 8.75 11.0767 8.95139 11.4795 9.35417C11.8823 9.75694 12.0837 10.25 12.0837 10.8333C12.0837 11.4167 11.8823 11.9097 11.4795 12.3125C11.0767 12.7153 10.5837 12.9167 10.0003 12.9167ZM3.33366 17.5C2.87533 17.5 2.48283 17.3367 2.15616 17.01C1.82949 16.6833 1.66644 16.2911 1.66699 15.8333V5.83333C1.66699 5.375 1.83033 4.9825 2.15699 4.65583C2.48366 4.32917 2.87588 4.16611 3.33366 4.16667H5.95866L7.50033 2.5H12.5003L14.042 4.16667H16.667C17.1253 4.16667 17.5178 4.33 17.8445 4.65667C18.1712 4.98333 18.3342 5.37556 18.3337 5.83333V15.8333C18.3337 16.2917 18.1703 16.6842 17.8437 17.0108C17.517 17.3375 17.1248 17.5006 16.667 17.5H3.33366ZM16.667 15.8333V5.83333H13.292L11.7712 4.16667H8.22949L6.70866 5.83333H3.33366V15.8333H16.667Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+          </ImageCropper>
         </div>
         <button className="profile-edit-button">
           <svg

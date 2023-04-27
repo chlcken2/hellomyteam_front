@@ -8,6 +8,12 @@ import UserState from "../recoil/userAtom";
 import "styles/pages/home.scss";
 import "styles/layouts/main.scss";
 
+interface titleType {
+  imageUrl: string;
+  teamId: number;
+  teamName: string;
+}
+
 const BREAK_POINT = 1000;
 const MENU = [
   { path: "", name: "둘러보기" },
@@ -18,26 +24,36 @@ const MENU = [
 ];
 
 const Main = () => {
+  const [isClicked, setIsClicked] = useState(0);
+
+  const handleClick = (idx: number) => {
+    setIsClicked(0);
+  };
   const path = process.env.PUBLIC_URL;
   const navi = useNavigate();
   const { pathname } = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
-
   const [useUser, setUseUser] = useRecoilState(UserState);
+  // userId 리턴해야하므로 리코일값을 가져와야한다 (4/27)
+  const [userId, setUserId] = useState(useUser?.id);
+  const [flag, setFlag] = useState(false);
+
   const [showTeamsModal, setShowTeamsModal] = useState(false);
+  // User가 가입한 team list fetch (param - memberId)
+  const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(userId);
 
   // 모바일 탭바의 menuItem 배경 인터렉션관련 스타일 state
   const [menuItemBackgroundStyle, setMenuItemBackgroundStyle] = useState({
     width: 0,
     offsetLeft: 0,
   });
-  const [userId, setUserId] = useState(0);
-  const [currentTeamTitle, setCurrentTeamTitle] = useState("헬로마이팀");
-  const [currentTeamId, setCurrentTeamId] = useState(0);
-  const [logo, setLogo] = useState(`${path}/common/logo.png`);
 
-  // User가 가입한 team list fetch
-  const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(userId);
+  const [currentTeamTitle, setCurrentTeamTitle] = useState(
+    JSON.parse(localStorage.getItem("arrayData"))?.[0].teamName || "헬로마이팀",
+  );
+  const [currentTeamId, setCurrentTeamId] = useState(0);
+
+  const [localTitle, setLocalTitle] = useState<titleType[]>(team?.data);
 
   // 토글보이기
   const handleTeamsModal = () => {
@@ -51,15 +67,26 @@ const Main = () => {
   };
   // 타이틀바꾸기
   const handleMember = (name: string, id: number, imageUrl: string) => {
-    setLogo(imageUrl);
+    setFlag(true);
     setCurrentTeamTitle(name);
     setCurrentTeamId(id);
     setShowTeamsModal(false);
 
-    // 2023-03-29: teamMemberInfoId Atom에 추가함
+    // 2023-04-02 localStorage에 최근 정보 저장
+    const arrayData = JSON.parse(localStorage.getItem("arrayData")) || [];
+    const filtered = arrayData.filter((el: titleType) => el.teamName !== name);
+    filtered.unshift({ teamName: name, imageUrl, teamId: id });
+    localStorage.setItem("arrayData", JSON.stringify(filtered));
+
+    setLocalTitle(filtered);
+    // 2023-04-02: teamMemberInfoId Atom에 추가함
     if (isGetTeamInfoLoading) return alert("로딩중입니다");
-    teamMemberId(id, useUser.id).then((res) => {
-      setUseUser({ ...useUser, teamMemberInfoId: res.data.data, selectedTeamId: id });
+    teamMemberId(id, filtered[0].teamId).then((res) => {
+      setUseUser({
+        ...useUser,
+        teamMemberInfoId: res.data.data,
+        selectedTeamId: filtered[0].teamId,
+      });
     });
   };
 
@@ -69,13 +96,6 @@ const Main = () => {
       setUserId(useUser.id);
     }
   }, [useUser]);
-
-  // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
-  useEffect(() => {
-    if (team?.data) {
-      setUseUser({ ...useUser, teamInfo: [...team.data] });
-    }
-  }, [team]);
 
   const menuClassName = (menuPath: string) => {
     if (menuPath === "" && pathname === "/") return "active";
@@ -122,32 +142,89 @@ const Main = () => {
     };
   }, []);
 
-  console.log(team);
+  useEffect(() => {
+    if (isGetTeamInfoLoading) return;
+
+    if (team.data) {
+      setFlag(true);
+
+      if (!localStorage.getItem("arrayData")) {
+        localStorage.setItem("arrayData", JSON.stringify(team.data));
+        setFlag(false);
+      }
+
+      // 로컬스토리지에서 배열 데이터 가져오기
+      const arrayData = JSON.parse(localStorage.getItem("arrayData"));
+
+      setCurrentTeamId(arrayData?.[0].teamId);
+      setLocalTitle(arrayData);
+      setCurrentTeamTitle(arrayData?.[0].teamName);
+
+      // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
+
+      setUseUser({
+        ...useUser,
+        teamInfo: [...team.data],
+        selectedTeamId: localTitle?.[0].teamId,
+      });
+
+      if (!flag) return;
+      team.data.forEach((el, idx) => {
+        // 가져온 배열에 새로운 데이터 추가 또는 기존 데이터 수정
+        arrayData[idx] = {
+          teamName: el.teamName,
+          imageUrl: el.imageUrl,
+          teamId: el.teamId,
+        };
+
+        // 수정된 배열 다시 로컬스토리지에 저장
+        localStorage.setItem("arrayData", JSON.stringify(arrayData));
+      });
+    }
+  }, [team]);
+
   return (
     <div className="main-wrap">
       <div className="main-buttons">
         <h1 className="main-title">
           <button onClick={handleTeamsModal}>
             <span>
-              <img src={logo} alt="로고" />
+              <img
+                src={localTitle?.[0].imageUrl || `${path}/common/logo.png`}
+                alt="로고"
+              />
             </span>
             <p>{currentTeamTitle}</p>
           </button>
           {showTeamsModal && (
-            <div className="main-teams">
-              <ul>
-                {team?.data.map((el, idx) => {
-                  return (
-                    <li key={idx}>
-                      <button
-                        onClick={() => handleMember(el.teamName, el.teamId, el?.imageUrl)}
+            <div className="main-teams__wrap">
+              <div className="main-teams">
+                <button className="close-teams" onClick={() => setShowTeamsModal(false)}>
+                  <img src={`${path}/common/close.png`} alt="close" />
+                </button>
+                <ul>
+                  <li className="mo-title">
+                    <h3>나의 팀 선택</h3>
+                  </li>
+                  {localTitle?.map((el: any, idx: number) => {
+                    return (
+                      <li
+                        key={idx}
+                        onKeyDown={() =>
+                          handleMember(el.teamName, el.teamId, el.imageUrl)
+                        }
+                        onClick={() => {
+                          handleMember(el.teamName, el.teamId, el.imageUrl);
+                          handleClick(idx);
+                        }}
+                        className={isClicked === idx ? "on" : ""}
                       >
-                        {el.teamName}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
+                        <button>{el.teamName}</button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
           )}
         </h1>

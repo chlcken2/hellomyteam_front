@@ -63,6 +63,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     "consistent-return": "off",
     "no-plusplus": "off",
+    "array-callback-return": "off",
   },
   settings: {
     "import/resolver": {

@@ -6,6 +6,8 @@ import getBoardDetail from "quires/board/getBoardDetail";
 import Input from "components/common/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";
 import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
+import UserState from "recoil/userAtom";
+import { useRecoilValue } from "recoil";
 
 // 댓글 테스트를 위한 teamMemberInfoId, 로그인한 계정의 teamMemberrInfoId입력
 const TEMP_TEAM_MEMBER_INFO_ID = 148;
@@ -13,10 +15,10 @@ const TEMP_TEAM_MEMBER_INFO_ID = 148;
 const Detail: FC = () => {
   const param = useParams();
   const img = process.env.PUBLIC_URL;
-
+  const user = useRecoilValue(UserState);
   /* Board Part Start */
 
-  const { data: detail } = getBoardDetail(Number(param.id));
+  const { data: detail } = getBoardDetail(user.selectedTeamId, Number(param.id));
   const [info, setInfo] = useState({
     name: "test",
     title: "test",

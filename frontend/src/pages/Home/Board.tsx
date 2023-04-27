@@ -2,36 +2,40 @@ import React, { FC, useEffect, useState, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import PostItem from "components/Home/PostItem";
 import getBoardList from "quires/board/getBoardList";
+import Pagination from "components/common/Pagination";
 import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
 
-interface contentType {
-  content: {
-    boardCategory: string;
-    boardStatus: string;
-    commentCount: number;
-    contents: string;
-    createdDate: string;
-    id: number;
-    likeCount: number;
-    modifiedDate: string;
-    title: string;
-    viewCount: number;
-    writer: string;
-  };
-}
 const Board: FC = () => {
   const reg = /<[^>]*>?/g;
   const user = useRecoilValue(UserState);
+
+  const [item, setItem] = useState(0);
+  const [totalItem, setTotalItem] = useState(0);
+
   // (4/27) selectedTeamId가 없을 경우 localStorage에서 가져오게
-  const { data: list, isLoading: listLoad } = getBoardList(
-    0,
+  const {
+    data: list,
+    isLoading: listLoad,
+    refetch: listRefetch,
+  } = getBoardList(
+    item - 1,
     user?.selectedTeamId || JSON.parse(localStorage.getItem("arrayData"))[0].teamId,
     "FREE_BOARD",
   );
 
   console.log(list);
   console.log(user);
+  console.log(item);
+
+  useEffect(() => {
+    if (listLoad) return;
+    setTotalItem(list?.data.totalElements);
+  }, [list]);
+
+  useEffect(() => {
+    console.log(listRefetch());
+  }, [item]);
   return (
     <div>
       <section className="section-container">
@@ -92,7 +96,7 @@ const Board: FC = () => {
               );
             })}
         </ul>
-        <div className="pagination-wrapper">페이지네이션</div>
+        <Pagination setItem={setItem} item={item} totalItem={totalItem} />
       </section>
     </div>
   );

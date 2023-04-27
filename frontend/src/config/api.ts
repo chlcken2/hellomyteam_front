@@ -46,7 +46,7 @@ const getRefreshToken = async (): Promise<string | void> => {
 const createInstance = () => {
   return axios.create({
     baseURL: "http://localhost:3000",
-    timeout: 2000,
+    timeout: 9000,
     withCredentials: true,
     headers: { "Content-Type": "application/json" },
   });
@@ -56,7 +56,7 @@ const instance = createInstance();
 
 instance.interceptors.request.use(
   async (config) => {
-    const accessToken = JSON.parse(localStorage.getItem("token")).value;
+    const accessToken = JSON.parse(localStorage.getItem("token"));
 
     if (!accessToken) {
       config.headers.accessToken = null;

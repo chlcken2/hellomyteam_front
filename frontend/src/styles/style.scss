@@ -1,18 +1,25 @@
 @import "./abstracts/variables.scss";
 
-.join-wrap {
-  text-align: center;
+.preview-wrap {
+  text-align: left;
+  > button {
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
   h2 {
     font-size: 22px;
+    text-align: center;
   }
   .join-menu {
     display: flex;
-    gap: 30px;
+    gap: 15px;
     flex-wrap: wrap;
-    padding: 10px;
+    padding-top: 40px;
     li {
+      width: 167px;
+      height: 168px;
       display: flex;
-      padding: 20px;
       justify-content: center;
       align-items: center;
       flex-direction: column;
@@ -34,11 +41,11 @@
     }
   }
   .join-button {
+    display: flex;
+    padding-top: 173px;
     :nth-child(1) {
       margin-right: 5px;
     }
-    display: flex;
-    padding-top: 22px;
     .g-login {
       width: 62px;
       border-radius: 8px;
@@ -46,78 +53,73 @@
   }
 }
 
-.go-back {
+.join-wrap {
+  padding: 2px;
+  text-align: left;
+
   > button {
     background: transparent;
     border: none;
     padding: 0;
-    margin-bottom: 30px;
+    margin-bottom: 33px;
   }
-}
-.join-wrap2 {
-  padding: 2px;
-  text-align: left;
-  h1 {
-    font-size: 22px;
-    padding-bottom: 12px;
-  }
-  p {
+  .guide-text {
+    padding-bottom: 56px;
     font-size: 14px;
     line-height: 22px;
-    color: #7a7a7a;
-    padding-bottom: 30px;
-  }
-  label {
-    display: block;
-    text-align: left;
-    color: #7a7a7a;
-    font-size: 14px;
-    padding: 9px 0;
-  }
-  form {
-    input[type="text"],
-    input[type="password"],
-    select,
-    button {
-      border: 1px solid #e6e6e6;
-      border-radius: 5px;
-      height: 38px;
-      width: 100%;
+    > h1 {
+      margin-bottom: 8px;
     }
-    button {
-      background-color: #5e81ff;
-      color: #fff;
-      height: 48px;
-      border-radius: 8px;
-      &:disabled {
-        opacity: 0.5;
+    > p {
+      color: $gray-400;
+      > span {
+        display: block;
       }
     }
   }
-  #check {
-    display: inline-block;
-  }
-  #check + label {
-    display: inline-block;
-  }
-  .check-input {
-    // padding: 30px 0;
-    text-align: left;
-    input {
-      width: 20px;
-      height: 20px;
-      border: 2px solid lightgray;
+
+  .join-form {
+    > div {
+      margin-bottom: 24px;
     }
-    label {
-      vertical-align: bottom;
+    .verify-password {
+      margin-top: 8px;
+      .highlight {
+        color: $main-blue-100;
+      }
+      > span {
+        font-size: 12px;
+        color: $gray-300;
+        margin-right: 12px;
+      }
     }
+  }
+
+  .checkbox-wrap {
+    position: absolute;
+    bottom: 90px;
+  }
+
+  .next-button {
+    position: absolute;
+    bottom: 20px;
+    width: 346px;
+    height: 44px;
+    border-radius: 8px;
+    background: $main-blue-100;
+    color: $white;
+    margin-bottom: 0px !important;
+  }
+
+  button:disabled,
+  button[disabled] {
+    cursor: auto;
+    background: $main-blue-50;
   }
 }
-
-.join-form {
-  > div {
-    margin-bottom: 15px;
-  }
+h1 {
+  font-size: 22px;
+  padding-bottom: 12px;
 }
 
 p.error-message {
@@ -141,8 +143,9 @@ p.error-message {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #fff;
-    width: 400px;
-    padding: 24px;
+    width: 390px;
+    height: 700px;
+    padding: 20px;
     border-radius: 16px;
   }
 }

@@ -1,12 +1,12 @@
 import Label from "components/common/Label";
-import { memo, useEffect, useState } from "react";
+import { LegacyRef, memo, useEffect, useState } from "react";
 import "styles/components/common.scss";
 
 interface PropsType {
   label?: string;
   isRequierd?: boolean;
   value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
+  setValue?: React.Dispatch<React.SetStateAction<string>>;
   errorMessage?: string;
   type?: React.HTMLInputTypeAttribute;
   id?: string;
@@ -14,6 +14,9 @@ interface PropsType {
   placeholder?: string;
   keyDownHandler?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   children?: React.ReactNode;
+  inputRef?: LegacyRef<HTMLInputElement>;
+  readOnly?: boolean;
+  maxLength?: number;
 }
 
 const Input = ({
@@ -27,11 +30,15 @@ const Input = ({
   onChange,
   placeholder,
   keyDownHandler,
+  inputRef,
+  readOnly,
+  maxLength,
   children,
 }: PropsType) => {
   const [isViewPassword, setIsViewPassword] = useState(false);
   const [isError, setIsError] = useState(false);
   const inputContainerClassName = isError ? "input-container error" : "input-container";
+  const inputWrapperClassName = readOnly ? "input-wrapper read-only" : "input-wrapper";
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
@@ -44,11 +51,14 @@ const Input = ({
   return (
     <div className={inputContainerClassName}>
       <Label id={id} isError={isError} isRequierd={isRequierd} label={label} />
-      <div className="input-wrapper">
+      <div className={inputWrapperClassName}>
         <input
           id={id}
+          readOnly={readOnly}
           type={isViewPassword ? "text" : type}
           value={value}
+          maxLength={maxLength}
+          ref={inputRef}
           onChange={onChange || handleChange}
           onKeyDown={keyDownHandler}
           placeholder={placeholder}

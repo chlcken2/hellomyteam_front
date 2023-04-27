@@ -1,10 +1,6 @@
 export const setLocalStorage = (accessToken: string) => {
   localStorage.removeItem("token");
-  const item = {
-    value: accessToken,
-    expiry: new Date().getTime() + 1,
-  };
-  localStorage.setItem("token", JSON.stringify(item));
+  localStorage.setItem("token", JSON.stringify(accessToken));
 };
 
 export const getExpiredDate = () => {

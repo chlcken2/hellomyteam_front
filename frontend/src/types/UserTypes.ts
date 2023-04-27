@@ -36,7 +36,11 @@ export interface boardDetailTypes {
   likeCount: number;
 }
 
-export interface boardListTypes {
+export type boardListTypes = {
+  content: boardArray[];
+};
+
+interface boardArray {
   boardCategory: string;
   boardStatus: string;
   commentCount: number;
@@ -49,7 +53,6 @@ export interface boardListTypes {
   viewCount: number;
   writer: string;
 }
-
 /**
  * write comment
  */

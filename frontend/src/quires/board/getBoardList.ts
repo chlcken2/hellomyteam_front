@@ -7,8 +7,8 @@ export const QUERY_KEY = "/board/boardId";
 
 const fetcher = (num: number, teamId: number, category: string) =>
   instance
-    .get<ApiResponseType<boardListTypes[]>>(
-      `/api/team/${teamId}/boards?category=${category}&pageNum=${num}&teamId=${teamId}
+    .get<ApiResponseType<boardListTypes>>(
+      `/api/teams/${teamId}/boards?category=${category}&pageNum=${num}&pageSize=10&sortType=created_date
     `,
     )
     .then(({ data }) => data);

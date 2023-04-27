@@ -92,14 +92,6 @@ const Main = () => {
     }
   }, [useUser]);
 
-  // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
-  useEffect(() => {
-    if (isGetTeamInfoLoading) return;
-    if (team?.data) {
-      setUseUser({ ...useUser, teamInfo: [...team.data] });
-    }
-  }, [team]);
-
   const menuClassName = (menuPath: string) => {
     if (menuPath === "" && pathname === "/") return "active";
     if (menuPath !== "" && pathname.indexOf(menuPath) !== -1) return "active";
@@ -147,8 +139,10 @@ const Main = () => {
 
   useEffect(() => {
     if (isGetTeamInfoLoading) return;
+
     if (team.data) {
       setFlag(true);
+
       if (!localStorage.getItem("arrayData")) {
         localStorage.setItem("arrayData", JSON.stringify(team.data));
         setFlag(false);
@@ -160,6 +154,15 @@ const Main = () => {
       setCurrentTeamId(arrayData?.[0].teamId);
       setLocalTitle(arrayData);
       setCurrentTeamTitle(arrayData?.[0].teamName);
+
+      // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
+
+      setUseUser({
+        ...useUser,
+        teamInfo: [...team.data],
+        selectedTeamId: localTitle?.[0].teamId,
+      });
+
       if (!flag) return;
       team.data.forEach((el, idx) => {
         // 가져온 배열에 새로운 데이터 추가 또는 기존 데이터 수정

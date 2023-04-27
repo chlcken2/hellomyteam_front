@@ -5,12 +5,28 @@ import getBoardList from "quires/board/getBoardList";
 import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
 
+interface contentType {
+  content: {
+    boardCategory: string;
+    boardStatus: string;
+    commentCount: number;
+    contents: string;
+    createdDate: string;
+    id: number;
+    likeCount: number;
+    modifiedDate: string;
+    title: string;
+    viewCount: number;
+    writer: string;
+  };
+}
 const Board: FC = () => {
   const reg = /<[^>]*>?/g;
   const user = useRecoilValue(UserState);
+  // (4/27) selectedTeamId가 없을 경우 localStorage에서 가져오게
   const { data: list, isLoading: listLoad } = getBoardList(
     0,
-    user?.selectedTeamId,
+    user?.selectedTeamId || JSON.parse(localStorage.getItem("arrayData"))[0].teamId,
     "FREE_BOARD",
   );
 
@@ -59,7 +75,7 @@ const Board: FC = () => {
             />
           </li> */}
           {!listLoad &&
-            list?.data.map((el, idx) => {
+            list?.data.content.map((el: any, idx: number) => {
               return (
                 <Link to={`/board/${el.id}`} key={idx}>
                   <PostItem

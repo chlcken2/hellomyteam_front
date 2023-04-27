@@ -24,6 +24,11 @@ const MENU = [
 ];
 
 const Main = () => {
+  const [isClicked, setIsClicked] = useState(0);
+
+  const handleClick = (idx: number) => {
+    setIsClicked(0);
+  };
   const path = process.env.PUBLIC_URL;
   const navi = useNavigate();
   const { pathname } = useLocation();
@@ -192,20 +197,34 @@ const Main = () => {
             <p>{currentTeamTitle}</p>
           </button>
           {showTeamsModal && (
-            <div className="main-teams">
-              <ul>
-                {localTitle?.map((el: any, idx: number) => {
-                  return (
-                    <li
-                      key={idx}
-                      onKeyDown={() => handleMember(el.teamName, el.teamId, el.imageUrl)}
-                      onClick={() => handleMember(el.teamName, el.teamId, el.imageUrl)}
-                    >
-                      <button>{el.teamName}</button>
-                    </li>
-                  );
-                })}
-              </ul>
+            <div className="main-teams__wrap">
+              <div className="main-teams">
+                <button className="close-teams" onClick={() => setShowTeamsModal(false)}>
+                  <img src={`${path}/common/close.png`} alt="close" />
+                </button>
+                <ul>
+                  <li className="mo-title">
+                    <h3>나의 팀 선택</h3>
+                  </li>
+                  {localTitle?.map((el: any, idx: number) => {
+                    return (
+                      <li
+                        key={idx}
+                        onKeyDown={() =>
+                          handleMember(el.teamName, el.teamId, el.imageUrl)
+                        }
+                        onClick={() => {
+                          handleMember(el.teamName, el.teamId, el.imageUrl);
+                          handleClick(idx);
+                        }}
+                        className={isClicked === idx ? "on" : ""}
+                      >
+                        <button>{el.teamName}</button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
           )}
         </h1>

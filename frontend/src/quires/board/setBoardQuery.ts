@@ -12,6 +12,7 @@ type boardWriteType = {
   contents: string;
   teamMemberInfoId: number;
   title: string;
+  teamId: number;
 };
 
 const fetcher = ({
@@ -20,9 +21,10 @@ const fetcher = ({
   contents,
   teamMemberInfoId,
   title,
+  teamId,
 }: boardWriteType) =>
   instance
-    .post<ApiResponseType<boardDetailTypes>>("/api/board", {
+    .post<ApiResponseType<boardDetailTypes>>(`/api/teams/${teamId}/board`, {
       boardCategory,
       boardStatus,
       contents,

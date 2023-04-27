@@ -10,7 +10,7 @@ const Board: FC = () => {
   const reg = /<[^>]*>?/g;
   const user = useRecoilValue(UserState);
 
-  const [item, setItem] = useState(0);
+  const [item, setItem] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
 
   // (4/27) selectedTeamId가 없을 경우 localStorage에서 가져오게
@@ -24,17 +24,13 @@ const Board: FC = () => {
     "FREE_BOARD",
   );
 
-  console.log(list);
-  console.log(user);
-  console.log(item);
-
   useEffect(() => {
     if (listLoad) return;
     setTotalItem(list?.data.totalElements);
   }, [list]);
 
   useEffect(() => {
-    console.log(listRefetch());
+    listRefetch();
   }, [item]);
   return (
     <div>

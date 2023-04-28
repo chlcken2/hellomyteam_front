@@ -2,6 +2,8 @@ import DefaultAvatar from "components/common/DefaultAvatar";
 import ImageCropper from "components/common/ImageCropper";
 import { FC, useEffect, useState } from "react";
 
+import "styles/pages/profile.scss";
+
 const Profile: FC = () => {
   const [profileImage, setProfileImage] = useState<string>(null);
   const [bannerImage, setBannerImage] = useState<string>(null);

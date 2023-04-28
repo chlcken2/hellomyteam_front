@@ -13,7 +13,8 @@ import Team from "pages/Home/Team";
 import CreateTeam from "pages/Account/CreateTeam";
 import Detail from "pages/Home/Detail";
 import Write from "pages/Home/Write";
-import Profile from "pages/Home/Profile";
+import Profile from "pages/Home/Profile/Profile";
+import EditProfile from "pages/Home/Profile/EditProfile";
 import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 import Alarm from "pages/Alarm/Alarm";
@@ -74,6 +75,7 @@ const App = () => {
             <Route path="team" element={<Team />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
+          <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/search" element={<FindTeam />} />
           <Route path="/alarm" element={<Alarm />} />
           <Route path="/create" element={<CreateTeam />} />

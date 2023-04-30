@@ -10,7 +10,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftjsToHtml from "draftjs-to-html";
 import { useRecoilValue } from "recoil";
 import UserState from "recoil/userAtom";
-import { teamMemberId } from "quires/team/getTeamId";
+import { teamMemberId } from "quires/team/getTeamMemberId";
 import { setBoardWriteMutation } from "quires/board/setBoardQuery";
 
 const Write: FC = () => {

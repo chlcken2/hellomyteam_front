@@ -8,6 +8,7 @@ import useGetCommentsQuery from "quires/comment/useCommentQuery";
 import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
 import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
+import { teamMemberId } from "quires/team/getTeamMemberId";
 
 // 댓글 테스트를 위한 teamMemberInfoId, 로그인한 계정의 teamMemberrInfoId입력
 const TEMP_TEAM_MEMBER_INFO_ID = 148;
@@ -25,6 +26,12 @@ const Detail: FC = () => {
     contents: "test",
   });
 
+  const handleLikes = () => {
+    teamMemberId(user.selectedTeamId, user.id).then((res) => {
+      console.log(res);
+    });
+  };
+
   useEffect(() => {
     if (detail) {
       console.log(detail.data);
@@ -35,6 +42,8 @@ const Detail: FC = () => {
       });
     }
   }, [detail]);
+
+  console.log(user);
 
   /* Board Part End */
 
@@ -126,7 +135,7 @@ const Detail: FC = () => {
           </div>
           <div className="board-detail">
             <p dangerouslySetInnerHTML={{ __html: info.contents }} />
-            <Button text="좋아요" handler={() => console.log("test")} />
+            <Button text="좋아요" handler={handleLikes} />
           </div>
         </div>
       </div>

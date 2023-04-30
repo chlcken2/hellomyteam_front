@@ -5,8 +5,10 @@ interface pageProps {
   setItem: Dispatch<SetStateAction<number>>;
   item: number;
   totalItem: number;
+  totalPage: number;
 }
-const Pagination = ({ setItem, item, totalItem }: pageProps) => {
+
+const Pagination = ({ setItem, item, totalItem, totalPage }: pageProps) => {
   const path = process.env.PUBLIC_URL;
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
@@ -17,30 +19,33 @@ const Pagination = ({ setItem, item, totalItem }: pageProps) => {
   const handleClickPrevPage = () => {
     setPage(page - 1);
     setItem(page - 1);
-    if (page % 4 === 1) {
-      setNum(num - 4);
+    setCount(page - 1);
+    if (page % 3 === 1) {
+      setNum(num - 3);
     }
   };
 
   const handleClickNextPage = () => {
     setPage(page + 1);
     setItem(page + 1);
-    if (page >= 4 && page % 4 === 0 && page !== Math.ceil(totalItem / perPage)) {
-      setNum(num + 4);
+    setCount(page + 1);
+    if (page >= 3 && page % 3 === 0 && page !== Math.ceil(totalItem / perPage)) {
+      setNum(num + 3);
     }
   };
 
   useEffect(() => {
     if (page === Math.ceil(totalItem / perPage) + 1) {
+      setItem(page);
       return;
     }
-    if (page % 4 === 1) {
+    if (page % 3 === 1) {
       setNum(page);
+      setItem(page);
     }
-    setItem(page);
   }, [page]);
 
-  console.log(page, num, count, Math.ceil(totalItem / perPage) + 1);
+  console.log(count, page);
 
   return (
     <div className="paging">
@@ -53,25 +58,36 @@ const Pagination = ({ setItem, item, totalItem }: pageProps) => {
         </span>
       </button>
       {/* Array.from({length:4}, (_,idx))에서 수정 - 4/27 */}
-      {[0, 1, 2, 3].map((_, index) => {
-        if (index + num !== Math.ceil(totalItem / perPage) + 1) {
-          return (
-            <button
-              key={index}
-              disabled={page - (num - 1) === index + 1}
-              className={clicked === index ? "on" : ""}
-              onClick={() => {
-                setCount(index + 1);
-                setPage(index + num);
-              }}
-            >
-              {index + num}
-            </button>
-          );
-        }
-      })}
+      {Array(totalPage > 1 ? 3 : 1)
+        .fill(0)
+        .map((_, index) => {
+          if (index + num < totalPage) {
+            return (
+              <button
+                key={index}
+                disabled={page - (num - 1) === index + 1}
+                className={clicked === index ? "on" : ""}
+                onClick={() => {
+                  // setCount(index + 1);
+                  setPage(index + num);
+                }}
+              >
+                {index + num}
+              </button>
+            );
+          }
+        })}
       {Math.ceil(totalItem / perPage) > 5 && <span className="period">...</span>}
-      <button>{Math.ceil(totalItem / perPage) + 1}</button>
+      {Math.ceil(totalItem / perPage) > 5 && (
+        <button
+          disabled={page === totalPage}
+          onClick={() => {
+            setPage(totalPage);
+          }}
+        >
+          {totalPage}
+        </button>
+      )}
       <button
         className="arrow"
         disabled={page === Math.ceil(totalItem / perPage) + 1}

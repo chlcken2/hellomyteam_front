@@ -35,6 +35,19 @@ const EditProfileEtcInfoCard = ({
       <div className="card-content">
         <div className="edit-content-wrapper">
           <div className="label">컨디션</div>
+          <div className="content">
+            <div className="input">
+              <Input
+                type="number"
+                id="condition"
+                value={profileInfo.condition}
+                onChange={handleProfileInfo}
+                max={100}
+                min={0}
+                placeholder="0~100 사이 숫자"
+              />
+            </div>
+          </div>
         </div>
         <div className="edit-content-wrapper">
           <div className="label">주량</div>

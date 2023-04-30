@@ -5,9 +5,9 @@ export interface ProfileInfoType {
   local: string;
   phone: string;
   birth: string;
-  backNum: number;
+  backNum: string;
   position: string;
   weakInfo: string;
-  condition: number;
-  amountOfAlcohol: number;
+  condition: string;
+  amountOfAlcohol: string;
 }

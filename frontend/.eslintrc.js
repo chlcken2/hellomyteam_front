@@ -64,6 +64,7 @@ module.exports = {
     "consistent-return": "off",
     "no-plusplus": "off",
     "array-callback-return": "off",
+    "no-lonely-if": "off",
   },
   settings: {
     "import/resolver": {

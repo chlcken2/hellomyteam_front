@@ -47,6 +47,19 @@ const EditProfileTeamInfoCard = ({
       <div className="card-content">
         <div className="edit-content-wrapper">
           <div className="label">등번호</div>
+          <div className="content">
+            <div className="input">
+              <Input
+                type="number"
+                id="backNum"
+                value={profileInfo.backNum}
+                onChange={handleProfileInfo}
+                max={99}
+                min={0}
+                placeholder="0~99 사이 숫자"
+              />
+            </div>
+          </div>
         </div>
         <div className="edit-content-wrapper">
           <div className="label">선호 포지션</div>

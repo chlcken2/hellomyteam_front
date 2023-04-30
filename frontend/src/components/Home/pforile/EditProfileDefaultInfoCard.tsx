@@ -30,7 +30,12 @@ const EditProfileDefaultInfoCard = ({
           <div className="label">이름</div>
           <div className="content">
             <div className="input">
-              <Input id="name" value={profileInfo.name} onChange={handleProfileInfo} />
+              <Input
+                id="name"
+                value={profileInfo.name}
+                onChange={handleProfileInfo}
+                readOnly
+              />
             </div>
           </div>
         </div>
@@ -68,7 +73,14 @@ const EditProfileDefaultInfoCard = ({
           <div className="label">휴대폰번호</div>
           <div className="content">
             <div className="input">
-              <Input id="phone" value={profileInfo.phone} onChange={handleProfileInfo} />
+              <Input
+                id="phone"
+                type="number"
+                maxLength={11}
+                placeholder="11자리 숫자"
+                value={profileInfo.phone}
+                onChange={handleProfileInfo}
+              />
             </div>
           </div>
         </div>
@@ -76,7 +88,12 @@ const EditProfileDefaultInfoCard = ({
           <div className="label">생년월일</div>
           <div className="content">
             <div className="input">
-              <Input id="birth" value={profileInfo.birth} onChange={handleProfileInfo} />
+              <Input
+                id="birth"
+                value={profileInfo.birth}
+                onChange={handleProfileInfo}
+                readOnly
+              />
             </div>
           </div>
         </div>

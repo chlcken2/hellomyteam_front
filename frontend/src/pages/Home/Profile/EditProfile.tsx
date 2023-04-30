@@ -7,17 +7,17 @@ import EditProfileEtcInfoCard from "components/Home/pforile/EditProfileEtcInfoCa
 import Button from "components/common/Button";
 
 const DEFAULT_PROFILE_INFO: ProfileInfoType = {
-  name: "",
+  name: "손흥민",
   intro: "",
   state: [],
   local: "",
   phone: "",
-  birth: "",
-  backNum: 0,
+  birth: "2001. 12. 20",
+  backNum: "",
   position: "",
   weakInfo: "",
-  condition: 0,
-  amountOfAlcohol: 0,
+  condition: "",
+  amountOfAlcohol: "",
 };
 
 const EditProfile = () => {

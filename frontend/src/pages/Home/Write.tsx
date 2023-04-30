@@ -93,6 +93,8 @@ const Write: FC = () => {
 
   useEffect(() => {
     if (boardNum !== 0) {
+      console.log(error);
+
       mutate({
         // TODO: 옵셔널 체이닝 이유 찾기
         boardCategory: boardName ? boardName.value : "FREE_BOARD",
@@ -100,6 +102,7 @@ const Write: FC = () => {
         contents: htmlString,
         teamMemberInfoId: boardNum,
         title,
+        teamId: user.selectedTeamId,
       });
     }
   }, [boardNum]);

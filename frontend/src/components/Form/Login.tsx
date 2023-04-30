@@ -1,7 +1,10 @@
 import { Dispatch, SetStateAction, useState, useEffect, ChangeEvent } from "react";
 import { useCookies } from "react-cookie"; // useCookies import
 import LoginState from "recoil/atom";
-import { useSetRecoilState } from "recoil";
+
+import { useSetRecoilState, useRecoilState } from "recoil";
+import getMemberInfo from "quires/member/getMemberInfo";
+import UserState from "recoil/userAtom";
 import { setLocalStorage, getExpiredDate } from "../../utils/setAuthorization";
 import Input from "../common/Input";
 import useLoginMutation from "../../quires/certification/useLoginMutation";
@@ -13,6 +16,10 @@ interface IHas {
 
 const Login = ({ setHasId, setLogin }: IHas) => {
   const [cookies, setCookie] = useCookies(["refresh"]);
+  // userId를 리코일에 추가하기
+  const [useUser, setUseUser] = useRecoilState(UserState);
+  const [validUser, isValidUser] = useState(false);
+  const { data: userData, isLoading: userLoad } = getMemberInfo(validUser);
   const setConfirmLogin = useSetRecoilState(LoginState);
   const img = process.env.PUBLIC_URL;
   const [text, setText] = useState({
@@ -36,8 +43,16 @@ const Login = ({ setHasId, setLogin }: IHas) => {
     const { accessToken, refreshToken } = loginResponse.data.data;
     setCookie("refresh", refreshToken, { path: "/", expires: getExpiredDate() });
     setLocalStorage(accessToken);
-    setConfirmLogin(true);
+
+    isValidUser(true);
   }, [loginResponse, loginError]);
+
+  useEffect(() => {
+    if (validUser && !userLoad) {
+      setUseUser(userData.data);
+      setConfirmLogin(true);
+    }
+  }, [isValidUser, userData]);
 
   const loginDisabled = () => {
     if (text.email.length > 5 && text.password.length > 5) {

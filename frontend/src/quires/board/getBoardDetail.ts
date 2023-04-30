@@ -5,10 +5,10 @@ import ApiResponseType from "types/ApiResponseType";
 
 export const QUERY_KEY = "/board/boardId";
 
-const fetcher = (boardId: number) =>
+const fetcher = (teamId: number, boardId: number) =>
   instance
     .get<ApiResponseType<boardDetailTypes>>(
-      `/api/board/${boardId}
+      `/api/teams/${teamId}/boards/${boardId}
     `,
     )
     .then(({ data }) => data);
@@ -17,8 +17,8 @@ const fetcher = (boardId: number) =>
  * 게시판의 상세정보 가져오기
  * @returns
  */
-const getBoardDetail = (boardId: number) => {
-  return useQuery([QUERY_KEY, boardId], () => fetcher(boardId));
+const getBoardDetail = (teamId: number, boardId: number) => {
+  return useQuery([QUERY_KEY, boardId], () => fetcher(teamId, boardId));
 };
 
 export default getBoardDetail;

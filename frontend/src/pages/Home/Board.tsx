@@ -2,18 +2,36 @@ import React, { FC, useEffect, useState, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import PostItem from "components/Home/PostItem";
 import getBoardList from "quires/board/getBoardList";
+import Pagination from "components/common/Pagination";
 import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
 
 const Board: FC = () => {
   const reg = /<[^>]*>?/g;
   const user = useRecoilValue(UserState);
-  const { data: list, isLoading: listLoad } = getBoardList(
-    0,
-    user?.selectedTeamId,
+
+  const [item, setItem] = useState(1);
+  const [totalItem, setTotalItem] = useState(0);
+
+  // (4/27) selectedTeamId가 없을 경우 localStorage에서 가져오게
+  const {
+    data: list,
+    isLoading: listLoad,
+    refetch: listRefetch,
+  } = getBoardList(
+    item - 1,
+    user?.selectedTeamId || JSON.parse(localStorage.getItem("arrayData"))[0].teamId,
     "FREE_BOARD",
   );
 
+  useEffect(() => {
+    if (listLoad) return;
+    setTotalItem(list?.data.totalElements);
+  }, [list]);
+
+  useEffect(() => {
+    listRefetch();
+  }, [item]);
   return (
     <div>
       <section className="section-container">
@@ -56,22 +74,25 @@ const Board: FC = () => {
               imageURL="https://imagedelivery.net/R2WiK4wfRK3oBXTwjgzQfA/21a6cc15-e13e-4e6e-1a80-38ec12630b00/blogThumbnail"
             />
           </li> */}
-          {list?.data.map((el, idx) => {
-            return (
-              <Link to={`/board/${el.id}`} key={idx}>
-                <PostItem
-                  title={el.title}
-                  content={el.contents.replace(reg, "")}
-                  commentCount={el.commentCount}
-                  likeCount={el.likeCount}
-                  createdAt={el.createdDate}
-                  author={el.writer}
-                />
-              </Link>
-            );
-          })}
+          {!listLoad &&
+            list?.data.content.map((el: any, idx: number) => {
+              return (
+                <Link to={`/board/${el.id}`} key={idx}>
+                  <PostItem
+                    title={el.title}
+                    content={el.contents.replace(reg, "")}
+                    commentCount={el.commentCount}
+                    likeCount={el.likeCount}
+                    createdAt={`${el.createdDate.split("T")[0]} ${
+                      el.createdDate.split("T")[1]
+                    }`}
+                    author={el.writer}
+                  />
+                </Link>
+              );
+            })}
         </ul>
-        <div className="pagination-wrapper">페이지네이션</div>
+        <Pagination setItem={setItem} item={item} totalItem={totalItem} />
       </section>
     </div>
   );

@@ -14,6 +14,8 @@ const Board: FC = () => {
   const [totalItem, setTotalItem] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
 
+  const [sortType, setSortType] = useState("created_date");
+
   // (4/27) selectedTeamId가 없을 경우 localStorage에서 가져오게
   const {
     data: list,
@@ -23,6 +25,7 @@ const Board: FC = () => {
     item - 1,
     user?.selectedTeamId || JSON.parse(localStorage.getItem("arrayData"))[0].teamId,
     "FREE_BOARD",
+    sortType,
   );
 
   useEffect(() => {
@@ -33,7 +36,7 @@ const Board: FC = () => {
 
   useEffect(() => {
     listRefetch();
-  }, [item]);
+  }, [item, sortType]);
 
   console.log(user);
 
@@ -44,7 +47,9 @@ const Board: FC = () => {
           <h2>자유게시판</h2>
           <div className="option-box">
             <div className="sort-box">
-              <span className="sort-type">최신순</span>
+              <button className="sort-type" onClick={() => setSortType("created_date")}>
+                최신순
+              </button>
               <div className="icon-box">
                 <span>
                   <img className="active" src="/icons/arrow_down.svg" alt="arrow-down" />
@@ -55,7 +60,9 @@ const Board: FC = () => {
               </div>
             </div>
             <div className="sort-box">
-              <span className="sort-type">좋아요</span>
+              <button className="sort-type" onClick={() => setSortType("like_count")}>
+                좋아요
+              </button>
               <div className="icon-box">
                 <span>
                   <img src="/icons/arrow_down.svg" alt="arrow-down" />

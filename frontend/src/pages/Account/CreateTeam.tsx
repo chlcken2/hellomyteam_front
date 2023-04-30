@@ -17,7 +17,8 @@ const CreateTeam: FC = () => {
   const [tactic, setTactic] = useState(null);
   const [imageUrl, setImageUrl] = useState<any>("");
   const [imageSize, setImageSize] = useState(0);
-  const [imageFormData, setImageFormData] = useState<FormData>(null);
+  const [imageData, setImageData] = useState(null);
+  const [forms, setForms] = useState(new FormData());
 
   const user = useRecoilValue(UserState);
   const test = (e: any) => console.log(e);
@@ -27,21 +28,17 @@ const CreateTeam: FC = () => {
     if (regex.test(name)) return alert("숫자만 섞인 팀이름은 사용할 수 없습니다");
     if (name.length < 2 || name.length > 12)
       return alert("팀 이름은 2글자 이상 12글자 이하로 해주세요.");
+
     try {
-      const save = await instance.post("/api/team", {
-        detailIntro: text,
-        memberId: user.id,
-        oneIntro: text,
-        tacticalStyleStatus: "POSSESSION",
-        teamName: name,
-        image: imageFormData,
-      });
+      const save = await instance.post("/api/team", forms);
 
       console.log(save);
     } catch (err) {
       console.log(err);
     }
   };
+
+  console.log(forms);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -57,10 +54,7 @@ const CreateTeam: FC = () => {
           if (file.size <= 1024 * 1024) {
             console.log("이미지 용량이 올바릅니다.");
             setFile(file.name);
-            const formData = new FormData();
-            // 파일 추가
-            formData.append("file", file);
-            setImageFormData(formData);
+            setImageData(file);
           } else {
             alert("이미지 용량이 너무 큽니다.");
           }

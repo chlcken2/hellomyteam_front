@@ -19,6 +19,7 @@ const Detail: FC = () => {
   const img = process.env.PUBLIC_URL;
   const user = useRecoilValue(UserState);
   const [infoId, setInfoId] = useState(0);
+  const [buttonColor, setButtonColor] = useState(false);
   /* Board Part Start */
 
   const { data: detail } = getBoardDetail(user.selectedTeamId, Number(param.id));
@@ -38,6 +39,7 @@ const Detail: FC = () => {
   const handleLikes = async () => {
     await teamMemberId(user.selectedTeamId, user.id).then((res) => {
       setInfoId(res.data.data);
+      setButtonColor(!buttonColor);
     });
   };
 
@@ -57,9 +59,9 @@ const Detail: FC = () => {
       teamMemberInfoId: infoId,
       teamId: user.selectedTeamId,
     });
-  }, [infoId]);
+  }, [infoId, buttonColor]);
 
-  console.log(LikeData);
+  console.log(buttonColor);
   /* Board Part End */
 
   /* Comment part Start */
@@ -133,27 +135,33 @@ const Detail: FC = () => {
   return (
     <>
       {/* Boad Part Start */}
-      <div className="board">
-        <Link to="/board" className="back-button">
-          <img src={`${img}/common/ChevronLeftOutline.png`} alt="" />
-        </Link>
-        <div className="board-content">
-          <h2>{info.title}</h2>
-          <div className="user">
-            <span>
-              <img src={`${img}/common/join-1.png`} alt="" />
-            </span>
-            <div>
-              <h3>{info.name}</h3>
-              <p>1시간 전</p>
+      {!load && detail && (
+        <div className="board">
+          <Link to="/board" className="back-button">
+            <img src={`${img}/common/ChevronLeftOutline.png`} alt="" />
+          </Link>
+          <div className="board-content">
+            <h2>{info.title}</h2>
+            <div className="user">
+              <span>
+                <img src={`${img}/common/join-1.png`} alt="" />
+              </span>
+              <div>
+                <h3>{info.name}</h3>
+                <p>1시간 전</p>
+              </div>
+            </div>
+            <div className="board-detail">
+              <p dangerouslySetInnerHTML={{ __html: info.contents }} />
+              <Button
+                text="좋아요"
+                handler={handleLikes}
+                color={LikeData?.data || buttonColor ? "blue" : "white"}
+              />
             </div>
           </div>
-          <div className="board-detail">
-            <p dangerouslySetInnerHTML={{ __html: info.contents }} />
-            <Button text="좋아요" handler={handleLikes} />
-          </div>
         </div>
-      </div>
+      )}
       {/* Boad Part End */}
 
       {/* Comment Part Start */}

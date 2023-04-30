@@ -10,7 +10,7 @@
   border-radius: 16px;
   overflow: hidden;
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 1280px) {
     border-radius: 0px;
   }
 }
@@ -44,13 +44,13 @@
     background-color: rgba(29, 29, 29, 0.3);
     border-radius: 32px;
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 1280px) {
       top: 20px;
       right: 20px;
     }
   }
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 1280px) {
     height: fit-content;
     padding-top: 24.61%;
   }
@@ -61,7 +61,7 @@
   width: 100%;
   padding: 112px 32px 40px 32px;
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 1280px) {
     padding: 104px 20px 94px 20px;
   }
 
@@ -70,7 +70,7 @@
     top: 35px;
     right: 32px;
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 1280px) {
       top: 23px;
       right: 23px;
     }
@@ -109,7 +109,7 @@
       right: 4px;
     }
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 1280px) {
       left: 20px;
     }
   }
@@ -120,7 +120,7 @@
     line-height: 32px;
     margin-bottom: 8px;
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 1280px) {
       font-weight: 600;
       font-size: 24px;
       line-height: 32px;
@@ -147,7 +147,7 @@
     border-radius: 24px;
     margin-bottom: 32px;
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 1280px) {
       margin-bottom: 38px;
     }
   }
@@ -159,7 +159,7 @@
   flex-direction: column;
   row-gap: 24px;
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 1280px) {
     flex-direction: column;
   }
 }
@@ -170,7 +170,7 @@
   border-radius: 16px;
   padding: 32px;
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 1280px) {
     padding: 32px 20px;
   }
 
@@ -187,7 +187,7 @@
     row-gap: 16px;
     flex-wrap: wrap;
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 1280px) {
       row-gap: 24px;
     }
 
@@ -196,7 +196,7 @@
       display: flex;
       align-items: center;
 
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width: 1280px) {
         flex-direction: column;
         align-items: flex-start;
         row-gap: 8px;
@@ -225,6 +225,9 @@
   background: $white;
   border-radius: 16px;
   margin-bottom: 128px;
+  @media screen and (max-width: 1280px) {
+    margin-bottom: 0px;
+  }
 }
 
 .edit-profile-header {
@@ -239,6 +242,10 @@
 
 .edit-profile-content {
   padding: 0px 32px 32px 32px;
+
+  @media screen and (max-width: 1280px) {
+    padding: 0px 20px 24px 20px;
+  }
 
   h2 {
     font-weight: 600;
@@ -258,6 +265,10 @@
     border-radius: 16px;
     padding: 23px;
 
+    @media screen and (max-width: 1280px) {
+      padding: 31px 19px;
+    }
+
     .title {
       font-weight: 600;
       font-size: 20px;
@@ -276,6 +287,12 @@
       display: flex;
       align-items: center;
 
+      @media screen and (max-width: 1280px) {
+        flex-direction: column;
+        align-items: flex-start;
+        row-gap: 8px;
+      }
+
       .label {
         width: 120px;
         font-weight: 500;
@@ -286,10 +303,47 @@
 
       .content {
         flex: 1;
+        flex-wrap: wrap;
+        width: 100%;
+        display: flex;
+        row-gap: 8px;
+        column-gap: 16px;
+        align-items: center;
+
+        .radio-container {
+          display: flex;
+          column-gap: 16px;
+          align-items: center;
+
+          .radio-wrapper {
+            display: flex;
+            column-gap: 8px;
+            align-items: center;
+            cursor: pointer;
+
+            span {
+              font-weight: 500;
+              font-size: 14px;
+              line-height: 16px;
+              color: #7a7a7a;
+            }
+
+            input {
+              margin: 0;
+              width: 16px;
+              height: 16px;
+              cursor: pointer;
+            }
+          }
+        }
 
         .input,
         .select {
           width: 310px;
+
+          @media screen and (max-width: 1280px) {
+            width: 100%;
+          }
         }
       }
     }
@@ -302,4 +356,8 @@
   display: flex;
   justify-content: flex-end;
   column-gap: 16px;
+
+  > div {
+    width: 76px;
+  }
 }

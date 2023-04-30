@@ -5,6 +5,7 @@ import EditProfileDefaultInfoCard from "components/Home/pforile/EditProfileDefau
 import EditProfileTeamInfoCard from "components/Home/pforile/EditProfileTeamInfoCard";
 import EditProfileEtcInfoCard from "components/Home/pforile/EditProfileEtcInfoCard";
 import Button from "components/common/Button";
+import { useNavigate } from "react-router-dom";
 
 const DEFAULT_PROFILE_INFO: ProfileInfoType = {
   name: "손흥민",
@@ -18,13 +19,16 @@ const DEFAULT_PROFILE_INFO: ProfileInfoType = {
   weakInfo: "",
   condition: "",
   amountOfAlcohol: "",
+  isPhoneOpen: true,
+  isBirthOpen: true,
 };
 
 const EditProfile = () => {
+  const navigate = useNavigate();
   const [profileInfo, setProfileInfo] = useState<ProfileInfoType>(DEFAULT_PROFILE_INFO);
 
   const handleCancel = () => {
-    alert("취소");
+    navigate("/profile");
   };
 
   const handleSubmit = () => {
@@ -39,7 +43,7 @@ const EditProfile = () => {
     <div className="main-wrap">
       <div className="edit-profile-container">
         <div className="edit-profile-header">
-          <button>
+          <button onClick={handleCancel}>
             <svg
               width="9"
               height="16"
@@ -78,8 +82,12 @@ const EditProfile = () => {
           </div>
         </div>
         <div className="edit-profile-footer">
-          <Button text="취소" handler={handleCancel} color="white" />
-          <Button text="저장" handler={handleSubmit} color="blue" />
+          <div>
+            <Button text="취소" handler={handleCancel} color="white" width="fullWidth" />
+          </div>
+          <div>
+            <Button text="저장" handler={handleSubmit} color="blue" width="fullWidth" />
+          </div>
         </div>
       </div>
     </div>

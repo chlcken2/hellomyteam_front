@@ -21,6 +21,12 @@ const EditProfileDefaultInfoCard = ({
   const handleLocalSelect = (e: OptionType) => {
     setProfileInfo((prev) => ({ ...prev, local: e.value }));
   };
+  const handlePhoneOpenState = (value: boolean) => {
+    setProfileInfo((prev) => ({ ...prev, isPhoneOpen: value }));
+  };
+  const handleBirthOpenState = (value: boolean) => {
+    setProfileInfo((prev) => ({ ...prev, isBirthOpen: value }));
+  };
 
   return (
     <div className="card">
@@ -82,6 +88,22 @@ const EditProfileDefaultInfoCard = ({
                 onChange={handleProfileInfo}
               />
             </div>
+            <div className="radio-container">
+              <button
+                onClick={() => handlePhoneOpenState(true)}
+                className="radio-wrapper"
+              >
+                <input type="radio" readOnly checked={profileInfo.isPhoneOpen} />
+                <span>공개</span>
+              </button>
+              <button
+                onClick={() => handlePhoneOpenState(false)}
+                className="radio-wrapper"
+              >
+                <input type="radio" readOnly checked={!profileInfo.isPhoneOpen} />
+                <span>비공개</span>
+              </button>
+            </div>
           </div>
         </div>
         <div className="edit-content-wrapper">
@@ -94,6 +116,22 @@ const EditProfileDefaultInfoCard = ({
                 onChange={handleProfileInfo}
                 readOnly
               />
+            </div>
+            <div className="radio-container">
+              <button
+                onClick={() => handleBirthOpenState(true)}
+                className="radio-wrapper"
+              >
+                <input type="radio" readOnly checked={profileInfo.isBirthOpen} />
+                <span>공개</span>
+              </button>
+              <button
+                onClick={() => handleBirthOpenState(false)}
+                className="radio-wrapper"
+              >
+                <input type="radio" readOnly checked={!profileInfo.isBirthOpen} />
+                <span>비공개</span>
+              </button>
             </div>
           </div>
         </div>

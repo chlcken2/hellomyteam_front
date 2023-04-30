@@ -10,4 +10,6 @@ export interface ProfileInfoType {
   weakInfo: string;
   condition: string;
   amountOfAlcohol: string;
+  isPhoneOpen: boolean;
+  isBirthOpen: boolean;
 }

@@ -9,6 +9,7 @@ import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
 import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
 import { teamMemberId } from "quires/team/getTeamMemberId";
+import { setBoardLikeMutation } from "quires/board/setBoardLikes";
 
 // 댓글 테스트를 위한 teamMemberInfoId, 로그인한 계정의 teamMemberrInfoId입력
 const TEMP_TEAM_MEMBER_INFO_ID = 148;
@@ -17,24 +18,31 @@ const Detail: FC = () => {
   const param = useParams();
   const img = process.env.PUBLIC_URL;
   const user = useRecoilValue(UserState);
+  const [infoId, setInfoId] = useState(0);
   /* Board Part Start */
 
   const { data: detail } = getBoardDetail(user.selectedTeamId, Number(param.id));
+  const {
+    mutate,
+    isLoading: load,
+    isError: error,
+    data: LikeData,
+  } = setBoardLikeMutation();
+
   const [info, setInfo] = useState({
     name: "test",
     title: "test",
     contents: "test",
   });
 
-  const handleLikes = () => {
-    teamMemberId(user.selectedTeamId, user.id).then((res) => {
-      console.log(res);
+  const handleLikes = async () => {
+    await teamMemberId(user.selectedTeamId, user.id).then((res) => {
+      setInfoId(res.data.data);
     });
   };
 
   useEffect(() => {
     if (detail) {
-      console.log(detail.data);
       setInfo({
         name: detail.data.writer,
         title: detail.data.title,
@@ -43,8 +51,15 @@ const Detail: FC = () => {
     }
   }, [detail]);
 
-  console.log(user);
+  useEffect(() => {
+    mutate({
+      boardId: Number(param.id),
+      teamMemberInfoId: infoId,
+      teamId: user.selectedTeamId,
+    });
+  }, [infoId]);
 
+  console.log(LikeData);
   /* Board Part End */
 
   /* Comment part Start */

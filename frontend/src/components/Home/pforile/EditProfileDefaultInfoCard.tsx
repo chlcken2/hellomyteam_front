@@ -1,6 +1,8 @@
+import { useState } from "react";
 import Input from "components/common/Input";
 import Select, { OptionType } from "components/common/Select";
 import { ProfileInfoType } from "types/profileType";
+import StateSelector from "./StateSelector";
 
 interface PropsType {
   profileInfo: ProfileInfoType;
@@ -61,6 +63,14 @@ const EditProfileDefaultInfoCard = ({
         </div>
         <div className="edit-content-wrapper">
           <div className="label">상태</div>
+          <div className="content">
+            <StateSelector
+              title="상태"
+              intro="나의 상태를 표현해보세요. (최대 5개)"
+              profileInfo={profileInfo}
+              setProfileInfo={setProfileInfo}
+            />
+          </div>
         </div>
         <div className="edit-content-wrapper">
           <div className="label">활동 지역</div>

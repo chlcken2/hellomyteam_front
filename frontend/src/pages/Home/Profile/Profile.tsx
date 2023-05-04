@@ -1,10 +1,12 @@
 import DefaultAvatar from "components/common/DefaultAvatar";
 import ImageCropper from "components/common/ImageCropper";
 import { FC, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import "styles/pages/profile.scss";
 
 const Profile: FC = () => {
+  const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState<string>(null);
   const [bannerImage, setBannerImage] = useState<string>(null);
   const [bannerColor, setBannerColor] = useState<string>(null);

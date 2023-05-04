@@ -80,20 +80,39 @@ const StateSelector = ({ title, intro, profileInfo, setProfileInfo }: PropsType)
           <div className="modal">
             <div className="modal-header">
               <button onClick={handleIsViewModal}>
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1 12.8794L12.8794 1.00005M1 1L12.8794 12.8793"
-                    stroke="#1D1D1D"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                <span className="arrow">
+                  <svg
+                    width="9"
+                    height="16"
+                    viewBox="0 0 9 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M8 15L1 8L8 1"
+                      stroke="#1D1D1D"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                <span className="close">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M1 12.8794L12.8794 1.00005M1 1L12.8794 12.8793"
+                      stroke="#1D1D1D"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>
               </button>
             </div>
             <div className="modal-content">

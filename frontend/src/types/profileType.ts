@@ -1,8 +1,13 @@
+export type SelectedLocalListType = {
+  title: string;
+  localName: string;
+};
+
 export interface ProfileInfoType {
   name: string;
   intro: string;
   state: string[];
-  local: string;
+  local: SelectedLocalListType[];
   phone: string;
   birth: string;
   backNum: string;

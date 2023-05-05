@@ -3,6 +3,7 @@ import Input from "components/common/Input";
 import Select, { OptionType } from "components/common/Select";
 import { ProfileInfoType } from "types/profileType";
 import StateSelector from "./StateSelector";
+import LocalSelector from "./LocalSelector";
 
 interface PropsType {
   profileInfo: ProfileInfoType;
@@ -10,19 +11,11 @@ interface PropsType {
   handleProfileInfo: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const LOCAL_OPTIONS = [
-  { label: "선택해주세요", value: "선택해주세요" },
-  { label: "서울", value: "서울" },
-];
-
 const EditProfileDefaultInfoCard = ({
   profileInfo,
   setProfileInfo,
   handleProfileInfo,
 }: PropsType) => {
-  const handleLocalSelect = (e: OptionType) => {
-    setProfileInfo((prev) => ({ ...prev, local: e.value }));
-  };
   const handlePhoneOpenState = (value: boolean) => {
     setProfileInfo((prev) => ({ ...prev, isPhoneOpen: value }));
   };
@@ -64,25 +57,13 @@ const EditProfileDefaultInfoCard = ({
         <div className="edit-content-wrapper">
           <div className="label">상태</div>
           <div className="content">
-            <StateSelector
-              title="상태"
-              intro="나의 상태를 표현해보세요. (최대 5개)"
-              profileInfo={profileInfo}
-              setProfileInfo={setProfileInfo}
-            />
+            <StateSelector profileInfo={profileInfo} setProfileInfo={setProfileInfo} />
           </div>
         </div>
         <div className="edit-content-wrapper">
           <div className="label">활동 지역</div>
           <div className="content">
-            <div className="select">
-              <Select
-                options={LOCAL_OPTIONS}
-                onChange={handleLocalSelect}
-                defaultValue="서울"
-                placeholder="선택해주세요"
-              />
-            </div>
+            <LocalSelector profileInfo={profileInfo} setProfileInfo={setProfileInfo} />
           </div>
         </div>
         <div className="edit-content-wrapper">

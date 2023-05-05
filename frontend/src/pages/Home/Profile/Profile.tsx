@@ -11,6 +11,8 @@ const Profile: FC = () => {
   const [bannerImage, setBannerImage] = useState<string>(null);
   const [bannerColor, setBannerColor] = useState<string>(null);
 
+  const navigateProfileEditPage = () => navigate("/profile/edit");
+
   const uploadProfileImage = (image: string) => {
     setProfileImage(image);
   };
@@ -137,7 +139,7 @@ const Profile: FC = () => {
             </button>
           </ImageCropper>
         </div>
-        <button className="profile-edit-button">
+        <button onClick={navigateProfileEditPage} className="profile-edit-button">
           <svg
             width="24"
             height="24"

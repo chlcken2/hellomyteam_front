@@ -11,7 +11,7 @@ const DEFAULT_PROFILE_INFO: ProfileInfoType = {
   name: "손흥민",
   intro: "",
   state: [],
-  local: "",
+  local: [],
   phone: "",
   birth: "2001. 12. 20",
   backNum: "",

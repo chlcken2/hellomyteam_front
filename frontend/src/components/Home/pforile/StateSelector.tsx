@@ -6,15 +6,13 @@ import { ProfileInfoType } from "types/profileType";
 interface PropsType {
   profileInfo: ProfileInfoType;
   setProfileInfo: React.Dispatch<React.SetStateAction<ProfileInfoType>>;
-  title: string;
-  intro: string;
 }
 
 const CONDITIONS = ["휴식중", "부상", "피로", "활력", "회복중"];
 const FEELS = ["열정", "신남", "슬픔", "즐거움", "설렘"];
 const ACTIVITYS = ["파견", "출장", "개인연습", "여행", "야근"];
 
-const StateSelector = ({ title, intro, profileInfo, setProfileInfo }: PropsType) => {
+const StateSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
   const [selectedState, setSelectedState] = useState<string[]>([]);
   const [isViewModal, setIsViewModal] = useState(false);
 
@@ -30,6 +28,8 @@ const StateSelector = ({ title, intro, profileInfo, setProfileInfo }: PropsType)
       const filteredState = selectedState.filter((state) => state !== word);
       setSelectedState(filteredState);
     } else {
+      if (selectedState.length === 5) return;
+
       const addedState = [...selectedState, word];
       setSelectedState(addedState);
     }
@@ -117,8 +117,8 @@ const StateSelector = ({ title, intro, profileInfo, setProfileInfo }: PropsType)
             </div>
             <div className="modal-content">
               <div className="title-wrapper">
-                <h3>{title}</h3>
-                <p>{intro}</p>
+                <h3>상태</h3>
+                <p>나의 상태를 표현해보세요. (최대 5개)</p>
               </div>
               <div className="state-select-container">
                 <div className="state-select-wrapper">

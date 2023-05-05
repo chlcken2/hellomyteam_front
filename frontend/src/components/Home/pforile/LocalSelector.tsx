@@ -66,7 +66,9 @@ const LocalSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
       <div className="selector-wrapper">
         <p>
           {profileInfo.local.length > 0
-            ? profileInfo.state.join(", ")
+            ? profileInfo.local
+                .map((item) => `${item.title} - ${item.localName}`)
+                .join(", ")
             : "지역을 설정해주세요"}
         </p>
         <button onClick={handleIsViewModal}>
@@ -130,7 +132,7 @@ const LocalSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
             </div>
             <div className="local-modal-content">
               <div className="title-wrapper local">
-                <h3>활동 지역 설정</h3>
+                <h3>활동 지역</h3>
                 <p>주요 활동 지역을 선택해주세요. (최대 5개)</p>
               </div>
               <div className="local-container">
@@ -190,7 +192,7 @@ const LocalSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
                     <ul>
                       {selectedLocalList.map((local, idx) => (
                         <li key={idx}>
-                          <span>{`${local.title} > ${local.localName}`}</span>
+                          <span>{`${local.title} - ${local.localName}`}</span>
                           <button
                             onClick={() =>
                               removeSelectedLocal(local.title, local.localName)

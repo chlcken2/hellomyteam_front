@@ -10,13 +10,23 @@ interface NotiType {
   imageUrl: string;
   joinHandler?: () => void;
   teamId?: number;
+  isTeamJoined: boolean;
 }
-const TeamCard = ({ title, slogan, num, imageUrl, teamId, joinHandler }: NotiType) => {
-  const img = process.env.PUBLIC_URL;
 
+const img = process.env.PUBLIC_URL;
+
+const TeamCard = ({
+  title,
+  slogan,
+  num,
+  imageUrl,
+  teamId,
+  isTeamJoined,
+  joinHandler,
+}: NotiType) => {
   return (
     <div className="team-card">
-      <div className="wrap">
+      <div className="team-card-contents">
         <DefaultAvatar
           type="TEAM"
           width={46}
@@ -25,7 +35,10 @@ const TeamCard = ({ title, slogan, num, imageUrl, teamId, joinHandler }: NotiTyp
           alt="teamLogo"
           uniqueNum={teamId}
         />
-        <h4 className="title">{title}</h4>
+        <div className="title">
+          <h4>{title}</h4>
+          {isTeamJoined && <span>가입한 팀</span>}
+        </div>
         <p className="slogan">{slogan}</p>
         <div className="person">
           <span>
@@ -34,8 +47,13 @@ const TeamCard = ({ title, slogan, num, imageUrl, teamId, joinHandler }: NotiTyp
           <p>{num}명</p>
         </div>
       </div>
-      <div>
-        <Button text="가입" width="fullWidth" handler={joinHandler} />
+      <div className="team-card-join-button">
+        <Button
+          text={isTeamJoined ? "가입취소" : "가입"}
+          width="fullWidth"
+          handler={joinHandler}
+          color={isTeamJoined ? "white" : "blue"}
+        />
       </div>
     </div>
   );

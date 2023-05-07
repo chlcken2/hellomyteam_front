@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState, useRef, useMemo } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation, useSearchParams } from "react-router-dom";
 import Button from "components/common/Button";
 import Comment from "components/common/Comment";
 import getBoardDetail from "quires/board/getBoardDetail";
@@ -15,20 +15,22 @@ import { setBoardLikeMutation } from "quires/board/setBoardLikes";
 const TEMP_TEAM_MEMBER_INFO_ID = 148;
 
 const Detail: FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const likeCount = searchParams.get("likeCount");
   const param = useParams();
   const img = process.env.PUBLIC_URL;
   const user = useRecoilValue(UserState);
   const [infoId, setInfoId] = useState(0);
-  const [buttonColor, setButtonColor] = useState(false);
+  const [likeBoolean, setLikeBoolean] = useState<any>(true);
   /* Board Part Start */
 
   const { data: detail } = getBoardDetail(user.selectedTeamId, Number(param.id));
   const {
-    mutate,
+    mutate: likeMutate,
     isLoading: load,
     isError: error,
     data: LikeData,
-  } = setBoardLikeMutation();
+  } = setBoardLikeMutation(Number(param.id));
 
   const [info, setInfo] = useState({
     name: "test",
@@ -38,10 +40,44 @@ const Detail: FC = () => {
 
   const handleLikes = async () => {
     await teamMemberId(user.selectedTeamId, user.id).then((res) => {
-      setInfoId(res.data.data);
-      setButtonColor(!buttonColor);
+      likeMutate({
+        boardId: Number(param.id),
+        teamMemberInfoId: res.data.data,
+        teamId: user.selectedTeamId,
+      });
     });
   };
+
+  useEffect(() => {
+    teamMemberId(user.selectedTeamId, user.id).then((res) => {
+      setInfoId(res.data.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
+    LikeData?.data ? setLikeBoolean(true) : setLikeBoolean(false);
+  }, [LikeData]);
+
+  useEffect(() => {
+    if (likeBoolean) searchParams.set("likeCount", String(1));
+    else searchParams.set("likeCount", String(0));
+  }, [likeBoolean]);
+
+  console.log(likeBoolean, likeCount);
+
+  useEffect(() => {
+    if (
+      (Number(likeCount) === 1 && likeBoolean === true) ||
+      (Number(likeCount) === 0 && likeBoolean === false)
+    )
+      return;
+    likeMutate({
+      boardId: Number(param.id),
+      teamMemberInfoId: infoId,
+      teamId: user.selectedTeamId,
+    });
+  }, [infoId]);
 
   useEffect(() => {
     if (detail) {
@@ -54,14 +90,9 @@ const Detail: FC = () => {
   }, [detail]);
 
   useEffect(() => {
-    mutate({
-      boardId: Number(param.id),
-      teamMemberInfoId: infoId,
-      teamId: user.selectedTeamId,
-    });
-  }, [infoId, buttonColor]);
+    console.log(likeCount);
+  }, [likeCount]);
 
-  console.log(buttonColor);
   /* Board Part End */
 
   /* Comment part Start */
@@ -154,9 +185,9 @@ const Detail: FC = () => {
             <div className="board-detail">
               <p dangerouslySetInnerHTML={{ __html: info.contents }} />
               <Button
-                text="좋아요"
+                text={`좋아요 ${likeCount}개`}
                 handler={handleLikes}
-                color={LikeData?.data || buttonColor ? "blue" : "white"}
+                color="white"
               />
             </div>
           </div>

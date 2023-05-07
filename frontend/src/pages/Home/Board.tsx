@@ -78,7 +78,7 @@ const Board: FC = () => {
           {!listLoad &&
             list?.data.content.map((el: any, idx: number) => {
               return (
-                <Link to={`/board/${el.id}`} key={idx}>
+                <Link to={`/board/${el.id}?likeCount=${el.likeCount}`} key={idx}>
                   <PostItem
                     title={el.title}
                     content={el.contents.replace(reg, "")}

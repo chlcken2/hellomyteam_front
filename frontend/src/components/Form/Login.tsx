@@ -6,7 +6,7 @@ import { useSetRecoilState, useRecoilState } from "recoil";
 import getMemberInfo from "quires/member/getMemberInfo";
 import UserState from "recoil/userAtom";
 import { setLocalStorage, getExpiredDate } from "../../utils/setAuthorization";
-import Input from "../Input/Input";
+import Input from "../common/Input";
 import useLoginMutation from "../../quires/certification/useLoginMutation";
 
 interface IHas {

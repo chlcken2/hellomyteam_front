@@ -45,6 +45,7 @@ const Detail: FC = () => {
         teamMemberInfoId: res.data.data,
         teamId: user.selectedTeamId,
       });
+      setLikeBoolean(true);
     });
   };
 
@@ -59,25 +60,17 @@ const Detail: FC = () => {
     LikeData?.data ? setLikeBoolean(true) : setLikeBoolean(false);
   }, [LikeData]);
 
-  useEffect(() => {
-    if (likeBoolean) searchParams.set("likeCount", String(1));
-    else searchParams.set("likeCount", String(0));
-  }, [likeBoolean]);
-
   console.log(likeBoolean, likeCount);
 
   useEffect(() => {
-    if (
-      (Number(likeCount) === 1 && likeBoolean === true) ||
-      (Number(likeCount) === 0 && likeBoolean === false)
-    )
-      return;
-    likeMutate({
-      boardId: Number(param.id),
-      teamMemberInfoId: infoId,
-      teamId: user.selectedTeamId,
-    });
-  }, [infoId]);
+    if (Number(likeCount) !== 0) return;
+    if (likeBoolean)
+      likeMutate({
+        boardId: Number(param.id),
+        teamMemberInfoId: infoId,
+        teamId: user.selectedTeamId,
+      });
+  }, [infoId, likeBoolean]);
 
   useEffect(() => {
     if (detail) {

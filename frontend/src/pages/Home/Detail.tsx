@@ -21,7 +21,7 @@ const Detail: FC = () => {
   const img = process.env.PUBLIC_URL;
   const user = useRecoilValue(UserState);
   const [infoId, setInfoId] = useState(0);
-  const [likeBoolean, setLikeBoolean] = useState<any>(true);
+  const [likeBoolean, setLikeBoolean] = useState(false);
   /* Board Part Start */
 
   const { data: detail } = getBoardDetail(user.selectedTeamId, Number(param.id));
@@ -45,7 +45,6 @@ const Detail: FC = () => {
         teamMemberInfoId: res.data.data,
         teamId: user.selectedTeamId,
       });
-      setLikeBoolean(true);
     });
   };
 
@@ -55,15 +54,9 @@ const Detail: FC = () => {
     });
   }, []);
 
-  useEffect(() => {
-    // eslint-disable-next-line no-unused-expressions
-    LikeData?.data ? setLikeBoolean(true) : setLikeBoolean(false);
-  }, [LikeData]);
-
   console.log(likeBoolean, likeCount);
 
   useEffect(() => {
-    if (Number(likeCount) !== 0) return;
     if (likeBoolean)
       likeMutate({
         boardId: Number(param.id),
@@ -81,10 +74,7 @@ const Detail: FC = () => {
       });
     }
   }, [detail]);
-
-  useEffect(() => {
-    console.log(likeCount);
-  }, [likeCount]);
+  console.log(LikeData);
 
   /* Board Part End */
 

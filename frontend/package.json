@@ -13,6 +13,7 @@
     "@types/react-dom": "^18.0.9",
     "@types/react-draft-wysiwyg": "^1.13.4",
     "@types/react-responsive": "^8.0.5",
+    "@uiball/loaders": "1.2.6",
     "axios": "^1.2.0",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",

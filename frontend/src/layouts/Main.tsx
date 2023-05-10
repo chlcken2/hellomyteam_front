@@ -4,7 +4,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import getTeamInfo from "quires/team/getTeamInfo";
 import { teamMemberId } from "quires/team/getTeamMemberId";
-import Button from "components/common/Button";
+import Button from "components/common/button";
 import UserState from "../recoil/userAtom";
 import "styles/pages/home.scss";
 import "styles/layouts/main.scss";

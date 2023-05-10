@@ -1,4 +1,4 @@
-import Button from "components/common/Button";
+import Button from "components/common/button";
 import { Dispatch, SetStateAction } from "react";
 
 interface IHas {

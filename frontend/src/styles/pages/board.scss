@@ -162,3 +162,21 @@
     }
   }
 }
+
+.main-teams__wrap {
+  &.board-list {
+    position: absolute;
+    top: 5px;
+    right: 15%;
+    .main-teams {
+      position: relative;
+      width: auto;
+      li {
+        width: 100px;
+      }
+    }
+    button {
+      text-align: left;
+    }
+  }
+}

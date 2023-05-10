@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState, useRef, useMemo } from "react";
 import { Link, useParams, useLocation, useSearchParams } from "react-router-dom";
 import Button from "components/common/button";
-import Comment from "components/common/comment";
+import Comment from "components/common/Comment";
 import getBoardDetail from "quires/board/getBoardDetail";
 import Input from "components/common/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";

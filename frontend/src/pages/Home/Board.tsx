@@ -7,12 +7,14 @@ import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
 
 const Board: FC = () => {
+  const path = process.env.PUBLIC_URL;
   const reg = /<[^>]*>?/g;
   const user = useRecoilValue(UserState);
 
   const [item, setItem] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
+  const [idx, setIdx] = useState(0);
 
   const [sortType, setSortType] = useState("created_date");
 
@@ -47,29 +49,44 @@ const Board: FC = () => {
           <h2>자유게시판</h2>
           <div className="option-box">
             <div className="sort-box">
-              <button className="sort-type" onClick={() => setSortType("created_date")}>
-                최신순
+              <button className="sort-type">
+                <img src={`${path}/common/board-list.png`} alt="arrow-up" />
               </button>
-              <div className="icon-box">
-                <span>
-                  <img className="active" src="/icons/arrow_down.svg" alt="arrow-down" />
-                </span>
-                <span>
-                  <img src="/icons/arrow_up.svg" alt="arrow-up" />
-                </span>
-              </div>
-            </div>
-            <div className="sort-box">
-              <button className="sort-type" onClick={() => setSortType("like_count")}>
-                좋아요
-              </button>
-              <div className="icon-box">
-                <span>
-                  <img src="/icons/arrow_down.svg" alt="arrow-down" />
-                </span>
-                <span>
-                  <img src="/icons/arrow_up.svg" alt="arrow-up" />
-                </span>
+              <div className="main-teams__wrap board-list">
+                <div className="main-teams">
+                  <ul>
+                    <li className={idx === 0 ? "on" : ""}>
+                      <button
+                        onClick={() => {
+                          setIdx(0);
+                          setSortType("created_date");
+                        }}
+                      >
+                        최신순
+                      </button>
+                    </li>
+                    <li className={idx === 1 ? "on" : ""}>
+                      <button
+                        onClick={() => {
+                          setIdx(1);
+                          setSortType("like_count");
+                        }}
+                      >
+                        좋아요순
+                      </button>
+                    </li>
+                    <li className={idx === 2 ? "on" : ""}>
+                      <button
+                        onClick={() => {
+                          setIdx(2);
+                          setSortType("like_count");
+                        }}
+                      >
+                        오래된순
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

@@ -21,6 +21,9 @@ const Button = ({
   const [className, setClassName] = useState(`${width}-${color}-button`);
 
   useEffect(() => {
+    setClassName(`${width}-${color}-button`);
+  }, [color, width]);
+  useEffect(() => {
     if (disabled) {
       setClassName(`disabled-${width}-blue-button`);
     } else {

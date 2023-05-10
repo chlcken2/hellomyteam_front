@@ -162,14 +162,6 @@ const Main = () => {
       setLocalTitle(arrayData);
       setCurrentTeamTitle(arrayData?.[0].teamName);
 
-      // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
-
-      setUseUser({
-        ...useUser,
-        teamInfo: [...team.data],
-        selectedTeamId: localTitle?.[0].teamId,
-      });
-
       if (!flag) return;
       team.data.forEach((el, idx) => {
         // 가져온 배열에 새로운 데이터 추가 또는 기존 데이터 수정
@@ -185,6 +177,17 @@ const Main = () => {
     }
   }, [team]);
 
+  useEffect(() => {
+    // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
+
+    if (team && localTitle) {
+      setUseUser({
+        ...useUser,
+        teamInfo: [...team.data],
+        selectedTeamId: localTitle?.[0].teamId,
+      });
+    }
+  }, [team, localTitle]);
   return (
     <div className="main-wrap">
       <div className="main-buttons">

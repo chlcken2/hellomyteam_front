@@ -5,10 +5,17 @@ import ApiResponseType from "types/ApiResponseType";
 
 export const QUERY_KEY = "/board/boardId";
 
-const fetcher = (num: number, teamId: number, category: string, sortType: string) =>
+const fetcher = (
+  num: number,
+  teamId: number,
+  category: string,
+  sortType: string,
+  srchKwd: string,
+  srchType: string,
+) =>
   instance
     .get<ApiResponseType<boardListTypes>>(
-      `/api/teams/${teamId}/boards?category=${category}&pageNum=${num}&pageSize=10&sortType=${sortType}
+      `/api/teams/${teamId}/boards?category=${category}&pageNum=${num}&pageSize=10&sortType=${sortType}&srchKwd=${srchKwd}&srchType=${srchType}
     `,
     )
     .then(({ data }) => data);
@@ -22,8 +29,12 @@ const getBoardList = (
   teamId: number,
   category: string,
   sortType: string,
+  srchKwd: string,
+  srchType: string,
 ) => {
-  return useQuery([QUERY_KEY, teamId], () => fetcher(num, teamId, category, sortType));
+  return useQuery([QUERY_KEY, teamId], () =>
+    fetcher(num, teamId, category, sortType, srchKwd, srchType),
+  );
 };
 
 export default getBoardList;

@@ -22,10 +22,12 @@ const Board: FC = () => {
   const [flag, setFlag] = useState(false);
 
   const [boardName, setBoardName] = useState({
-    label: "자유게시판",
-    value: "FREE_BOARD",
+    label: "제목",
+    value: "title",
   });
 
+  const [searchType, setSearchType] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [inputValue, setInputValue] = useState("");
   // (4/27) selectedTeamId가 없을 경우 localStorage에서 가져오게
   const {
@@ -37,6 +39,8 @@ const Board: FC = () => {
     user?.selectedTeamId || JSON.parse(localStorage.getItem("arrayData"))[0].teamId,
     "FREE_BOARD",
     sortType,
+    searchKeyword,
+    searchType,
   );
 
   useEffect(() => {
@@ -47,14 +51,28 @@ const Board: FC = () => {
 
   useEffect(() => {
     listRefetch();
-  }, [item, sortType]);
+  }, [item, sortType, searchKeyword, searchType]);
 
-  console.log(user);
   const option = [
-    { label: "자유게시판", value: "FREE_BOARD" },
-    { label: "공지게시판", value: "NOTICE_BOARD" },
+    { label: "제목", value: "title" },
+    { label: "내용", value: "contents" },
+    { label: "작성자", value: "writer" },
   ];
+  const handleInput = (e: any) => {
+    setInputValue(e.target.value);
+  };
 
+  const onEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setSearchKeyword(inputValue);
+    }
+  };
+
+  console.log(searchKeyword, inputValue);
+
+  useEffect(() => {
+    if (boardName) setSearchType(boardName.value);
+  }, [boardName]);
   return (
     <div>
       <section className="section-container">
@@ -67,14 +85,19 @@ const Board: FC = () => {
               </li>
               <li>
                 <Select
-                  placeholder="자유게시판"
+                  placeholder="제목"
                   options={option}
-                  defaultValue="FREE_BOARD"
+                  defaultValue="title"
                   onChange={(e) => setBoardName(e)}
                 />
               </li>
               <li>
-                <Input value={inputValue} />
+                <Input
+                  value={inputValue}
+                  placeholder="검색어 입력"
+                  onChange={handleInput}
+                  keyDownHandler={onEnterPress}
+                />
               </li>
               <li>
                 <div className="sort-box">

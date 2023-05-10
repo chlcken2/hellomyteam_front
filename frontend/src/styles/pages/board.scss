@@ -166,9 +166,10 @@
 .main-teams__wrap {
   &.board-list {
     position: absolute;
-    top: 5px;
+    top: 40px;
     right: 15%;
     .main-teams {
+      margin-top: 0;
       position: relative;
       width: auto;
       li {
@@ -177,6 +178,23 @@
     }
     button {
       text-align: left;
+    }
+  }
+}
+
+.option-box.board-input {
+  > ul {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    flex-shrink: 0;
+    > li {
+      &:first-child {
+        padding: 0 5px;
+      }
+    }
+    .select-control {
+      width: 150px;
     }
   }
 }

@@ -12,25 +12,39 @@ const CreateTeam: FC = () => {
   const img = process.env.PUBLIC_URL;
   const [name, setName] = useState("");
   const [text, setText] = useState("");
-  const [file, setFile] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [tactic, setTactic] = useState(null);
-  const [imageUrl, setImageUrl] = useState<any>("");
-  const [imageSize, setImageSize] = useState(0);
-  const [imageData, setImageData] = useState(null);
-  const [forms, setForms] = useState(new FormData());
-
+  const [file, setFile] = useState<any>(null);
   const user = useRecoilValue(UserState);
   const test = (e: any) => console.log(e);
   const handler = async (e: React.MouseEvent) => {
     e.preventDefault();
+
     const regex = /^\d+$/;
     if (regex.test(name)) return alert("숫자만 섞인 팀이름은 사용할 수 없습니다");
     if (name.length < 2 || name.length > 12)
       return alert("팀 이름은 2글자 이상 12글자 이하로 해주세요.");
+    const formData = new FormData();
+    formData.append("detailIntro", text);
 
+    formData.append("memberId", user.id.toString());
+    formData.append("oneIntro", text);
+    formData.append("teamName", name);
+    formData.append("tacticalStyleStatus", tactic.value);
+
+    if (file) {
+      const fileData = new Blob([file], { type: "image/png" }); // Blob 객체 생성
+      formData.append("image", fileData, "file.png"); // Blob 객체를 FormData에 추가
+      formData.append("name", name);
+    }
+
+    console.log(Array.from(formData.entries()));
     try {
-      const save = await instance.post("/api/team", forms);
+      const save = await instance.post("/api/team", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       console.log(save);
     } catch (err) {
@@ -38,23 +52,23 @@ const CreateTeam: FC = () => {
     }
   };
 
-  console.log(forms);
-
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    if (file.type !== "image/png") {
+      alert("이미지는 png 파일만 가능합니다.");
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (event) => {
       if (event.target?.result && typeof event.target.result === "string") {
         const img = new Image();
         img.onload = () => {
-          setImageUrl(event.target.result);
-          setImageSize(file.size);
           // 이미지 용량 체크를 여기서 수행합니다.
           if (file.size <= 1024 * 1024) {
             console.log("이미지 용량이 올바릅니다.");
             setFile(file.name);
-            setImageData(file);
           } else {
             alert("이미지 용량이 너무 큽니다.");
           }

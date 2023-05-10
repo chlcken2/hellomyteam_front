@@ -11,6 +11,8 @@ interface NotiType {
   joinHandler?: () => void;
   teamId?: number;
   isTeamJoined: boolean;
+  buttonText: string;
+  buttonColor?: "blue" | "white";
 }
 
 const img = process.env.PUBLIC_URL;
@@ -22,6 +24,8 @@ const TeamCard = ({
   imageUrl,
   teamId,
   isTeamJoined,
+  buttonText,
+  buttonColor,
   joinHandler,
 }: NotiType) => {
   return (
@@ -48,12 +52,14 @@ const TeamCard = ({
         </div>
       </div>
       <div className="team-card-join-button">
-        <Button
-          text={isTeamJoined ? "가입취소" : "가입"}
-          width="fullWidth"
-          handler={joinHandler}
-          color={isTeamJoined ? "white" : "blue"}
-        />
+        {!isTeamJoined && (
+          <Button
+            text={buttonText}
+            width="fullWidth"
+            handler={joinHandler}
+            color={buttonColor}
+          />
+        )}
       </div>
     </div>
   );

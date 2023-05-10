@@ -1,3 +1,4 @@
+// color
 $black: #1d1d1d;
 $white: #ffffff;
 $blue-100: #f8fafd;
@@ -15,3 +16,13 @@ $green-200: #309c49;
 $main-blue-50: #b4c4ff;
 $main-blue-100: #5e81ff;
 $main-blue-200: #335cec;
+
+// box shadow
+$shadow-M1: 0px 2px 4px rgba(14, 31, 53, 0.06), 0px 6px 12px rgba(14, 31, 53, 0.08),
+  0px 12px 20px rgba(14, 31, 53, 0.06);
+$shadow-M2: 0px 3px 6px rgba(14, 31, 53, 0.08), 0px 6px 12px rgba(14, 31, 53, 0.12),
+  0px 14px 24px rgba(14, 31, 53, 0.08);
+$shadow-M3: 0px 4px 8px rgba(14, 31, 53, 0.1), 0px 8px 16px rgba(14, 31, 53, 0.16),
+  0px 16px 28px -1px rgba(14, 31, 53, 0.1);
+$shadow-M4: 0px 6px 10px rgba(14, 31, 53, 0.12), 0px 12px 18px rgba(14, 31, 53, 0.2),
+  0px 20px 40px -1px rgba(14, 31, 53, 0.12);

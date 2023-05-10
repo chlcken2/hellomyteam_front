@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { menuClassName } from "utils/common";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import getTeamInfo from "quires/team/getTeamInfo";
@@ -97,11 +98,12 @@ const Main = () => {
     }
   }, [useUser]);
 
-  const menuClassName = (menuPath: string) => {
-    if (menuPath === "" && pathname === "/") return "active";
-    if (menuPath !== "" && pathname.indexOf(menuPath) !== -1) return "active";
-    return "";
-  };
+  // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
+  useEffect(() => {
+    if (team?.data) {
+      setUseUser({ ...useUser, teamInfo: [...team.data] });
+    }
+  }, [team]);
 
   // 모바일 홈 탭바 인터랙션 관련 코드
   const handleMenuItemInteraction = () => {
@@ -249,7 +251,7 @@ const Main = () => {
             }}
           />
           {MENU.map((menuItem, idx) => (
-            <li key={idx} className={menuClassName(menuItem.path)}>
+            <li key={idx} className={menuClassName(menuItem.path, "active")}>
               <Link to={`/${menuItem.path}`}>{menuItem.name}</Link>
             </li>
           ))}

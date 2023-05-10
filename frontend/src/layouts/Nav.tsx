@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { menuClassName } from "utils/common";
+
+const homePathname = ["/", "/notice", "/board", "/team"];
+const searchTeamPathname = ["/search"];
+const alarmPathname = ["/alarm"];
+const profilePathname = ["/profile"];
 
 const Nav = () => {
-  const [on, setOn] = useState(0);
   const style = {
     backgroundColor: "#F4F6FB",
   };
   return (
     <header>
       <ul>
-        <li
-          className={`btn ${on === 0 ? "active" : ""}`}
-          onKeyDown={() => setOn(0)}
-          onClick={() => setOn(0)}
-        >
-          <Link to="/">
+        <li className={`btn ${menuClassName(homePathname, "active")}`}>
+          <NavLink to="/" style={({ isActive }) => (isActive ? style : {})}>
             <span className="wrap">
               <span>
                 <svg
@@ -28,14 +28,10 @@ const Nav = () => {
               </span>
               <span>홈</span>
             </span>
-          </Link>
+          </NavLink>
         </li>
-        <li
-          className={`btn ${on === 1 ? "active" : ""}`}
-          onKeyDown={() => setOn(1)}
-          onClick={() => setOn(1)}
-        >
-          <Link to="/search">
+        <li className={`btn ${menuClassName(searchTeamPathname, "active")}`}>
+          <NavLink to="/search" style={({ isActive }) => (isActive ? style : {})}>
             <span className="wrap">
               <span>
                 <svg
@@ -53,13 +49,9 @@ const Nav = () => {
               </span>
               <span>팀 찾기</span>
             </span>
-          </Link>
+          </NavLink>
         </li>
-        <li
-          className={`btn ${on === 2 ? "active" : ""}`}
-          onKeyDown={() => setOn(2)}
-          onClick={() => setOn(2)}
-        >
+        <li className={`btn ${menuClassName(alarmPathname, "active")}`}>
           <NavLink to="/alarm" style={({ isActive }) => (isActive ? style : {})}>
             <span className="wrap">
               <span>
@@ -80,11 +72,7 @@ const Nav = () => {
             </span>
           </NavLink>
         </li>
-        <li
-          className={`btn ${on === 3 ? "active" : ""}`}
-          onKeyDown={() => setOn(3)}
-          onClick={() => setOn(3)}
-        >
+        <li className={`btn ${menuClassName(profilePathname, "active")}`}>
           <NavLink to="/profile" style={({ isActive }) => (isActive ? style : {})}>
             <span className="wrap">
               <span>

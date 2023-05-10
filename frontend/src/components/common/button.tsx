@@ -26,7 +26,7 @@ const Button = ({
     } else {
       setClassName(`${width}-${color}-button`);
     }
-  }, [disabled]);
+  }, [disabled, color]);
 
   return (
     <button onClick={(e) => handler(e)} className={className} disabled={disabled}>

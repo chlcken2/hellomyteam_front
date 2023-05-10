@@ -111,7 +111,6 @@ const FindTeam = () => {
   }, [hasNextPage]);
 
   const handleJoinButton = (teamId: number, memberAuthority: MemberAuthorityType) => {
-    console.log(memberAuthority);
     if (memberAuthority === "WAIT") {
       useJoinTeamCancel(teamId, userState.id);
       setToastModal({

@@ -97,9 +97,14 @@ const Board: FC = () => {
       const currentValue = cookies.keyword || [];
       const newValue = [inputValue, ...currentValue];
       setCookie("keyword", newValue, { path: "/", expires });
+      setOpenTab(true);
+      setSearchKeyword(inputValue);
+      setBoardName({ label: "제목", value: "title" });
+      setSearchType("title");
     }
   };
 
+  console.log(inputValue);
   const handleMobile = () => {
     // setMoFlag(!moFlag);
     if (open) {
@@ -134,6 +139,28 @@ const Board: FC = () => {
       // setMoTotalPage
     }
   }, [list, searchType, openTab]);
+
+  useEffect(() => {
+    const windowWidth = window.innerWidth;
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+
+    const handleMediaQueryChange = (event: any) => {
+      if (event.matches && cookies.keyword.length) {
+        setOpenSearch(true);
+      } else setOpenSearch(false);
+    };
+
+    if (windowWidth <= 767 && cookies.keyword.length) {
+      setOpenSearch(true);
+    } else {
+      setOpenSearch(false);
+    }
+    mediaQuery.addListener(handleMediaQueryChange);
+
+    return () => {
+      mediaQuery.removeListener(handleMediaQueryChange);
+    };
+  }, []);
 
   return (
     <div>

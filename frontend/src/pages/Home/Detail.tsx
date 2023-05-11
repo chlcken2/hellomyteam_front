@@ -1,5 +1,11 @@
 import React, { FC, useEffect, useState, useRef, useMemo } from "react";
-import { Link, useParams, useLocation, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useParams,
+  useLocation,
+  useSearchParams,
+  useNavigate,
+} from "react-router-dom";
 import Button from "components/common/button";
 import Comment from "components/common/Comment";
 import getBoardDetail from "quires/board/getBoardDetail";
@@ -17,6 +23,7 @@ const TEMP_TEAM_MEMBER_INFO_ID = 148;
 const Detail: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const likeCount = searchParams.get("likeCount");
+  const navi = useNavigate();
   const param = useParams();
   const img = process.env.PUBLIC_URL;
   const user = useRecoilValue(UserState);
@@ -151,9 +158,9 @@ const Detail: FC = () => {
       {/* Boad Part Start */}
       {!load && detail && (
         <div className="board">
-          <Link to="/board" className="back-button">
+          <button onClick={() => navi(-1)} className="back-button">
             <img src={`${img}/common/ChevronLeftOutline.png`} alt="" />
-          </Link>
+          </button>
           <div className="board-content">
             <h2>{info.title}</h2>
             <div className="user">

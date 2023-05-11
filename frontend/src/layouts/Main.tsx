@@ -5,6 +5,7 @@ import { useRecoilState } from "recoil";
 import getTeamInfo from "quires/team/getTeamInfo";
 import { teamMemberId } from "quires/team/getTeamMemberId";
 import Button from "components/common/button";
+import { useCookies } from "react-cookie"; // useCookies import
 import UserState from "../recoil/userAtom";
 import "styles/pages/home.scss";
 import "styles/layouts/main.scss";
@@ -25,6 +26,8 @@ const MENU = [
 ];
 
 const Main = () => {
+  const [cookies, setCookie, removeCookie] = useCookies(["keyword"]);
+
   const [isClicked, setIsClicked] = useState(0);
 
   const handleClick = (idx: number) => {
@@ -188,6 +191,7 @@ const Main = () => {
       });
     }
   }, [team, localTitle]);
+
   return (
     <div className="main-wrap">
       <div className="main-buttons">

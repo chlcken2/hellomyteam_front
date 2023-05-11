@@ -7,8 +7,11 @@ import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
 import Select from "components/common/Select";
 import Input from "components/common/Input";
+import { useCookies } from "react-cookie"; // useCookies import
 
 const Board: FC = () => {
+  const [cookies, setCookie, removeCookie] = useCookies(["keyword"]);
+
   const path = process.env.PUBLIC_URL;
   const reg = /<[^>]*>?/g;
   const user = useRecoilValue(UserState);
@@ -29,6 +32,7 @@ const Board: FC = () => {
   const [searchType, setSearchType] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [inputValue, setInputValue] = useState("");
+
   // (4/27) selectedTeamId가 없을 경우 localStorage에서 가져오게
   const {
     data: list,
@@ -43,6 +47,31 @@ const Board: FC = () => {
     searchType,
   );
 
+  const [moFlag, setMoFlag] = useState("small");
+  const [open, setOpen] = useState(false);
+  const [moInput, setMoInput] = useState("");
+  const [openSearch, setOpenSearch] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    console.log(mediaQuery);
+
+    const handleMediaQueryChange = (event: any) => {
+      if (event.matches) {
+        setMoFlag("small");
+      } else {
+        setMoFlag("large");
+      }
+    };
+
+    mediaQuery.addListener(handleMediaQueryChange);
+
+    return () => {
+      mediaQuery.removeListener(handleMediaQueryChange);
+    };
+  }, []);
+
+  console.log(moFlag);
   useEffect(() => {
     if (listLoad) return;
     setTotalItem(list?.data.totalElements);
@@ -58,29 +87,110 @@ const Board: FC = () => {
     { label: "내용", value: "contents" },
     { label: "작성자", value: "writer" },
   ];
-  const handleInput = (e: any) => {
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
   const onEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setSearchKeyword(inputValue);
+      const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7일 후
+      const currentValue = cookies.keyword || [];
+      const newValue = [inputValue, ...currentValue];
+      setCookie("keyword", newValue, { path: "/", expires });
     }
   };
 
-  console.log(searchKeyword, inputValue);
+  const handleMobile = () => {
+    // setMoFlag(!moFlag);
+    if (open) {
+      setOpenSearch(true);
+    } else {
+      setOpenSearch(false);
+    }
+  };
+
+  const removeCookieData = (el: string) => {
+    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7일 후
+
+    const arr = cookies.keyword.filter((element: string) => element !== el);
+    setCookie("keyword", arr, { path: "/", expires });
+  };
 
   useEffect(() => {
     if (boardName) setSearchType(boardName.value);
   }, [boardName]);
+
+  useEffect(() => {
+    if (moFlag === "small") {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  }, [moFlag]);
+
+  console.log(cookies.keyword);
   return (
     <div>
-      <section className="section-container">
-        <div className="section-top">
-          <h2>자유게시판</h2>
-          <div className="option-box board-input">
+      {openSearch && (
+        <div className="mo-search">
+          <div className="search-top">
+            <Input
+              value={inputValue}
+              placeholder="검색어 입력"
+              onChange={handleInput}
+              keyDownHandler={onEnterPress}
+            />
+            <button onClick={() => setOpenSearch(false)}>
+              <img src={`${path}/common/close.png`} alt="닫기" />
+            </button>
+          </div>
+          <div className="search-bottom">
             <ul>
               <li>
+                <button disabled>최근검색어</button>
+              </li>
+              <li>
+                <button>전체삭제</button>
+              </li>
+            </ul>
+            <div className="search-bottom__content">
+              {/* <div className="no-content">
+              <p>최근 검색어 내역이 없습니다.</p>
+            </div> */}
+              <ul className="search-list">
+                {/* <li>
+                <span>test</span>{" "}
+                <button>
+                  <img src={`${path}/common/close.png`} alt="닫기" />
+                </button>
+              </li>
+              <li>
+                <span>test</span>{" "}
+                <button>
+                  <img src={`${path}/common/close.png`} alt="닫기" />
+                </button>
+              </li> */}
+                {cookies.keyword.map((el: any, idx: number) => {
+                  return (
+                    <li key={idx}>
+                      <span>{el}</span>
+                      <button onClick={() => removeCookieData(el)}>
+                        <img src={`${path}/common/close.png`} alt="제거하기" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+      <section className="section-container">
+        <div className="section-top">
+          <h2>자유게시판 </h2>
+          <div className="option-box board-input">
+            <ul>
+              <li onClick={handleMobile} onKeyDown={handleMobile}>
                 <img src={`${path}/icons/board-search.png`} alt="" />
               </li>
               <li>

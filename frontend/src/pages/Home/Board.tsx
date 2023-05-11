@@ -32,6 +32,9 @@ const Board: FC = () => {
   const [searchType, setSearchType] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [inputValue, setInputValue] = useState("");
+  const [openTab, setOpenTab] = useState(false);
+  const [moTotalPage, setMoTotalPage] = useState(0);
+  const [moIdx, setMoIdx] = useState(0);
 
   // (4/27) selectedTeamId가 없을 경우 localStorage에서 가져오게
   const {
@@ -49,12 +52,10 @@ const Board: FC = () => {
 
   const [moFlag, setMoFlag] = useState("small");
   const [open, setOpen] = useState(false);
-  const [moInput, setMoInput] = useState("");
   const [openSearch, setOpenSearch] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
-    console.log(mediaQuery);
 
     const handleMediaQueryChange = (event: any) => {
       if (event.matches) {
@@ -71,7 +72,6 @@ const Board: FC = () => {
     };
   }, []);
 
-  console.log(moFlag);
   useEffect(() => {
     if (listLoad) return;
     setTotalItem(list?.data.totalElements);
@@ -128,7 +128,13 @@ const Board: FC = () => {
     }
   }, [moFlag]);
 
-  console.log(cookies.keyword);
+  useEffect(() => {
+    if (list?.data.content) {
+      setMoTotalPage(list?.data.content.length);
+      // setMoTotalPage
+    }
+  }, [list, searchType, openTab]);
+
   return (
     <div>
       {openSearch && (
@@ -140,57 +146,85 @@ const Board: FC = () => {
               onChange={handleInput}
               keyDownHandler={onEnterPress}
             />
-            <button onClick={() => setOpenSearch(false)}>
+            <button
+              onClick={() => {
+                setOpenSearch(false);
+                setOpenTab(false);
+              }}
+            >
               <img src={`${path}/common/close.png`} alt="닫기" />
             </button>
           </div>
-          <div className="search-bottom">
-            <ul>
-              <li>
-                <button disabled>최근검색어</button>
-              </li>
-              <li>
-                <button>전체삭제</button>
-              </li>
-            </ul>
-            <div className="search-bottom__content">
-              {/* <div className="no-content">
-              <p>최근 검색어 내역이 없습니다.</p>
-            </div> */}
-              <ul className="search-list">
-                {/* <li>
-                <span>test</span>{" "}
-                <button>
-                  <img src={`${path}/common/close.png`} alt="닫기" />
-                </button>
-              </li>
-              <li>
-                <span>test</span>{" "}
-                <button>
-                  <img src={`${path}/common/close.png`} alt="닫기" />
-                </button>
-              </li> */}
-                {cookies.keyword.map((el: any, idx: number) => {
+          {openTab && (
+            <ul className="open-tab">
+              {[{ title: "제목" }, { content: "내용" }, { writer: "작성자" }].map(
+                (el: any, idx: number) => {
+                  const keys = Object.keys(el)[0];
                   return (
-                    <li key={idx}>
-                      <span>{el}</span>
-                      <button onClick={() => removeCookieData(el)}>
-                        <img src={`${path}/common/close.png`} alt="제거하기" />
+                    <li key={idx} className={moIdx === idx ? "on" : ""}>
+                      <button
+                        onClick={() => {
+                          // setBoardName({ label: el[keys], value: keys });
+                          setSearchType(keys);
+                          setMoIdx(idx);
+                        }}
+                      >
+                        {el[keys]}
                       </button>
                     </li>
                   );
-                })}
+                },
+              )}
+            </ul>
+          )}
+          {!openTab && (
+            <div className="search-bottom">
+              <ul>
+                <li>
+                  <button disabled>최근검색어</button>
+                </li>
+                <li>
+                  <button>전체삭제</button>
+                </li>
               </ul>
+              <div className="search-bottom__content">
+                {!cookies.keyword.length && (
+                  <div className="no-content">
+                    <p>최근 검색어 내역이 없습니다.</p>
+                  </div>
+                )}
+                <ul className="search-list">
+                  {cookies.keyword.map((el: string, idx: number) => {
+                    return (
+                      <li key={idx}>
+                        <button
+                          onClick={() => {
+                            setBoardName({ label: "제목", value: "title" });
+                            setSearchKeyword(el);
+                            setOpenTab(true);
+                            setInputValue(el);
+                          }}
+                        >
+                          <span>{el}</span>
+                        </button>
+                        <button onClick={() => removeCookieData(el)}>
+                          <img src={`${path}/common/close.png`} alt="제거하기" />
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
       <section className="section-container">
-        <div className="section-top">
-          <h2>자유게시판 </h2>
+        <div className={`section-top  ${openTab ? "search-sort__mo" : ""}`}>
+          <h2>자유게시판 {openTab && `검색결과 ${moTotalPage}건`}</h2>
           <div className="option-box board-input">
             <ul>
-              <li onClick={handleMobile} onKeyDown={handleMobile}>
+              <li className="search-icon" onClick={handleMobile} onKeyDown={handleMobile}>
                 <img src={`${path}/icons/board-search.png`} alt="" />
               </li>
               <li>

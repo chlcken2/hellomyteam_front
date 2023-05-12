@@ -1,7 +1,13 @@
 import React, { FC, useEffect, useState, useRef, useMemo } from "react";
-import { Link, useParams, useLocation, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useParams,
+  useLocation,
+  useSearchParams,
+  useNavigate,
+} from "react-router-dom";
 import Button from "components/common/button";
-import Comment from "components/common/comment";
+import Comment from "components/common/Comment";
 import getBoardDetail from "quires/board/getBoardDetail";
 import Input from "components/common/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";
@@ -17,6 +23,7 @@ const TEMP_TEAM_MEMBER_INFO_ID = 148;
 const Detail: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const likeCount = searchParams.get("likeCount");
+  const navi = useNavigate();
   const param = useParams();
   const img = process.env.PUBLIC_URL;
   const user = useRecoilValue(UserState);
@@ -24,7 +31,10 @@ const Detail: FC = () => {
   const [likeBoolean, setLikeBoolean] = useState(false);
   /* Board Part Start */
 
-  const { data: detail } = getBoardDetail(user.selectedTeamId, Number(param.id));
+  const { data: detail } = getBoardDetail(
+    JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+    Number(param.id),
+  );
   const {
     mutate: likeMutate,
     isLoading: load,
@@ -39,29 +49,33 @@ const Detail: FC = () => {
   });
 
   const handleLikes = async () => {
-    await teamMemberId(user.selectedTeamId, user.id).then((res) => {
+    await teamMemberId(
+      JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+      Number(JSON.stringify(localStorage.getItem("userId"))) || user.id,
+    ).then((res) => {
       likeMutate({
         boardId: Number(param.id),
         teamMemberInfoId: res.data.data,
-        teamId: user.selectedTeamId,
+        teamId: JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
       });
     });
   };
 
   useEffect(() => {
-    teamMemberId(user.selectedTeamId, user.id).then((res) => {
+    teamMemberId(
+      JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+      Number(JSON.parse(localStorage.getItem("userId"))) || user.id,
+    ).then((res) => {
       setInfoId(res.data.data);
     });
   }, []);
-
-  console.log(likeBoolean, likeCount);
 
   useEffect(() => {
     if (likeBoolean)
       likeMutate({
         boardId: Number(param.id),
         teamMemberInfoId: infoId,
-        teamId: user.selectedTeamId,
+        teamId: JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
       });
   }, [infoId, likeBoolean]);
 
@@ -74,8 +88,6 @@ const Detail: FC = () => {
       });
     }
   }, [detail]);
-  console.log(LikeData);
-
   /* Board Part End */
 
   /* Comment part Start */
@@ -151,9 +163,9 @@ const Detail: FC = () => {
       {/* Boad Part Start */}
       {!load && detail && (
         <div className="board">
-          <Link to="/board" className="back-button">
+          <button onClick={() => navi(-1)} className="back-button">
             <img src={`${img}/common/ChevronLeftOutline.png`} alt="" />
-          </Link>
+          </button>
           <div className="board-content">
             <h2>{info.title}</h2>
             <div className="user">

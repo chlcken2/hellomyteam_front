@@ -67,7 +67,7 @@ const FindTeam = () => {
     isLoading: teamListIsLoading,
     hasNextPage,
   } = useInfiniteTeamListQuery(userState && userState.id);
-        
+
   const onEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       searchTeamListRefetch().then((data) =>

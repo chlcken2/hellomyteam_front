@@ -183,6 +183,8 @@
 }
 
 .option-box.board-input {
+  border-radius: 8px;
+  border: 1px solid $gray-100;
   > ul {
     display: flex;
     gap: 3px;
@@ -192,15 +194,23 @@
       &:first-child {
         padding: 0 5px;
       }
+      &.search-icon {
+        padding: 0 10px;
+      }
     }
     .select-control {
       width: 100px;
+      box-shadow: none;
+    }
+    .input-wrapper {
+      box-shadow: none;
     }
   }
 }
 
 @media all and (max-width: 767px) {
   .option-box.board-input {
+    border: none;
     > ul {
       > li:first-child {
         margin-right: 15px;

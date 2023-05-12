@@ -31,7 +31,10 @@ const Detail: FC = () => {
   const [likeBoolean, setLikeBoolean] = useState(false);
   /* Board Part Start */
 
-  const { data: detail } = getBoardDetail(user.selectedTeamId, Number(param.id));
+  const { data: detail } = getBoardDetail(
+    JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+    Number(param.id),
+  );
   const {
     mutate: likeMutate,
     isLoading: load,
@@ -46,29 +49,33 @@ const Detail: FC = () => {
   });
 
   const handleLikes = async () => {
-    await teamMemberId(user.selectedTeamId, user.id).then((res) => {
+    await teamMemberId(
+      JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+      Number(JSON.stringify(localStorage.getItem("userId"))) || user.id,
+    ).then((res) => {
       likeMutate({
         boardId: Number(param.id),
         teamMemberInfoId: res.data.data,
-        teamId: user.selectedTeamId,
+        teamId: JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
       });
     });
   };
 
   useEffect(() => {
-    teamMemberId(user.selectedTeamId, user.id).then((res) => {
+    teamMemberId(
+      JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+      Number(JSON.parse(localStorage.getItem("userId"))) || user.id,
+    ).then((res) => {
       setInfoId(res.data.data);
     });
   }, []);
-
-  console.log(likeBoolean, likeCount);
 
   useEffect(() => {
     if (likeBoolean)
       likeMutate({
         boardId: Number(param.id),
         teamMemberInfoId: infoId,
-        teamId: user.selectedTeamId,
+        teamId: JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
       });
   }, [infoId, likeBoolean]);
 
@@ -81,8 +88,6 @@ const Detail: FC = () => {
       });
     }
   }, [detail]);
-  console.log(LikeData);
-
   /* Board Part End */
 
   /* Comment part Start */

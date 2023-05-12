@@ -45,8 +45,6 @@ const Pagination = ({ setItem, item, totalItem, totalPage }: pageProps) => {
     }
   }, [page]);
 
-  console.log(count, page);
-
   return (
     <div className="paging">
       {/* <button disabled={page === 1} onClick={handleClickFirstPage}>
@@ -61,7 +59,7 @@ const Pagination = ({ setItem, item, totalItem, totalPage }: pageProps) => {
       {Array(totalPage > 1 ? 3 : 1)
         .fill(0)
         .map((_, index) => {
-          if (index + num < totalPage) {
+          if (index + num < totalPage || totalPage === 0) {
             return (
               <button
                 key={index}

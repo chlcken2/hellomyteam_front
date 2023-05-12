@@ -39,12 +39,16 @@ const Main = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [useUser, setUseUser] = useRecoilState(UserState);
   // userId 리턴해야하므로 리코일값을 가져와야한다 (4/27)
-  const [userId, setUserId] = useState(useUser?.id);
+  const [userId, setUserId] = useState(
+    Number(JSON.stringify(localStorage.getItem("userId"))) || useUser?.id,
+  );
   const [flag, setFlag] = useState(false);
 
   const [showTeamsModal, setShowTeamsModal] = useState(false);
   // User가 가입한 team list fetch (param - memberId)
-  const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(userId);
+  const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(
+    Number(JSON.parse(localStorage.getItem("userId"))) || userId,
+  );
 
   // 모바일 탭바의 menuItem 배경 인터렉션관련 스타일 state
   const [menuItemBackgroundStyle, setMenuItemBackgroundStyle] = useState({
@@ -91,6 +95,7 @@ const Main = () => {
         teamMemberInfoId: res.data.data,
         selectedTeamId: filtered[0].teamId,
       });
+      localStorage.setItem("selectedTeamId", filtered[0].teamId);
     });
   };
 
@@ -189,6 +194,7 @@ const Main = () => {
         teamInfo: [...team.data],
         selectedTeamId: localTitle?.[0].teamId,
       });
+      localStorage.setItem("selectedTeamId", localTitle?.[0].teamId.toString());
     }
   }, [team, localTitle]);
 

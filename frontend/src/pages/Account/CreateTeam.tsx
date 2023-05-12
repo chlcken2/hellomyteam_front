@@ -38,15 +38,12 @@ const CreateTeam: FC = () => {
       formData.append("name", name);
     }
 
-    console.log(Array.from(formData.entries()));
     try {
       const save = await instance.post("/api/team", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      console.log(save);
     } catch (err) {
       console.log(err);
     }

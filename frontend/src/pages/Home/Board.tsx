@@ -12,6 +12,7 @@ import { useCookies } from "react-cookie"; // useCookies import
 const Board: FC = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["keyword"]);
 
+  const searchRef = useRef<HTMLInputElement>(null);
   const path = process.env.PUBLIC_URL;
   const reg = /<[^>]*>?/g;
   const user = useRecoilValue(UserState);
@@ -35,7 +36,7 @@ const Board: FC = () => {
   const [openTab, setOpenTab] = useState(false);
   const [moTotalPage, setMoTotalPage] = useState(0);
   const [moIdx, setMoIdx] = useState(0);
-
+  const [changeSearch, setChangeSearch] = useState(false);
   // (4/27) selectedTeamId가 없을 경우 localStorage에서 가져오게
   const {
     data: list,
@@ -94,17 +95,17 @@ const Board: FC = () => {
   const onEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7일 후
-      const currentValue = cookies.keyword || [];
+      const currentValue = cookies?.keyword || [];
       const newValue = [inputValue, ...currentValue];
       setCookie("keyword", newValue, { path: "/", expires });
       setOpenTab(true);
       setSearchKeyword(inputValue);
       setBoardName({ label: "제목", value: "title" });
       setSearchType("title");
+      searchRef.current.focus();
     }
   };
 
-  console.log(inputValue);
   const handleMobile = () => {
     // setMoFlag(!moFlag);
     if (open) {
@@ -117,7 +118,7 @@ const Board: FC = () => {
   const removeCookieData = (el: string) => {
     const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7일 후
 
-    const arr = cookies.keyword.filter((element: string) => element !== el);
+    const arr = cookies?.keyword.filter((element: string) => element !== el);
     setCookie("keyword", arr, { path: "/", expires });
   };
 
@@ -145,15 +146,25 @@ const Board: FC = () => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
 
     const handleMediaQueryChange = (event: any) => {
-      if (event.matches && cookies.keyword.length) {
+      if (event.matches && cookies?.keyword?.length) {
         setOpenSearch(true);
-      } else setOpenSearch(false);
+        setOpenTab(true);
+        setChangeSearch(true);
+      } else {
+        setOpenSearch(false);
+        setOpenTab(false);
+        setChangeSearch(false);
+      }
     };
 
-    if (windowWidth <= 767 && cookies.keyword.length) {
+    if (windowWidth <= 767 && cookies?.keyword?.length) {
       setOpenSearch(true);
+      setOpenTab(true);
+      setChangeSearch(true);
     } else {
       setOpenSearch(false);
+      setOpenTab(false);
+      setChangeSearch(false);
     }
     mediaQuery.addListener(handleMediaQueryChange);
 
@@ -172,11 +183,13 @@ const Board: FC = () => {
               placeholder="검색어 입력"
               onChange={handleInput}
               keyDownHandler={onEnterPress}
+              inputRef={searchRef}
             />
             <button
               onClick={() => {
                 setOpenSearch(false);
                 setOpenTab(false);
+                setChangeSearch(false);
               }}
             >
               <img src={`${path}/common/close.png`} alt="닫기" />
@@ -211,17 +224,23 @@ const Board: FC = () => {
                   <button disabled>최근검색어</button>
                 </li>
                 <li>
-                  <button>전체삭제</button>
+                  <button
+                    onClick={() => {
+                      removeCookie("keyword", { path: "/" });
+                    }}
+                  >
+                    전체삭제
+                  </button>
                 </li>
               </ul>
               <div className="search-bottom__content">
-                {!cookies.keyword.length && (
+                {!cookies?.keyword?.length && (
                   <div className="no-content">
                     <p>최근 검색어 내역이 없습니다.</p>
                   </div>
                 )}
                 <ul className="search-list">
-                  {cookies.keyword.map((el: string, idx: number) => {
+                  {cookies?.keyword?.map((el: string, idx: number) => {
                     return (
                       <li key={idx}>
                         <button
@@ -247,7 +266,7 @@ const Board: FC = () => {
         </div>
       )}
       <section className="section-container">
-        <div className={`section-top  ${openTab ? "search-sort__mo" : ""}`}>
+        <div className={`section-top  ${changeSearch ? "search-sort__mo" : ""}`}>
           <h2>자유게시판 {openTab && `검색결과 ${moTotalPage}건`}</h2>
           <div className="option-box board-input">
             <ul>

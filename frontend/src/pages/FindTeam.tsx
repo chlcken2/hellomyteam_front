@@ -3,7 +3,7 @@ import Input from "components/common/Input";
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import "../styles/components/common.scss";
 import "../styles/pages/findTeam.scss";
-import useInfiniteTeamListQuery, { TeamListType } from "quires/team/useTeamList";
+import useInfiniteTeamListQuery from "quires/team/useTeamList";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import UserState from "recoil/userAtom";
 import { Ring } from "@uiball/loaders";
@@ -14,11 +14,12 @@ import { TeamCardContentsType } from "types/teamCardType";
 import useOutsideClick from "hooks/useOutsideClick";
 import Toast from "components/common/Toast";
 import ToastState from "recoil/toastAtom";
-import useMemberId from "hooks/useMemberId";
+import { useLocation, useNavigate } from "react-router-dom";
+import joinedTeamsAtom from "recoil/joinedTeams";
 
 const img = process.env.PUBLIC_URL;
 
-type MemberAuthorityType = "WAIT" | "NORMAL" | null;
+type MemberAuthorityType = "WAIT" | null;
 type DropDownMenuType = "all" | "asc" | "desc";
 
 type ActionType =
@@ -44,16 +45,23 @@ const reducer = (state: TeamCardContentsType[], action: ActionType) => {
 };
 
 const FindTeam = () => {
+  const joinedTeams = useRecoilValue(joinedTeamsAtom);
   const userState = useRecoilValue(UserState);
   const setToastModal = useSetRecoilState(ToastState);
   const [dropDownMenuOpen, setDropDownMenuOpen] = useState<boolean>(false);
   const [dropDownUnit, setDropDownUnit] = useState<DropDownMenuType>("all");
   const [teamListState, teamListDispatch] = useReducer(reducer, []);
 
-  const bottomObserver = useRef(null);
-  const [value, setValue] = useState<string>("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get("contents");
+  const memberId = Number(localStorage.getItem("userId"));
+  const [value, setValue] = useState<string>(!searchQuery ? "" : searchQuery);
 
-  const teamJoinMuation = useTeamJoin(userState && userState.id);
+  const bottomObserver = useRef(null);
+
+  const teamJoinMuation = useTeamJoin(memberId);
 
   const {
     data: searchTeamListResponse,
@@ -66,26 +74,41 @@ const FindTeam = () => {
     fetchNextPage,
     isLoading: teamListIsLoading,
     hasNextPage,
-  } = useInfiniteTeamListQuery(userState && userState.id);
+  } = useInfiniteTeamListQuery(memberId);
 
   const onEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && value.length >= 2) {
+      navigate(`?contents=${value}`);
       searchTeamListRefetch().then((data) =>
         teamListDispatch({ type: "SET_TEAM_LIST", value: data.data.data }),
       );
     }
   };
 
+  useEffect(() => {
+    if (searchQuery) {
+      searchTeamListRefetch().then((data) =>
+        teamListDispatch({ type: "SET_TEAM_LIST", value: data.data.data }),
+      );
+    } else {
+      navigate("");
+      fetchNextPage().then((data) =>
+        teamListDispatch({
+          type: "SET_TEAM_LIST",
+          value: data.data.pages.flatMap((el) => el.data.data.content),
+        }),
+      );
+    }
+  }, [location.search]);
+
   const userJoinedTeam = useCallback(
     (teamId: number) => {
-      if (userState) {
-        return userState.termsAndCond.some((el) => el.id === teamId);
+      if (joinedTeams) {
+        return joinedTeams.some((el) => el.teamId === teamId);
       }
     },
-    [userState],
+    [joinedTeams],
   );
-
-  useMemberId(() => fetchNextPage());
 
   useEffect(() => {
     teamListDispatch({
@@ -119,7 +142,7 @@ const FindTeam = () => {
         type: "default",
       });
     }
-    if (!memberAuthority || memberAuthority === "NORMAL") {
+    if (!memberAuthority) {
       teamJoinMuation.mutate(teamId);
       if (!teamJoinMuation.error) {
         setToastModal({
@@ -138,7 +161,7 @@ const FindTeam = () => {
 
   const setButtonState = (state: MemberAuthorityType) => {
     if (state === "WAIT") return true;
-    if (!state || state === "NORMAL") return false;
+    if (!state) return false;
   };
 
   const teamCardComponent = useMemo(() => {
@@ -170,7 +193,7 @@ const FindTeam = () => {
         />
       );
     });
-  }, [dropDownUnit, teamListState]);
+  }, [dropDownUnit, teamListState, joinedTeams]);
 
   const drowDownRef = useOutsideClick({
     onClickOutside: () => {

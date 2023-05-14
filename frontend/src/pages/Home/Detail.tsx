@@ -7,7 +7,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import Button from "components/common/button";
-import Comment from "components/common/Comment";
+import Comment from "components/common/comment";
 import getBoardDetail from "quires/board/getBoardDetail";
 import Input from "components/common/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";

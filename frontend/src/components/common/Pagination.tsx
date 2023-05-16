@@ -6,9 +6,16 @@ interface pageProps {
   item: number;
   totalItem: number;
   totalPage: number;
+  scrollOpacity: boolean;
 }
 
-const Pagination = ({ setItem, item, totalItem, totalPage }: pageProps) => {
+const Pagination = ({
+  setItem,
+  item,
+  totalItem,
+  totalPage,
+  scrollOpacity,
+}: pageProps) => {
   const path = process.env.PUBLIC_URL;
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
@@ -46,7 +53,7 @@ const Pagination = ({ setItem, item, totalItem, totalPage }: pageProps) => {
   }, [page]);
 
   return (
-    <div className="paging">
+    <div className="paging" style={{ opacity: scrollOpacity ? 0 : 1 }}>
       {/* <button disabled={page === 1} onClick={handleClickFirstPage}>
         첫 페이지
       </button> */}

@@ -8,6 +8,7 @@ import { useRecoilValue } from "recoil";
 import Select from "components/common/Select";
 import Input from "components/common/Input";
 import { useCookies } from "react-cookie"; // useCookies import
+import { Ring } from "@uiball/loaders";
 
 const Board: FC = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["keyword"]);
@@ -37,6 +38,8 @@ const Board: FC = () => {
   const [moTotalPage, setMoTotalPage] = useState(0);
   const [moIdx, setMoIdx] = useState(0);
   const [changeSearch, setChangeSearch] = useState(false);
+  const [page, setPage] = useState(10);
+
   // (4/27) selectedTeamId가 없을 경우 localStorage에서 가져오게
   const {
     data: list,
@@ -49,14 +52,73 @@ const Board: FC = () => {
     sortType,
     searchKeyword,
     searchType,
+    page,
   );
 
   const [moFlag, setMoFlag] = useState("small");
   const [open, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
 
+  // 무한스크롤
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [scrollOpacity, setScrollOpacity] = useState(false);
+
+  const fetchData = () => {
+    setLoading(true);
+    listRefetch().then((res) => {
+      if (res.data.data) {
+        setLoading(false);
+        if (list.data) setData((prevData) => [...prevData, ...list.data.content]);
+        setPage((prevPage) => prevPage + 20);
+        setHasMore(res.data.data.content.length > 0);
+      }
+    });
+  };
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    if (changeSearch) {
+      setPage(20);
+    } else {
+      setPage(10);
+    }
+  }, [changeSearch]);
+
+  useEffect(() => {
+    if (changeSearch && page === 20) {
+      fetchData();
+    }
+  }, [page, changeSearch]);
+  const isScrollAtEnd = () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    const documentHeight = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+    );
+
+    return scrollTop + windowHeight >= documentHeight;
+  };
+
+  const handleScroll = () => {
+    const windowWidth = window.innerWidth;
+    // 스크롤 이벤트 핸들러
+    if (isScrollAtEnd() && windowWidth <= 768) {
+      if (!loading && hasMore) {
+        fetchData();
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [loading, hasMore]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
 
     const handleMediaQueryChange = (event: any) => {
       if (event.matches) {
@@ -143,28 +205,32 @@ const Board: FC = () => {
 
   useEffect(() => {
     const windowWidth = window.innerWidth;
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
 
     const handleMediaQueryChange = (event: any) => {
       if (event.matches && cookies?.keyword?.length) {
         setOpenSearch(true);
         setOpenTab(true);
         setChangeSearch(true);
+        setScrollOpacity(true);
       } else {
         setOpenSearch(false);
         setOpenTab(false);
         setChangeSearch(false);
+        setScrollOpacity(false);
       }
     };
 
-    if (windowWidth <= 767 && cookies?.keyword?.length) {
+    if (windowWidth <= 768 && cookies?.keyword?.length) {
       setOpenSearch(true);
       setOpenTab(true);
       setChangeSearch(true);
+      setScrollOpacity(true);
     } else {
       setOpenSearch(false);
       setOpenTab(false);
       setChangeSearch(false);
+      setScrollOpacity(false);
     }
     mediaQuery.addListener(handleMediaQueryChange);
 
@@ -338,7 +404,24 @@ const Board: FC = () => {
           </div>
         </div>
         <ul className="post-list">
+          {openSearch &&
+            data.map((el: any, idx: number) => (
+              <Link to={`/board/${el.id}?likeCount=${el.likeCount}`} key={idx}>
+                <PostItem
+                  title={el.title}
+                  content={el.contents.replace(reg, "")}
+                  commentCount={el.commentCount}
+                  likeCount={el.likeCount}
+                  createdAt={`${el.createdDate.split("T")[0]} ${
+                    el.createdDate.split("T")[1]
+                  }`}
+                  author={el.writer}
+                />
+              </Link>
+            ))}
+          {loading && <Ring size={36} lineWeight={4} speed={2} color="#5E81FF" />}
           {!listLoad &&
+            !openSearch &&
             list?.data.content.map((el: any, idx: number) => {
               return (
                 <Link to={`/board/${el.id}?likeCount=${el.likeCount}`} key={idx}>
@@ -356,12 +439,15 @@ const Board: FC = () => {
               );
             })}
         </ul>
-        <Pagination
-          setItem={setItem}
-          item={item}
-          totalItem={totalItem}
-          totalPage={totalPage}
-        />
+        {!openSearch && (
+          <Pagination
+            scrollOpacity={scrollOpacity}
+            setItem={setItem}
+            item={item}
+            totalItem={totalItem}
+            totalPage={totalPage}
+          />
+        )}
       </section>
     </div>
   );

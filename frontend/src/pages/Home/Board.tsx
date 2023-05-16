@@ -212,10 +212,12 @@ const Board: FC = () => {
         setOpenSearch(true);
         setOpenTab(true);
         setChangeSearch(true);
+        setScrollOpacity(true);
       } else {
         setOpenSearch(false);
         setOpenTab(false);
         setChangeSearch(false);
+        setScrollOpacity(false);
       }
     };
 

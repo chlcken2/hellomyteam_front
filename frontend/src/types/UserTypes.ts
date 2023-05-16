@@ -19,7 +19,7 @@ export interface userTypes {
 export interface joinTeamTypes {
   teamName: string;
   teamId: number;
-  imageUrl: string;
+  imageUrl: string | null;
 }
 
 export interface boardDetailTypes {

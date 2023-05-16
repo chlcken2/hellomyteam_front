@@ -52,10 +52,10 @@ const TeamListFetcher = (
   );
 };
 
-export const useInfiniteTeamListQuery = (memberId: number) => {
+const useInfiniteTeamListQuery = (memberId: number) => {
   return useInfiniteQuery(
     [QUERY_KEY, "list"],
-    ({ pageParam = 0 }) => TeamListFetcher(memberId, pageParam, 10, "SHUFFLE"),
+    ({ pageParam = 0 }) => TeamListFetcher(memberId, pageParam, 40, "SHUFFLE"),
     {
       getNextPageParam: ({
         data: {

@@ -5,7 +5,7 @@ import ApiResponseType from "types/ApiResponseType";
 
 export const QUERY_KEY = "/teams/memberId";
 
-const fetcher = (memberId: number) =>
+export const useTeamInfoFetcher = (memberId: number) =>
   instance
     .get<ApiResponseType<joinTeamTypes[]>>(`/api/user/teams/${memberId}`)
     .then(({ data }) => data);
@@ -15,7 +15,7 @@ const fetcher = (memberId: number) =>
  * @returns
  */
 const getTeamInfo = (memberId: number) => {
-  return useQuery([QUERY_KEY, memberId], () => fetcher(memberId));
+  return useQuery([QUERY_KEY, memberId], () => useTeamInfoFetcher(memberId));
 };
 
 export default getTeamInfo;

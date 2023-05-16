@@ -7,6 +7,6 @@ export interface TeamCardContentsType {
   memberCount: number;
   imageUrl: null | string;
   location: null | string;
-  member_authority: "WAIT" | "NORMAL" | null;
+  member_authority: "WAIT" | null;
   leader_authority: "LEADER" | "SUB_LEADER" | "TEAM_MEMBER";
 }

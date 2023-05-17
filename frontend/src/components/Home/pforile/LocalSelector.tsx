@@ -47,26 +47,24 @@ const LocalSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
   };
 
   const saveLocal = () => {
-    setProfileInfo((prev) => ({ ...prev, local: selectedLocalList }));
+    setProfileInfo((prev) => ({ ...prev, address: selectedLocalList }));
     setIsViewModal(false);
   };
 
   useEffect(() => {
     if (isViewModal && profileInfo) {
-      setSelectedLocalList([...profileInfo.local]);
+      setSelectedLocalList([...profileInfo.address]);
     } else {
       setSelectedLocalList([]);
     }
   }, [isViewModal, profileInfo]);
 
-  console.log(selectedLocalList, "selectedLocalList");
-
   return (
     <>
       <div className="selector-wrapper">
         <p>
-          {profileInfo.local.length > 0
-            ? profileInfo.local
+          {profileInfo.address.length > 0
+            ? profileInfo.address
                 .map((item) => `${item.title} - ${item.localName}`)
                 .join(", ")
             : "지역을 설정해주세요"}

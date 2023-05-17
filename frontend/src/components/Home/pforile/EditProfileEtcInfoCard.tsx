@@ -26,7 +26,7 @@ const EditProfileEtcInfoCard = ({
   handleProfileInfo,
 }: PropsType) => {
   const handleAlcoholSelect = (e: OptionType) => {
-    setProfileInfo((prev) => ({ ...prev, position: e.value }));
+    setProfileInfo((prev) => ({ ...prev, drinkingCapacity: e.value }));
   };
 
   return (
@@ -39,8 +39,8 @@ const EditProfileEtcInfoCard = ({
             <div className="input">
               <Input
                 type="number"
-                id="condition"
-                value={profileInfo.condition}
+                id="conditionIndicator"
+                value={profileInfo.conditionIndicator}
                 onChange={handleProfileInfo}
                 max={100}
                 min={0}

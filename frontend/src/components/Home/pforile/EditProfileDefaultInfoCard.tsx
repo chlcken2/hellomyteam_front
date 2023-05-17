@@ -45,8 +45,8 @@ const EditProfileDefaultInfoCard = ({
           <div className="content">
             <div className="input">
               <Input
-                id="intro"
-                value={profileInfo.intro}
+                id="memberOneIntro"
+                value={profileInfo.memberOneIntro}
                 onChange={handleProfileInfo}
                 maxLength={30}
                 placeholder="띄어쓰기 포함 30자"
@@ -102,8 +102,8 @@ const EditProfileDefaultInfoCard = ({
           <div className="content">
             <div className="input">
               <Input
-                id="birth"
-                value={profileInfo.birth}
+                id="birthday"
+                value={profileInfo.birthday}
                 onChange={handleProfileInfo}
                 readOnly
               />

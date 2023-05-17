@@ -6,6 +6,16 @@ export const formatDate = (selectedDate: string | Date) => {
   }월 ${date.getDate()}일 ${date.getHours()}:${date.getMinutes()}`;
 };
 
+export const formatBirthday = (birthday: string) => {
+  const year = birthday.slice(0, 4);
+  const month = birthday.slice(4, 6);
+  const day = birthday.slice(6, 8);
+
+  const formattedDate = `${year}. ${month}. ${day}`;
+
+  return formattedDate;
+};
+
 export const base64toFile = (baseData: string, filename: string) => {
   const arr = baseData.split(",");
   const mime = arr[0].match(/:(.*?);/)[1];

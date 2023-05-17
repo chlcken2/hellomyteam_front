@@ -5,16 +5,16 @@ export type SelectedLocalListType = {
 
 export interface ProfileInfoType {
   name: string;
-  intro: string;
-  state: string[];
-  local: SelectedLocalListType[];
-  phone: string;
-  birth: string;
-  backNum: string;
-  position: string;
-  weakInfo: string;
-  condition: string;
-  amountOfAlcohol: string;
+  memberOneIntro?: string;
+  state?: string[];
+  address?: SelectedLocalListType[];
+  phone?: string;
+  birthday: string;
+  backNumber?: string;
+  preferPosition?: string;
+  leftRightFoot?: string;
+  conditionIndicator?: string;
+  drinkingCapacity?: string;
   isPhoneOpen: boolean;
   isBirthOpen: boolean;
 }

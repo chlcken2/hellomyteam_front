@@ -7,6 +7,7 @@ import {
 import {
   useGetTeamBannerImageQuery,
   useGetTeamProfileImageQuery,
+  useGetTeamProfileInfoQuery,
 } from "quires/profile/useTeamProfileQuery";
 import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,13 +15,15 @@ import { useRecoilValue } from "recoil";
 import UserState from "recoil/userAtom";
 
 import "styles/pages/profile.scss";
-import { base64toFile } from "utils/common";
+import { ProfileInfoType } from "types/profileType";
+import { base64toFile, formatBirthday } from "utils/common";
 
 const TEMP_TEAM_MEMBER_INFO_ID = 142;
 
 const Profile: FC = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(UserState);
+  const [profileInfo, setProfileInfo] = useState<ProfileInfoType>(null);
   const [profileImage, setProfileImage] = useState<string>(null);
   const [bannerImage, setBannerImage] = useState<string>(null);
   const [bannerColor, setBannerColor] = useState<string>(null);
@@ -31,6 +34,11 @@ const Profile: FC = () => {
 
   const { data: profileImageData } = useGetTeamProfileImageQuery({
     teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID,
+  });
+
+  const { data: profileInfoData } = useGetTeamProfileInfoQuery({
+    teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID,
+    teamId: user?.selectedTeamId,
   });
 
   const { mutate: registProfileImage } = useRegistTeamProfileImageMutation(
@@ -132,6 +140,12 @@ const Profile: FC = () => {
     }
   }, [bannerImageData]);
 
+  useEffect(() => {
+    if (profileInfoData?.data) {
+      setProfileInfo(profileInfoData.data);
+    }
+  }, [profileInfoData]);
+
   return (
     <div className="profile-container">
       <div
@@ -220,11 +234,15 @@ const Profile: FC = () => {
               </div>
               <div className="info-wrapper">
                 <div className="info-label">휴대폰 번호</div>
-                <div className="info-content">미등록</div>
+                <div className="info-content">{profileInfo?.phone || "미등록"}</div>
               </div>
               <div className="info-wrapper">
                 <div className="info-label">생년월일</div>
-                <div className="info-content">2001. 12. 20</div>
+                <div className="info-content">
+                  {profileInfo?.birthday
+                    ? formatBirthday(profileInfo?.birthday)
+                    : "미등록"}
+                </div>
               </div>
             </div>
           </div>
@@ -233,15 +251,19 @@ const Profile: FC = () => {
             <div className="info-container">
               <div className="info-wrapper">
                 <div className="info-label">등번호</div>
-                <div className="info-content">미등록</div>
+                <div className="info-content">{profileInfo?.backNumber || "미등록"}</div>
               </div>
               <div className="info-wrapper">
                 <div className="info-label">선호 포지션</div>
-                <div className="info-content">미등록</div>
+                <div className="info-content">
+                  {profileInfo?.preferPosition || "미등록"}
+                </div>
               </div>
               <div className="info-wrapper">
                 <div className="info-label">약발 정보</div>
-                <div className="info-content">미등록</div>
+                <div className="info-content">
+                  {profileInfo?.leftRightFoot || "미등록"}
+                </div>
               </div>
             </div>
           </div>
@@ -250,11 +272,15 @@ const Profile: FC = () => {
             <div className="info-container">
               <div className="info-wrapper">
                 <div className="info-label">컨디션</div>
-                <div className="info-content">미등록</div>
+                <div className="info-content">
+                  {profileInfo?.conditionIndicator || "미등록"}
+                </div>
               </div>
               <div className="info-wrapper">
                 <div className="info-label">주량</div>
-                <div className="info-content">미등록</div>
+                <div className="info-content">
+                  {profileInfo?.drinkingCapacity || "미등록"}
+                </div>
               </div>
             </div>
           </div>

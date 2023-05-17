@@ -34,11 +34,11 @@ const EditProfileTeamInfoCard = ({
   handleProfileInfo,
 }: PropsType) => {
   const handlePositionSelect = (e: OptionType) => {
-    setProfileInfo((prev) => ({ ...prev, position: e.value }));
+    setProfileInfo((prev) => ({ ...prev, preferPosition: e.value }));
   };
 
   const handleWeakSelect = (e: OptionType) => {
-    setProfileInfo((prev) => ({ ...prev, position: e.value }));
+    setProfileInfo((prev) => ({ ...prev, leftRightFoot: e.value }));
   };
 
   return (
@@ -51,8 +51,8 @@ const EditProfileTeamInfoCard = ({
             <div className="input">
               <Input
                 type="number"
-                id="backNum"
-                value={profileInfo.backNum}
+                id="backNumber"
+                value={profileInfo.backNumber}
                 onChange={handleProfileInfo}
                 max={99}
                 min={0}

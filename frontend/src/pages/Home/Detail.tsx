@@ -1,17 +1,11 @@
 import React, { FC, useEffect, useState, useRef, useMemo } from "react";
-import {
-  Link,
-  useParams,
-  useLocation,
-  useSearchParams,
-  useNavigate,
-} from "react-router-dom";
-import Button from "components/common/button";
-import Comment from "components/common/Comment";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import Button from "components/common/Button";
 import getBoardDetail from "quires/board/getBoardDetail";
 import Input from "components/common/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";
 import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
+import Comment from "components/common/comment";
 import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
 import { teamMemberId } from "quires/team/getTeamMemberId";

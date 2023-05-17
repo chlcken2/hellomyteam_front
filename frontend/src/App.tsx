@@ -16,11 +16,11 @@ import Team from "pages/Home/Team";
 import CreateTeam from "pages/Account/CreateTeam";
 import Detail from "pages/Home/Detail";
 import Write from "pages/Home/Write";
-
+import Profile from "pages/Home/Profile/Profile";
+import EditProfile from "pages/Home/Profile/EditProfile";
 import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
 import Alarm from "pages/Alarm/Alarm";
-
 import Toast from "components/common/Toast";
 import Nav from "layouts/Nav";
 import Login from "components/Form/Login";
@@ -84,10 +84,12 @@ const App = () => {
             <Route path="board/:id" element={<Detail />} />
             <Route path="board/:teamId/write" element={<Write />} />
             <Route path="team" element={<Team />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
+          <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/search/*" element={<FindTeam />} />
           <Route path="/alarm" element={<Alarm />} />
-          <Route path="/profile" element={<CreateTeam />} />
+          <Route path="/create" element={<CreateTeam />} />
         </Routes>
       </Router>
     </CookiesProvider>

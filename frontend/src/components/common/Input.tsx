@@ -17,6 +17,8 @@ interface PropsType {
   inputRef?: LegacyRef<HTMLInputElement>;
   readOnly?: boolean;
   maxLength?: number;
+  min?: number;
+  max?: number;
 }
 
 const Input = ({
@@ -33,6 +35,8 @@ const Input = ({
   inputRef,
   readOnly,
   maxLength,
+  min,
+  max,
   children,
 }: PropsType) => {
   const [isViewPassword, setIsViewPassword] = useState(false);
@@ -40,7 +44,23 @@ const Input = ({
   const inputContainerClassName = isError ? "input-container error" : "input-container";
   const inputWrapperClassName = readOnly ? "input-wrapper read-only" : "input-wrapper";
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
+    if (type === "number") {
+      let value = "";
+      if (max !== undefined && min !== undefined) {
+        value =
+          e.target.value === ""
+            ? ""
+            : Math.max(min, Math.min(max, Number(e.target.value))).toString();
+      } else if (maxLength !== undefined) {
+        value = e.target.value.slice(0, maxLength);
+      }
+
+      if (onChange) onChange({ ...e, target: { ...e.target, id: e.target.id, value } });
+      else setValue(value);
+    } else {
+      if (onChange) onChange(e);
+      else setValue(e.target.value);
+    }
   };
   const handleIsViewPassword = () => setIsViewPassword((prev) => !prev);
 
@@ -59,9 +79,11 @@ const Input = ({
           value={value}
           maxLength={maxLength}
           ref={inputRef}
-          onChange={onChange || handleChange}
+          onChange={handleChange}
           onKeyDown={keyDownHandler}
           placeholder={placeholder}
+          min={min}
+          max={max}
         />
         {type === "password" && (
           <svg

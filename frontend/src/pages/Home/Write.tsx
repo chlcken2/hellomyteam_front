@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import getTeamInfo from "quires/team/getTeamInfo";
-import Button from "components/common/button";
+import Button from "components/common/Button";
 import Select from "components/common/Select";
 import Input from "components/common/Input";
 import { Editor } from "react-draft-wysiwyg";

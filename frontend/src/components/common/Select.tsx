@@ -82,7 +82,7 @@ const Select = ({
   }, []);
 
   useEffect(() => {
-    onChange(currentValue);
+    if (currentValue) onChange(currentValue);
   }, [currentValue]);
 
   return (

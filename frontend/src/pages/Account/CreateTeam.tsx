@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import FormWrap from "components/Form/FormWrap";
 import Input from "components/common/Input";
 import Select from "components/common/Select";
-import Button from "components/common/button";
+import Button from "components/common/Button";
 import { useRecoilValue } from "recoil";
 import { instance } from "../../config/api";
 import UserState from "../../recoil/userAtom";

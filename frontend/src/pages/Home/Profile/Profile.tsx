@@ -1,24 +1,62 @@
 import DefaultAvatar from "components/common/DefaultAvatar";
 import ImageCropper from "components/common/ImageCropper";
+import {
+  useRegistTeamBannerImageMutation,
+  useRegistTeamProfileImageMutation,
+} from "quires/profile/useTeamProfileMutation";
+import {
+  useGetTeamBannerImageQuery,
+  useGetTeamProfileImageQuery,
+} from "quires/profile/useTeamProfileQuery";
 import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import UserState from "recoil/userAtom";
 
 import "styles/pages/profile.scss";
+import { base64toFile } from "utils/common";
+
+const TEMP_TEAM_MEMBER_INFO_ID = 142;
 
 const Profile: FC = () => {
   const navigate = useNavigate();
+  const user = useRecoilValue(UserState);
   const [profileImage, setProfileImage] = useState<string>(null);
   const [bannerImage, setBannerImage] = useState<string>(null);
   const [bannerColor, setBannerColor] = useState<string>(null);
 
+  const { data: bannerImageData } = useGetTeamBannerImageQuery({
+    teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID,
+  });
+
+  const { data: profileImageData } = useGetTeamProfileImageQuery({
+    teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID,
+  });
+
+  const { mutate: registProfileImage } = useRegistTeamProfileImageMutation(
+    TEMP_TEAM_MEMBER_INFO_ID,
+  );
+
+  const { mutate: registBannerImage } = useRegistTeamBannerImageMutation(
+    TEMP_TEAM_MEMBER_INFO_ID,
+  );
+
   const navigateProfileEditPage = () => navigate("/profile/edit");
 
   const uploadProfileImage = (image: string) => {
-    setProfileImage(image);
+    const imageFile = base64toFile(image, "profile_image");
+    const formData = new FormData();
+    formData.append("imgFile", imageFile);
+
+    registProfileImage(formData);
   };
 
   const uploadBannerImage = (image: string) => {
-    setBannerImage(image);
+    const imageFile = base64toFile(image, "profile_image");
+    const formData = new FormData();
+    formData.append("imgFile", imageFile);
+
+    registBannerImage(formData);
   };
 
   const getAverageColor = (): Promise<string> => {
@@ -49,6 +87,7 @@ const Profile: FC = () => {
       };
 
       img.onerror = (err) => {
+        console.log(err, "dd");
         reject(err);
       };
     });
@@ -80,6 +119,18 @@ const Profile: FC = () => {
       });
     }
   }, [profileImage, bannerImage]);
+
+  useEffect(() => {
+    if (profileImageData?.data) {
+      setProfileImage(profileImageData.data.imgUrl);
+    }
+  }, [profileImageData]);
+
+  useEffect(() => {
+    if (bannerImageData?.data) {
+      setBannerImage(bannerImageData.data.imgUrl);
+    }
+  }, [bannerImageData]);
 
   return (
     <div className="profile-container">

@@ -48,7 +48,9 @@ const ImageCropper = ({ children, aspectRatio, onCrop }: PropsType) => {
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
-      <button onClick={handleButtonClick}>{children}</button>
+      <div role="presentation" onClick={handleButtonClick}>
+        {children}
+      </div>
       {image && (
         <div className="image-cropper-container">
           <div className="backdrop" />

@@ -18,3 +18,11 @@ export interface ProfileInfoType {
   isPhoneOpen: boolean;
   isBirthOpen: boolean;
 }
+
+export interface GetProfileImageResponseType {
+  teamMemberInfoId: number;
+  imgUrl: string;
+  imgName: string;
+  createdDate: string;
+  backgroundId?: number;
+}

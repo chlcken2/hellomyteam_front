@@ -221,9 +221,13 @@ const Profile: FC = () => {
             />
           </svg>
         </button>
-        <h2 className="profile-intro-name">손흥민</h2>
-        <p className="profile-intro-message">안녕하세요. 손흥민입니다. 잘부탁드려요.</p>
-        <div className="profile-intro-state">휴식중, 열정, 부상, 파견, 여행중</div>
+        <h2 className="profile-intro-name">{profileInfo?.name}</h2>
+        <p className="profile-intro-message">
+          {profileInfo?.memberOneIntro || "한줄소개 미등록"}
+        </p>
+        <div className="profile-intro-state">
+          {profileInfo?.conditionStatus || "상태 미등록"}
+        </div>
         <div className="profile-info-card-container">
           <div className="profile-info-card">
             <h3 className="info-title">기본</h3>

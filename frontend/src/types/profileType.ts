@@ -6,7 +6,7 @@ export type SelectedLocalListType = {
 export interface ProfileInfoType {
   name: string;
   memberOneIntro?: string;
-  state?: string[];
+  conditionStatus?: string[];
   address?: SelectedLocalListType[];
   phone?: string;
   birthday: string;
@@ -17,6 +17,19 @@ export interface ProfileInfoType {
   drinkingCapacity?: string;
   isPhoneOpen: boolean;
   isBirthOpen: boolean;
+}
+
+export interface ChangeInfoType {
+  changeAddress: string;
+  changeBackNumber: number;
+  changeBirthday: string;
+  changeConditionIndicator: number;
+  changeConditionStatus: string;
+  changeDrinkingCapacity: number;
+  changeLeftRightFoot: string;
+  changeMemberOneIntro: string;
+  changeName: string;
+  changePreferPosition: string;
 }
 
 export interface GetProfileImageResponseType {

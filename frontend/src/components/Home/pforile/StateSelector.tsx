@@ -36,13 +36,13 @@ const StateSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
   };
 
   const saveState = () => {
-    setProfileInfo((prev) => ({ ...prev, state: selectedState }));
+    setProfileInfo((prev) => ({ ...prev, conditionStatus: selectedState }));
     setIsViewModal(false);
   };
 
   useEffect(() => {
     if (isViewModal && profileInfo) {
-      setSelectedState([...profileInfo.state]);
+      setSelectedState([...profileInfo.conditionStatus]);
     } else {
       setSelectedState([]);
     }
@@ -52,8 +52,8 @@ const StateSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
     <>
       <div className="selector-wrapper">
         <p>
-          {profileInfo.state.length > 0
-            ? profileInfo.state.join(", ")
+          {profileInfo.conditionStatus.length > 0
+            ? profileInfo.conditionStatus.join(", ")
             : "상태를 설정해주세요"}
         </p>
         <button onClick={handleIsViewModal}>

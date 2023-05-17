@@ -1,19 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "styles/pages/profile.scss";
-import { ProfileInfoType } from "types/profileType";
+import { ChangeInfoType, ProfileInfoType } from "types/profileType";
 import EditProfileDefaultInfoCard from "components/Home/pforile/EditProfileDefaultInfoCard";
 import EditProfileTeamInfoCard from "components/Home/pforile/EditProfileTeamInfoCard";
 import EditProfileEtcInfoCard from "components/Home/pforile/EditProfileEtcInfoCard";
 import Button from "components/common/Button";
 import { useNavigate } from "react-router-dom";
+import { useEditProfileInfoMutation } from "quires/profile/useTeamProfileMutation";
+import { useGetTeamProfileInfoQuery } from "quires/profile/useTeamProfileQuery";
+import { useRecoilValue } from "recoil";
+import UserState from "recoil/userAtom";
+
+const TEMP_TEAM_MEMBER_INFO_ID = 142;
 
 const DEFAULT_PROFILE_INFO: ProfileInfoType = {
-  name: "손흥민",
+  name: "",
   memberOneIntro: "",
-  state: [],
+  conditionStatus: [],
   address: [],
   phone: "",
-  birthday: "2001. 12. 20",
+  birthday: "",
   backNumber: "",
   preferPosition: "",
   leftRightFoot: "",
@@ -25,19 +31,60 @@ const DEFAULT_PROFILE_INFO: ProfileInfoType = {
 
 const EditProfile = () => {
   const navigate = useNavigate();
+  const user = useRecoilValue(UserState);
   const [profileInfo, setProfileInfo] = useState<ProfileInfoType>(DEFAULT_PROFILE_INFO);
+
+  const { data: profileInfoData } = useGetTeamProfileInfoQuery({
+    teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID,
+    teamId: user?.selectedTeamId,
+  });
+
+  const { mutate: editProfileInfo } = useEditProfileInfoMutation(
+    110,
+    TEMP_TEAM_MEMBER_INFO_ID,
+  );
 
   const handleCancel = () => {
     navigate("/profile");
   };
 
   const handleSubmit = () => {
+    const changeInfo: ChangeInfoType = {
+      changeAddress: "",
+      changeBackNumber: Number(profileInfo.backNumber),
+      changeBirthday: profileInfo.birthday,
+      changeConditionIndicator: Number(profileInfo.conditionIndicator),
+      changeConditionStatus: "INJURY",
+      changeDrinkingCapacity: Number(profileInfo.drinkingCapacity),
+      changeLeftRightFoot: profileInfo.leftRightFoot,
+      changeMemberOneIntro: profileInfo.memberOneIntro,
+      changeName: profileInfo.name,
+      changePreferPosition: "ST",
+    };
+
+    console.log(changeInfo, "changeInfo");
+
+    editProfileInfo(changeInfo);
     alert("저장");
   };
 
   const handleProfileInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfileInfo({ ...profileInfo, [e.target.id]: e.target.value });
   };
+
+  useEffect(() => {
+    if (profileInfoData?.data) {
+      console.log(profileInfoData?.data);
+      setProfileInfo({
+        ...profileInfoData.data,
+        conditionStatus: [],
+        address: [],
+        backNumber: String(profileInfoData.data.backNumber),
+        conditionIndicator: String(profileInfoData.data.conditionIndicator),
+        drinkingCapacity: String(profileInfoData.data.drinkingCapacity),
+      });
+    }
+  }, [profileInfoData]);
 
   return (
     <div className="main-wrap">

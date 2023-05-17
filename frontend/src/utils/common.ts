@@ -1,3 +1,5 @@
+import { useLocation } from "react-router-dom";
+
 export const formatDate = (selectedDate: string | Date) => {
   const date = new Date(selectedDate);
 
@@ -28,4 +30,15 @@ export const base64toFile = (baseData: string, filename: string) => {
   }
 
   return new File([u8arr], filename, { type: mime });
+};
+
+export const menuClassName = (menuPath: string | string[], className: string) => {
+  const { pathname } = useLocation();
+
+  if (Array.isArray(menuPath))
+    return menuPath.some((el) => el === pathname) ? className : "";
+  if (menuPath === "" && pathname === "/") return className;
+  if (menuPath !== "" && pathname.indexOf(menuPath) !== -1) return className;
+
+  return "";
 };

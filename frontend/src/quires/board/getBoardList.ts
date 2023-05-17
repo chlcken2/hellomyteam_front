@@ -5,10 +5,18 @@ import ApiResponseType from "types/ApiResponseType";
 
 export const QUERY_KEY = "/board/boardId";
 
-const fetcher = (num: number, teamId: number, category: string) =>
+const fetcher = (
+  num: number,
+  teamId: number,
+  category: string,
+  sortType: string,
+  srchKwd: string,
+  srchType: string,
+  pageSize: number,
+) =>
   instance
     .get<ApiResponseType<boardListTypes>>(
-      `/api/teams/${teamId}/boards?category=${category}&pageNum=${num}&pageSize=10&sortType=created_date
+      `/api/teams/${teamId}/boards?category=${category}&pageNum=${num}&pageSize=${pageSize}&sortType=${sortType}&srchKwd=${srchKwd}&srchType=${srchType}
     `,
     )
     .then(({ data }) => data);
@@ -17,8 +25,18 @@ const fetcher = (num: number, teamId: number, category: string) =>
  * 선택됨 팀의 게시판 리스트 가져오기
  * @returns
  */
-const getBoardList = (num: number, teamId: number, category: string) => {
-  return useQuery([QUERY_KEY, teamId], () => fetcher(num, teamId, category));
+const getBoardList = (
+  num: number,
+  teamId: number,
+  category: string,
+  sortType: string,
+  srchKwd: string,
+  srchType: string,
+  pageSize: number,
+) => {
+  return useQuery([QUERY_KEY, teamId], () =>
+    fetcher(num, teamId, category, sortType, srchKwd, srchType, pageSize),
+  );
 };
 
 export default getBoardList;

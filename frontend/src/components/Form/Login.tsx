@@ -51,6 +51,7 @@ const Login = ({ setHasId, setLogin }: IHas) => {
     if (validUser && !userLoad) {
       setUseUser(userData.data);
       setConfirmLogin(true);
+      localStorage.setItem("userId", userData.data.id.toString());
     }
   }, [isValidUser, userData]);
 

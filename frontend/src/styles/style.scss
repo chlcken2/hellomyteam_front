@@ -153,6 +153,7 @@ p.error-message {
 header {
   z-index: 2;
   position: fixed;
+  z-index: 99;
   top: 0;
   left: 0;
   width: 110px;

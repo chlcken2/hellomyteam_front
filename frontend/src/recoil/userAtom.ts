@@ -1,3 +1,4 @@
+import getMemberInfo from "quires/member/getMemberInfo";
 import { atom } from "recoil";
 
 interface termsAndCondType {
@@ -6,7 +7,7 @@ interface termsAndCondType {
   privacyYn: string;
 }
 
-interface UserType {
+export interface UserType {
   createdDate: string;
   modifiedDate: string;
   id: number;

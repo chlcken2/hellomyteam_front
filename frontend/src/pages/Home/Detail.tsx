@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState, useRef, useMemo } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Button from "components/common/Button";
 import getBoardDetail from "quires/board/getBoardDetail";
 import Input from "components/common/Input";
@@ -8,26 +8,73 @@ import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
 import Comment from "components/common/comment";
 import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
+import { teamMemberId } from "quires/team/getTeamMemberId";
+import { setBoardLikeMutation } from "quires/board/setBoardLikes";
 
 // 댓글 테스트를 위한 teamMemberInfoId, 로그인한 계정의 teamMemberrInfoId입력
 const TEMP_TEAM_MEMBER_INFO_ID = 148;
 
 const Detail: FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const likeCount = searchParams.get("likeCount");
+  const navi = useNavigate();
   const param = useParams();
   const img = process.env.PUBLIC_URL;
   const user = useRecoilValue(UserState);
+  const [infoId, setInfoId] = useState(0);
+  const [likeBoolean, setLikeBoolean] = useState(false);
   /* Board Part Start */
 
-  const { data: detail } = getBoardDetail(user.selectedTeamId, Number(param.id));
+  const { data: detail } = getBoardDetail(
+    JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+    Number(param.id),
+  );
+  const {
+    mutate: likeMutate,
+    isLoading: load,
+    isError: error,
+    data: LikeData,
+  } = setBoardLikeMutation(Number(param.id));
+
   const [info, setInfo] = useState({
     name: "test",
     title: "test",
     contents: "test",
   });
 
+  const handleLikes = async () => {
+    await teamMemberId(
+      JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+      Number(JSON.stringify(localStorage.getItem("userId"))) || user.id,
+    ).then((res) => {
+      likeMutate({
+        boardId: Number(param.id),
+        teamMemberInfoId: res.data.data,
+        teamId: JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+      });
+    });
+  };
+
+  useEffect(() => {
+    teamMemberId(
+      JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+      Number(JSON.parse(localStorage.getItem("userId"))) || user.id,
+    ).then((res) => {
+      setInfoId(res.data.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (likeBoolean)
+      likeMutate({
+        boardId: Number(param.id),
+        teamMemberInfoId: infoId,
+        teamId: JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+      });
+  }, [infoId, likeBoolean]);
+
   useEffect(() => {
     if (detail) {
-      console.log(detail.data);
       setInfo({
         name: detail.data.writer,
         title: detail.data.title,
@@ -35,7 +82,6 @@ const Detail: FC = () => {
       });
     }
   }, [detail]);
-
   /* Board Part End */
 
   /* Comment part Start */
@@ -109,27 +155,33 @@ const Detail: FC = () => {
   return (
     <>
       {/* Boad Part Start */}
-      <div className="board">
-        <Link to="/board" className="back-button">
-          <img src={`${img}/common/ChevronLeftOutline.png`} alt="" />
-        </Link>
-        <div className="board-content">
-          <h2>{info.title}</h2>
-          <div className="user">
-            <span>
-              <img src={`${img}/common/join-1.png`} alt="" />
-            </span>
-            <div>
-              <h3>{info.name}</h3>
-              <p>1시간 전</p>
+      {!load && detail && (
+        <div className="board">
+          <button onClick={() => navi(-1)} className="back-button">
+            <img src={`${img}/common/ChevronLeftOutline.png`} alt="" />
+          </button>
+          <div className="board-content">
+            <h2>{info.title}</h2>
+            <div className="user">
+              <span>
+                <img src={`${img}/common/join-1.png`} alt="" />
+              </span>
+              <div>
+                <h3>{info.name}</h3>
+                <p>1시간 전</p>
+              </div>
+            </div>
+            <div className="board-detail">
+              <p dangerouslySetInnerHTML={{ __html: info.contents }} />
+              <Button
+                text={`좋아요 ${likeCount}개`}
+                handler={handleLikes}
+                color="white"
+              />
             </div>
           </div>
-          <div className="board-detail">
-            <p dangerouslySetInnerHTML={{ __html: info.contents }} />
-            <Button text="좋아요" handler={() => console.log("test")} />
-          </div>
         </div>
-      </div>
+      )}
       {/* Boad Part End */}
 
       {/* Comment Part Start */}

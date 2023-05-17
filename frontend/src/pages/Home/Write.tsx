@@ -5,19 +5,46 @@ import Button from "components/common/Button";
 import Select from "components/common/Select";
 import Input from "components/common/Input";
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState, convertToRaw } from "draft-js";
+import { EditorState, convertToRaw, AtomicBlockUtils } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftjsToHtml from "draftjs-to-html";
 import { useRecoilValue } from "recoil";
 import UserState from "recoil/userAtom";
-import { teamMemberId } from "quires/team/getTeamId";
+import { teamMemberId } from "quires/team/getTeamMemberId";
 import { setBoardWriteMutation } from "quires/board/setBoardQuery";
 
 const Write: FC = () => {
-  interface teamType {
-    teamName: string;
-    teamId: number;
-  }
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const handleImageUpload = (file: File) => {
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity("IMAGE", "IMMUTABLE", {
+      src: file.name,
+    });
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, {
+      currentContent: contentStateWithEntity,
+    });
+
+    setEditorState(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, " "));
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    // fetch("https://your-image-upload-api-url", {
+    //   method: "POST",
+    //   body: formData,
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     const { imageUrl } = data;
+
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error uploading image: ", error);
+    //   });
+  };
+  console.log(editorState);
   function isAllConsonant(str: string) {
     // 자음만 포함하는 정규식
     const regex = /^[^aeiouㄱ-ㅎㅏ-ㅣ가-힣]+$/i;
@@ -62,7 +89,6 @@ const Write: FC = () => {
     { label: "공지게시판", value: "NOTICE_BOARD" },
   ];
   const [boardNum, setBoardNum] = useState(0);
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [htmlString, setHtmlString] = useState("");
 
   const updateTextDescription = async (state: any) => {
@@ -70,10 +96,6 @@ const Write: FC = () => {
     const html = draftjsToHtml(convertToRaw(editorState.getCurrentContent()));
 
     setHtmlString(html);
-  };
-
-  const uploadCallback = () => {
-    console.log("이미지 업로드");
   };
 
   const handleSubmit = async (e: React.MouseEvent) => {
@@ -136,7 +158,10 @@ const Write: FC = () => {
           editorState={editorState}
           onEditorStateChange={updateTextDescription}
           toolbar={{
-            image: { uploadCallback },
+            image: {
+              uploadCallback: handleImageUpload,
+              alt: { present: true, mandatory: true },
+            },
           }}
           localization={{ locale: "ko" }}
           editorStyle={{

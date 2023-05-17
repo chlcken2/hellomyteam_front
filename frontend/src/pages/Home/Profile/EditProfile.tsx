@@ -65,7 +65,7 @@ const EditProfile = () => {
     console.log(changeInfo, "changeInfo");
 
     editProfileInfo(changeInfo);
-    alert("저장");
+    navigate("/profile");
   };
 
   const handleProfileInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,6 +82,8 @@ const EditProfile = () => {
         backNumber: String(profileInfoData.data.backNumber),
         conditionIndicator: String(profileInfoData.data.conditionIndicator),
         drinkingCapacity: String(profileInfoData.data.drinkingCapacity),
+        isPhoneOpen: true,
+        isBirthOpen: true,
       });
     }
   }, [profileInfoData]);

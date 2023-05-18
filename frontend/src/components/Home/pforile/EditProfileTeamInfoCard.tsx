@@ -66,6 +66,7 @@ const EditProfileTeamInfoCard = ({
           <div className="content">
             <div className="select">
               <Select
+                modalTitle="선호 포지션"
                 options={POSITION_OPTIONS}
                 onChange={handlePositionSelect}
                 defaultValue="최전방 공격수"
@@ -79,6 +80,7 @@ const EditProfileTeamInfoCard = ({
           <div className="content">
             <div className="select">
               <Select
+                modalTitle="약발정보"
                 options={WEAK_OPTIONS}
                 onChange={handleWeakSelect}
                 defaultValue="왼발"

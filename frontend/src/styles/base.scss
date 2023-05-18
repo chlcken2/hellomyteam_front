@@ -146,3 +146,9 @@ button {
   background: transparent;
   border: none;
 }
+
+body {
+  &.modal-open {
+    overflow: hidden;
+  }
+}

@@ -54,6 +54,7 @@ const EditProfileEtcInfoCard = ({
           <div className="content">
             <div className="select">
               <Select
+                modalTitle="주량"
                 options={ALCOHOL_OPTIONS}
                 onChange={handleAlcoholSelect}
                 defaultValue={1}

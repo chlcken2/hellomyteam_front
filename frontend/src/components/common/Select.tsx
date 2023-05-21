@@ -19,6 +19,7 @@ export type OptionType = {
 };
 
 interface PropsTypes {
+  modalTitle?: string;
   label?: string;
   isRequierd?: boolean;
   errorMessage?: string;
@@ -31,6 +32,7 @@ interface PropsTypes {
 }
 
 const Select = ({
+  modalTitle,
   label,
   isRequierd,
   errorMessage,
@@ -46,9 +48,9 @@ const Select = ({
   const [currentValue, setCurrentValue] = useState<OptionType>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isError, setIsError] = useState(false);
-  const defaultLabel = useMemo(() => {
+  const defaultOption = useMemo(() => {
     if (!defaultValue) return null;
-    return options.find((option) => option.value === defaultValue).label || null;
+    return options.find((option) => option.value === defaultValue) || null;
   }, [defaultValue]);
 
   const selectContainerClassName = isError
@@ -56,6 +58,18 @@ const Select = ({
     : "select-container";
 
   const selectControlClassName = isModalOpen ? "select-control active" : "select-control";
+
+  const menuItemClassName = (optionValue: string) => {
+    let isActive = false;
+
+    if (currentValue) {
+      if (currentValue.value === optionValue) isActive = true;
+    } else if (defaultOption) {
+      if (defaultOption.value === optionValue) isActive = true;
+    }
+
+    return `select-menu-item ${isActive ? "active" : ""}`;
+  };
 
   const onClickSelectControl = () => setIsModalOpen((prev) => !prev);
   const onClickSelectOutSide = (e: MouseEvent) => {
@@ -79,7 +93,19 @@ const Select = ({
     return () => {
       window.removeEventListener("click", onClickSelectOutSide);
     };
-  }, []);
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+
+    return () => {
+      document.body.classList.remove("modal-open");
+    };
+  }, [isModalOpen]);
 
   useEffect(() => {
     if (currentValue) onChange(currentValue);
@@ -95,26 +121,72 @@ const Select = ({
           role="presentation"
         >
           <div className="select-value">
-            {currentValue?.label || defaultLabel || placeholder}
+            {currentValue?.label || defaultOption.label || placeholder}
           </div>
           <div className="select-indicator">
             <img src="/select/arrow.svg" alt="arrow" />
           </div>
         </div>
         {isModalOpen && (
-          <div className="select-menu-wrapper">
-            <ul className="select-menu">
-              {options.map((option, idx) => (
-                <li
-                  key={idx}
-                  className="select-menu-item"
-                  onClick={() => onClickSelectItem(idx)}
-                  role="presentation"
-                >
-                  {option.label}
-                </li>
-              ))}
-            </ul>
+          <div
+            role="presentation"
+            className="select-menu-container"
+            onClick={() => {
+              setIsModalOpen(false);
+            }}
+          >
+            <div
+              role="presentation"
+              className="select-menu-wrapper"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="select-menu-title">
+                <span>{modalTitle || "옵션을 선택하세요."}</span>
+                <button onClick={() => setIsModalOpen(false)}>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6 17.8794L17.8794 6M6 5.99995L17.8794 17.8793"
+                      stroke="#1D1D1D"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <ul className="select-menu">
+                {options.map((option, idx) => (
+                  <li
+                    key={idx}
+                    className={menuItemClassName(option.value)}
+                    onClick={() => onClickSelectItem(idx)}
+                    role="presentation"
+                  >
+                    <span>{option.label}</span>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M3.33301 8.66667L5.99967 11.3333L12.6663 4.66667"
+                        stroke="#5E81FF"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
       </div>

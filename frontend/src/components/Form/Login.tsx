@@ -56,7 +56,6 @@ const Login = ({ setHasId, setLogin }: IHas) => {
   }, [isValidUser, userData]);
 
   const loginDisabled = () => {
-    return false;
     if (text.email.length > 5 && text.password.length > 5) {
       return false;
     }

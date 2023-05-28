@@ -3,9 +3,9 @@ import { menuClassName } from "utils/common";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import getTeamInfo from "quires/team/getTeamInfo";
-import { teamMemberId } from "quires/team/getTeamMemberId";
 import Button from "components/common/Button";
 import { useCookies } from "react-cookie"; // useCookies import
+import teamMemberId from "quires/team/getTeamMemberId";
 import UserState from "../recoil/userAtom";
 import "styles/pages/home.scss";
 import "styles/layouts/main.scss";
@@ -50,6 +50,10 @@ const Main = () => {
   const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(
     Number(JSON.parse(localStorage.getItem("userId"))) || userId,
   );
+  const { data: teamId, isLoading: teamIdLoading } = teamMemberId(
+    Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
+    Number(JSON.parse(localStorage.getItem("userId"))),
+  );
 
   // 모바일 탭바의 menuItem 배경 인터렉션관련 스타일 state
   const [menuItemBackgroundStyle, setMenuItemBackgroundStyle] = useState({
@@ -90,14 +94,21 @@ const Main = () => {
     setLocalTitle(filtered);
     // 2023-04-02: teamMemberInfoId Atom에 추가함
 
-    teamMemberId(filtered[0].teamId, useUser.id).then((res) => {
+    if (teamId.data) {
       setUseUser({
         ...useUser,
-        teamMemberInfoId: res.data.data,
+        teamMemberInfoId: teamId.data,
         selectedTeamId: filtered[0].teamId,
       });
-      localStorage.setItem("selectedTeamId", filtered[0].teamId);
-    });
+    }
+    // teamMemberId(filtered[0].teamId, useUser.id).then((res) => {
+    //   setUseUser({
+    //     ...useUser,
+    //     teamMemberInfoId: res.data.data,
+    //     selectedTeamId: filtered[0].teamId,
+    //   });
+
+    // });
   };
 
   // recoil에 담긴 User의 정보가 있을시에, 사용자의 id값을 리액트 쿼리에 보냄
@@ -108,11 +119,11 @@ const Main = () => {
   }, [useUser]);
 
   // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
-  useEffect(() => {
-    if (team?.data) {
-      setUseUser({ ...useUser, teamInfo: [...team.data] });
-    }
-  }, [team]);
+  // useEffect(() => {
+  //   if (team?.data) {
+  //     setUseUser({ ...useUser, teamInfo: [...team.data] });
+  //   }
+  // }, [team]);
 
   // 모바일 홈 탭바 인터랙션 관련 코드
   const handleMenuItemInteraction = () => {
@@ -188,7 +199,6 @@ const Main = () => {
 
   useEffect(() => {
     // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
-
     if (team && localTitle) {
       setUseUser({
         ...useUser,
@@ -199,6 +209,14 @@ const Main = () => {
     }
   }, [team, localTitle]);
 
+  useEffect(() => {
+    if (teamId && teamId.data) {
+      setUseUser((prevUser) => ({
+        ...prevUser,
+        teamMemberInfoId: teamId.data,
+      }));
+    }
+  }, [teamId]);
   return (
     <div className="main-wrap">
       <div className="main-buttons">

@@ -10,7 +10,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftjsToHtml from "draftjs-to-html";
 import { useRecoilValue } from "recoil";
 import UserState from "recoil/userAtom";
-import { teamMemberId } from "quires/team/getTeamMemberId";
+import teamMemberId from "quires/team/getTeamMemberId";
 import { setBoardWriteMutation } from "quires/board/setBoardQuery";
 
 import axios from "axios";
@@ -20,13 +20,10 @@ const Write: FC = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [setTeamId] = useState(() => localStorage.getItem("selectedTeamId"));
   const [setBoardId] = useState(teamId);
-
-  useEffect(() => {
-    teamMemberId(
-      JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
-      Number(JSON.stringify(localStorage.getItem("userId"))) || user.id,
-    ).then((res) => console.log(res));
-  }, []);
+  const { data: getTeamId, isLoading: teamIdLoading } = teamMemberId(
+    Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
+    Number(JSON.parse(localStorage.getItem("userId"))),
+  );
 
   const handleImageUpload = async (file: File) => {
     const contentState = editorState.getCurrentContent();
@@ -83,6 +80,10 @@ const Write: FC = () => {
   ];
   const [boardNum, setBoardNum] = useState(0);
   const [htmlString, setHtmlString] = useState("");
+  const { data: teamInfoId, isLoading: isGetTeamInfoLoading } = teamMemberId(
+    Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
+    Number(JSON.parse(localStorage.getItem("userId"))),
+  );
 
   const updateTextDescription = async (state: any) => {
     setEditorState(state);
@@ -97,10 +98,8 @@ const Write: FC = () => {
 
     user.teamInfo.forEach((el) => {
       // teamId
-      if (el.teamId === Number(teamId)) {
-        teamMemberId(Number(teamId), memberId).then((res) => {
-          setBoardNum(res.data.data);
-        });
+      if (el.teamId === Number(teamId) && teamInfoId.data) {
+        setBoardNum(teamInfoId.data);
         return false;
       }
     });
@@ -165,9 +164,11 @@ const Write: FC = () => {
             padding: "20px",
           }}
         />
-        <div dangerouslySetInnerHTML={{ __html: htmlString }} />
+        <div className="visual-area" dangerouslySetInnerHTML={{ __html: htmlString }} />
         <hr />
-        <Button color="blue" text="제출" handler={handleSubmit} />
+        <div className="button-area">
+          <Button color="blue" text="제출" handler={handleSubmit} />
+        </div>
       </div>
     </div>
   );

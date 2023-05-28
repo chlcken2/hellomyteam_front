@@ -33,7 +33,7 @@ import "./styles/base.scss";
 import FindTeam from "./pages/FindTeam";
 
 const App = () => {
-  const setUser = useSetRecoilState(UserState);
+  const [useUser, setUseUser] = useRecoilState(UserState);
   const setJoinedTeams = useSetRecoilState(joinedTeamsAtom);
   const [login, setLogin] = useState(false);
   const [hasId, setHasId] = useState(false);
@@ -53,7 +53,7 @@ const App = () => {
       setConfirmLogin(true);
       setLoginBoolean(true);
       if (info && joinedTeamResponse) {
-        setUser(info.data);
+        setUseUser({ ...useUser, ...info.data });
         setJoinedTeams(joinedTeamResponse.data);
       }
     }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "../styles/pages/onboarding.scss";
-import Button from "components/common/button";
+import Button from "components/common/Button";
 
 const img = process.env.PUBLIC_URL;
 const IMAGE_WIDTH = 300;

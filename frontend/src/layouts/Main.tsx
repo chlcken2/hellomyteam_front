@@ -38,6 +38,7 @@ const Main = () => {
   const { pathname } = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
   const [useUser, setUseUser] = useRecoilState(UserState);
+
   // userId 리턴해야하므로 리코일값을 가져와야한다 (4/27)
   const [userId, setUserId] = useState(
     Number(JSON.stringify(localStorage.getItem("userId"))) || useUser?.id,
@@ -88,8 +89,11 @@ const Main = () => {
 
     setLocalTitle(filtered);
     // 2023-04-02: teamMemberInfoId Atom에 추가함
-    if (isGetTeamInfoLoading) return alert("로딩중입니다");
-    teamMemberId(id, filtered[0].teamId).then((res) => {
+
+    console.log("테스트");
+    console.log(filtered[0].teamId, id);
+
+    teamMemberId(filtered[0].teamId, useUser.id).then((res) => {
       setUseUser({
         ...useUser,
         teamMemberInfoId: res.data.data,

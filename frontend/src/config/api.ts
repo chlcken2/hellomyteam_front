@@ -45,7 +45,10 @@ const getRefreshToken = async (): Promise<string | void> => {
 
 const createInstance = () => {
   return axios.create({
-    baseURL: "https://localhost:3000",
+    baseURL:
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3000"
+        : "http://ec2-3-38-108-158.ap-northeast-2.compute.amazonaws.com:8080",
     timeout: 9000,
     withCredentials: true,
     headers: { "Content-Type": "application/json" },

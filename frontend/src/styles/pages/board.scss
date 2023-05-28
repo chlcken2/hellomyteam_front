@@ -7,7 +7,8 @@
       gap: 20px;
       > div {
         &:first-child {
-          width: 30% !important;
+          width: 30%;
+          max-width: 300px;
         }
         &:last-child {
           width: 70%;
@@ -343,4 +344,36 @@
 
 .Ring-module_container__1mCd7 {
   width: 100% !important;
+}
+
+@media all and (max-width: 768px) {
+  .board.write {
+    .input-wrap {
+      flex-direction: column;
+      .select-control {
+        width: 100%;
+      }
+      > div:last-child {
+        width: 100%;
+      }
+      > div:first-child {
+        width: 100%;
+        max-width: none;
+      }
+    }
+    .rdw-editor-toolbar {
+      display: none;
+    }
+    .visual-area {
+      display: none;
+      + hr {
+        display: none;
+        + button {
+        }
+      }
+    }
+    .button-area {
+      text-align: right;
+    }
+  }
 }

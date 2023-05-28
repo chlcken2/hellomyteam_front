@@ -8,7 +8,7 @@ import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
 import Comment from "components/common/Comment";
 import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
-import { teamMemberId } from "quires/team/getTeamMemberId";
+import teamMemberId from "quires/team/getTeamMemberId";
 import { setBoardLikeMutation } from "quires/board/setBoardLikes";
 
 // 댓글 테스트를 위한 teamMemberInfoId, 로그인한 계정의 teamMemberrInfoId입력
@@ -24,6 +24,11 @@ const Detail: FC = () => {
   const [infoId, setInfoId] = useState(0);
   const [likeBoolean, setLikeBoolean] = useState(false);
   /* Board Part Start */
+
+  const { data: teamId, isLoading: teamIdLoading } = teamMemberId(
+    Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
+    Number(JSON.parse(localStorage.getItem("userId"))),
+  );
 
   const { data: detail } = getBoardDetail(
     JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
@@ -43,26 +48,20 @@ const Detail: FC = () => {
   });
 
   const handleLikes = async () => {
-    await teamMemberId(
-      JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
-      Number(JSON.stringify(localStorage.getItem("userId"))) || user.id,
-    ).then((res) => {
+    if (teamId.data) {
       likeMutate({
         boardId: Number(param.id),
-        teamMemberInfoId: res.data.data,
+        teamMemberInfoId: teamId.data,
         teamId: JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
       });
-    });
+    }
   };
 
   useEffect(() => {
-    teamMemberId(
-      JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
-      Number(JSON.parse(localStorage.getItem("userId"))) || user.id,
-    ).then((res) => {
-      setInfoId(res.data.data);
-    });
-  }, []);
+    if (teamId?.data) {
+      setInfoId(teamId.data);
+    }
+  }, [teamId]);
 
   useEffect(() => {
     if (likeBoolean)

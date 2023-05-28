@@ -90,9 +90,6 @@ const Main = () => {
     setLocalTitle(filtered);
     // 2023-04-02: teamMemberInfoId Atom에 추가함
 
-    console.log("테스트");
-    console.log(filtered[0].teamId, id);
-
     teamMemberId(filtered[0].teamId, useUser.id).then((res) => {
       setUseUser({
         ...useUser,

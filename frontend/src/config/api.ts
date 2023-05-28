@@ -45,7 +45,7 @@ const getRefreshToken = async (): Promise<string | void> => {
 
 const createInstance = () => {
   return axios.create({
-    baseURL: "https://localhost:3000",
+    baseURL: "https://www.hellomyteam.com",
     timeout: 9000,
     withCredentials: true,
     headers: { "Content-Type": "application/json" },

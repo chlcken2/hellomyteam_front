@@ -1,8 +1,8 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "http://ec2-3-38-108-158.ap-northeast-2.compute.amazonaws.com:8080/"
+      "source": "/api/(.*)",
+      "destination": "http://ec2-3-38-108-158.ap-northeast-2.compute.amazonaws.com:8080/"
     }
   ]
 }

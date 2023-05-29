@@ -377,3 +377,19 @@
     }
   }
 }
+
+.user-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .sort-box {
+    position: relative;
+  }
+  .main-teams__wrap {
+    &.board-list {
+      position: absolute;
+      top: 24px;
+      right: 0;
+    }
+  }
+}

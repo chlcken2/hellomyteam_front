@@ -10,7 +10,13 @@ import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
 import teamMemberId from "quires/team/getTeamMemberId";
 import { setBoardLikeMutation } from "quires/board/setBoardLikes";
+import { boardDeleteMutation, useEditBoardMutation } from "quires/board/setBoardQuery";
 
+interface infoType {
+  name: string;
+  title: string;
+  contents: string;
+}
 // 댓글 테스트를 위한 teamMemberInfoId, 로그인한 계정의 teamMemberrInfoId입력
 const TEMP_TEAM_MEMBER_INFO_ID = 148;
 
@@ -23,8 +29,8 @@ const Detail: FC = () => {
   const user = useRecoilValue(UserState);
   const [infoId, setInfoId] = useState(0);
   const [likeBoolean, setLikeBoolean] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   /* Board Part Start */
-
   const { data: teamId, isLoading: teamIdLoading } = teamMemberId(
     Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
     Number(JSON.parse(localStorage.getItem("userId"))),
@@ -41,11 +47,52 @@ const Detail: FC = () => {
     data: LikeData,
   } = setBoardLikeMutation(Number(param.id));
 
-  const [info, setInfo] = useState({
+  const { mutate: deleteMutate, isLoading: deleteLoad } = boardDeleteMutation();
+
+  const {
+    mutate: editMutate,
+    isLoading: editLoad,
+    data: editData,
+  } = useEditBoardMutation(Number(param.id));
+
+  const [info, setInfo] = useState<infoType>({
     name: "test",
     title: "test",
     contents: "test",
   });
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setOpenEdit(!openEdit);
+  };
+
+  const handleModify = () => {
+    console.log("modify");
+    navi(
+      `/board/${user.selectedTeamId}/write?param1=${info.title}&param2=${info.contents}`,
+    );
+    // editMutate({
+    //   teamId: JSON.parse(localStorage.getItem("selectedTeamId")),
+    //   boardId: Number(param.id),
+    //   category: "FREE_BOARD",
+    //   content: "hi",
+    //   title: "hello",
+    // });
+  };
+  const handleDelete = () => {
+    if (deleteLoad) return alert("게시글 삭제 중입니다.");
+
+    const message = `게시글을 삭제하시겠습니까?`;
+    const result = window.confirm(message);
+
+    if (result)
+      deleteMutate({
+        teamId: JSON.parse(localStorage.getItem("selectedTeamId")),
+        boardId: Number(param.id),
+      });
+    alert("게시글이 삭제되었습니다");
+    navi("/board");
+  };
 
   const handleLikes = async () => {
     if (teamId.data) {
@@ -81,6 +128,7 @@ const Detail: FC = () => {
       });
     }
   }, [detail]);
+
   /* Board Part End */
 
   /* Comment part Start */
@@ -161,13 +209,36 @@ const Detail: FC = () => {
           </button>
           <div className="board-content">
             <h2>{info.title}</h2>
-            <div className="user">
-              <span>
-                <img src={`${img}/common/join-1.png`} alt="" />
-              </span>
-              <div>
-                <h3>{info.name}</h3>
-                <p>1시간 전</p>
+            <div className="user-wrap">
+              <div className="user">
+                <span>
+                  <img src={`${img}/common/join-1.png`} alt="" />
+                </span>
+                <div>
+                  <h3>{info.name}</h3>
+                  <p>1시간 전</p>
+                </div>
+              </div>
+              <div className="sort-box">
+                {user && info.name === user.name ? (
+                  <button className="sort-type" onClick={handleEdit}>
+                    <img src="/common/edit-button.png" alt="편집하기" />
+                  </button>
+                ) : null}
+                {openEdit && (
+                  <div className="main-teams__wrap board-list">
+                    <div className="main-teams">
+                      <ul>
+                        <li>
+                          <button onClick={handleModify}>수정</button>
+                        </li>
+                        <li>
+                          <button onClick={handleDelete}>삭제</button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             <div className="board-detail">

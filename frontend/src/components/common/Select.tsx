@@ -43,6 +43,7 @@ const Select = ({
   width,
   defaultValue,
 }: PropsTypes) => {
+  const img = process.env.PUBLIC_URL;
   const selectRef = useRef<HTMLDivElement>(null);
 
   const [currentValue, setCurrentValue] = useState<OptionType>(null);
@@ -124,7 +125,7 @@ const Select = ({
             {currentValue?.label || defaultOption.label || placeholder}
           </div>
           <div className="select-indicator">
-            <img src="/select/arrow.svg" alt="arrow" />
+            <img src={`${img}/select/arrow.svg`} alt="arrow" />
           </div>
         </div>
         {isModalOpen && (

@@ -23,12 +23,13 @@ const TEMP_TEAM_MEMBER_INFO_ID = 148;
 const Detail: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const likeCount = searchParams.get("likeCount");
+  const [likeCounts, setLikeCounts] = useState(Number(likeCount));
   const navi = useNavigate();
   const param = useParams();
   const img = process.env.PUBLIC_URL;
   const user = useRecoilValue(UserState);
   const [infoId, setInfoId] = useState(0);
-  const [likeBoolean, setLikeBoolean] = useState(false);
+  const [likeBoolean, setLikeBoolean] = useState(0);
   const [openEdit, setOpenEdit] = useState(false);
   /* Board Part Start */
   const { data: teamId, isLoading: teamIdLoading } = teamMemberId(
@@ -94,13 +95,14 @@ const Detail: FC = () => {
     navi("/board");
   };
 
-  const handleLikes = async () => {
+  const handleLikes = () => {
     if (teamId.data) {
       likeMutate({
         boardId: Number(param.id),
         teamMemberInfoId: teamId.data,
         teamId: JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
       });
+      // setLikeCounts(LikeData.data)
     }
   };
 
@@ -110,14 +112,14 @@ const Detail: FC = () => {
     }
   }, [teamId]);
 
-  useEffect(() => {
-    if (likeBoolean)
-      likeMutate({
-        boardId: Number(param.id),
-        teamMemberInfoId: infoId,
-        teamId: JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
-      });
-  }, [infoId, likeBoolean]);
+  // useEffect(() => {
+  //   if (likeBoolean)
+  //     likeMutate({
+  //       boardId: Number(param.id),
+  //       teamMemberInfoId: infoId,
+  //       teamId: JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
+  //     });
+  // }, [infoId, likeBoolean]);
 
   useEffect(() => {
     if (detail) {
@@ -129,6 +131,14 @@ const Detail: FC = () => {
     }
   }, [detail]);
 
+  useEffect(() => {
+    if (LikeData && LikeData.data === true) {
+      setLikeCounts(likeCounts + 1);
+    } else if (LikeData && LikeData.data === false) {
+      setLikeCounts(likeCounts - 1);
+    }
+    console.log(LikeData && LikeData.data);
+  }, [LikeData]);
   /* Board Part End */
 
   /* Comment part Start */
@@ -244,7 +254,7 @@ const Detail: FC = () => {
             <div className="board-detail">
               <p dangerouslySetInnerHTML={{ __html: info.contents }} />
               <Button
-                text={`좋아요 ${likeCount}개`}
+                text={`좋아요 ${likeCounts}개`}
                 handler={handleLikes}
                 color="white"
               />

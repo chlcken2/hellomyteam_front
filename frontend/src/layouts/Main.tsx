@@ -240,6 +240,7 @@ const Main = () => {
                   <li className="mo-title">
                     <h3>나의 팀 선택</h3>
                   </li>
+
                   {localTitle?.map((el: any, idx: number) => {
                     return (
                       <li
@@ -257,6 +258,9 @@ const Main = () => {
                       </li>
                     );
                   })}
+                  <li>
+                    <button onClick={() => navi("/search")}>다른팀 더 가입하기</button>
+                  </li>
                 </ul>
               </div>
             </div>

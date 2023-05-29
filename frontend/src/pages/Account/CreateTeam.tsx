@@ -13,7 +13,10 @@ const CreateTeam: FC = () => {
   const [name, setName] = useState("");
   const [text, setText] = useState("");
   const [disabled, setDisabled] = useState(false);
-  const [tactic, setTactic] = useState(null);
+  const [tactic, setTactic] = useState({
+    label: "점유율",
+    value: "POSSESSION",
+  });
   const [file, setFile] = useState<any>(null);
   const user = useRecoilValue(UserState);
   const test = (e: any) => console.log(e);
@@ -105,6 +108,7 @@ const CreateTeam: FC = () => {
                 <Select
                   label="선호전술*"
                   placeholder="선호전술"
+                  defaultValue="POSSESSION"
                   options={[
                     { label: "점유율", value: "POSSESSION" },
                     { label: "게겐프레싱", value: "GEGENPRESSING" },

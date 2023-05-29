@@ -254,8 +254,10 @@
 
   .back-button {
     display: block;
-    width: 50px;
+    width: auto;
+    margin-left: -10px;
     height: 50px;
+    padding-bottom: 30px;
   }
   .board-content {
     h2 {

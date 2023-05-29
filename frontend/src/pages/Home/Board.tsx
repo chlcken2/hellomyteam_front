@@ -420,6 +420,9 @@ const Board: FC = () => {
               </Link>
             ))}
           {loading && <Ring size={36} lineWeight={4} speed={2} color="#5E81FF" />}
+          {!listLoad && !openSearch && list.data.content.length === 0 && (
+            <li className="no-content">게시글이 없습니다.</li>
+          )}
           {!listLoad &&
             !openSearch &&
             list?.data.content.map((el: any, idx: number) => {

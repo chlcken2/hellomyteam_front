@@ -123,6 +123,7 @@ const Write: FC = () => {
         contents: htmlString,
         title,
       });
+      return;
     }
     user.teamInfo.forEach((el) => {
       // teamId

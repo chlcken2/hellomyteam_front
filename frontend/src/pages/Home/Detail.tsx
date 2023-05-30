@@ -211,7 +211,7 @@ const Detail: FC = () => {
               <div className="sort-box">
                 {user && info.name === user.name ? (
                   <button className="sort-type" onClick={handleEdit}>
-                    <img src="/common/edit-button.png" alt="편집하기" />
+                    <img src={`${img}/common/edit-button.png`} alt="편집하기" />
                   </button>
                 ) : null}
                 {openEdit && (

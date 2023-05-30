@@ -43,13 +43,14 @@ const Main = () => {
   const [userId, setUserId] = useState(
     Number(JSON.stringify(localStorage.getItem("userId"))) || useUser?.id,
   );
-  const [flag, setFlag] = useState(false);
+  const [flag, setFlag] = useState(true);
 
   const [showTeamsModal, setShowTeamsModal] = useState(false);
   // User가 가입한 team list fetch (param - memberId)
   const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(
     Number(JSON.parse(localStorage.getItem("userId"))) || userId,
   );
+
   const { data: teamId, isLoading: teamIdLoading } = teamMemberId(
     Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
     Number(JSON.parse(localStorage.getItem("userId"))),
@@ -100,6 +101,7 @@ const Main = () => {
         teamMemberInfoId: teamId.data,
         selectedTeamId: filtered[0].teamId,
       });
+      // setUseUser({...useUser, changedTeamState: teamId.data})
     }
     // teamMemberId(filtered[0].teamId, useUser.id).then((res) => {
     //   setUseUser({
@@ -119,11 +121,11 @@ const Main = () => {
   }, [useUser]);
 
   // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
-  // useEffect(() => {
-  //   if (team?.data) {
-  //     setUseUser({ ...useUser, teamInfo: [...team.data] });
-  //   }
-  // }, [team]);
+  useEffect(() => {
+    if (team?.data) {
+      setUseUser({ ...useUser, teamInfo: [...team.data] });
+    }
+  }, [team]);
 
   // 모바일 홈 탭바 인터랙션 관련 코드
   const handleMenuItemInteraction = () => {
@@ -167,7 +169,7 @@ const Main = () => {
   useEffect(() => {
     if (isGetTeamInfoLoading) return;
 
-    if (team.data) {
+    if (team && team.data) {
       setFlag(true);
 
       if (!localStorage.getItem("arrayData")) {
@@ -183,6 +185,7 @@ const Main = () => {
       setCurrentTeamTitle(arrayData?.[0].teamName);
 
       if (!flag) return;
+
       team.data.forEach((el, idx) => {
         // 가져온 배열에 새로운 데이터 추가 또는 기존 데이터 수정
         arrayData[idx] = {
@@ -217,6 +220,7 @@ const Main = () => {
       }));
     }
   }, [teamId]);
+
   return (
     <div className="main-wrap">
       <div className="main-buttons">

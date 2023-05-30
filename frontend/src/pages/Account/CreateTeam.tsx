@@ -4,10 +4,13 @@ import Input from "components/common/Input";
 import Select from "components/common/Select";
 import Button from "components/common/Button";
 import { useRecoilValue } from "recoil";
+import { teamCreateQuery } from "quires/team/teamCreate";
 import { instance } from "../../config/api";
 import UserState from "../../recoil/userAtom";
 
 const CreateTeam: FC = () => {
+  const { mutate, data: createTeam, isLoading: isGetTeamLoading } = teamCreateQuery();
+
   const [create, setCreate] = useState(false);
   const img = process.env.PUBLIC_URL;
   const [name, setName] = useState("");
@@ -42,15 +45,13 @@ const CreateTeam: FC = () => {
     }
 
     try {
-      const save = await instance.post("/api/team", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      if (isGetTeamLoading) return alert("팀 생성 중입니다");
+      mutate(formData);
     } catch (err) {
       console.log(err);
     }
   };
+  console.log(createTeam);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

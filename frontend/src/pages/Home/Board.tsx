@@ -1,5 +1,6 @@
-import React, { FC, useEffect, useState, useRef, useMemo } from "react";
+import React, { FC, useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
+
 import PostItem from "components/Home/PostItem";
 import getBoardList from "quires/board/getBoardList";
 import Pagination from "components/common/Pagination";

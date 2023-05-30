@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useRef, useMemo } from "react";
+import React, { FC, useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Button from "components/common/Button";
 import getBoardDetail from "quires/board/getBoardDetail";
@@ -29,8 +29,8 @@ const Detail: FC = () => {
   const img = process.env.PUBLIC_URL;
   const user = useRecoilValue(UserState);
   const [infoId, setInfoId] = useState(0);
-  const [likeBoolean, setLikeBoolean] = useState(0);
   const [openEdit, setOpenEdit] = useState(false);
+
   /* Board Part Start */
   const { data: teamId, isLoading: teamIdLoading } = teamMemberId(
     Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
@@ -50,35 +50,24 @@ const Detail: FC = () => {
 
   const { mutate: deleteMutate, isLoading: deleteLoad } = boardDeleteMutation();
 
-  const {
-    mutate: editMutate,
-    isLoading: editLoad,
-    data: editData,
-  } = useEditBoardMutation(Number(param.id));
-
   const [info, setInfo] = useState<infoType>({
     name: "test",
     title: "test",
     contents: "test",
   });
 
-  const handleEdit = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setOpenEdit(!openEdit);
-  };
+  const handleEdit = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      setOpenEdit(!openEdit);
+    },
+    [openEdit],
+  );
 
   const handleModify = () => {
-    console.log("modify");
     navi(
       `/board/${user.selectedTeamId}/write?param1=${info.title}&param2=${info.contents}`,
     );
-    // editMutate({
-    //   teamId: JSON.parse(localStorage.getItem("selectedTeamId")),
-    //   boardId: Number(param.id),
-    //   category: "FREE_BOARD",
-    //   content: "hi",
-    //   title: "hello",
-    // });
   };
   const handleDelete = () => {
     if (deleteLoad) return alert("게시글 삭제 중입니다.");
@@ -95,7 +84,7 @@ const Detail: FC = () => {
     navi("/board");
   };
 
-  const handleLikes = () => {
+  const handleLikes = useCallback(() => {
     if (teamId.data) {
       likeMutate({
         boardId: Number(param.id),
@@ -104,22 +93,13 @@ const Detail: FC = () => {
       });
       // setLikeCounts(LikeData.data)
     }
-  };
+  }, [teamId]);
 
   useEffect(() => {
     if (teamId?.data) {
       setInfoId(teamId.data);
     }
   }, [teamId]);
-
-  // useEffect(() => {
-  //   if (likeBoolean)
-  //     likeMutate({
-  //       boardId: Number(param.id),
-  //       teamMemberInfoId: infoId,
-  //       teamId: JSON.parse(localStorage.getItem("selectedTeamId")) || user.selectedTeamId,
-  //     });
-  // }, [infoId, likeBoolean]);
 
   useEffect(() => {
     if (detail) {
@@ -137,7 +117,6 @@ const Detail: FC = () => {
     } else if (LikeData && LikeData.data === false) {
       setLikeCounts(likeCounts - 1);
     }
-    console.log(LikeData && LikeData.data);
   }, [LikeData]);
   /* Board Part End */
 
@@ -212,7 +191,7 @@ const Detail: FC = () => {
   return (
     <>
       {/* Boad Part Start */}
-      {!load && detail && (
+      {detail && (
         <div className="board">
           <button onClick={() => navi(-1)} className="back-button">
             <img src={`${img}/common/ChevronLeftOutline.png`} alt="" />

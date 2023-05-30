@@ -20,6 +20,7 @@ export interface UserType {
   teamInfo?: teamInfoType[];
   teamMemberInfoId?: number;
   selectedTeamId?: number;
+  changedTeamState?: string;
 }
 
 interface teamInfoType {

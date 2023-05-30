@@ -119,7 +119,7 @@ const Write: FC = () => {
       editMutate({
         teamId: JSON.parse(localStorage.getItem("selectedTeamId")),
         boardId: Number(numbers),
-        category: "FREE_BOARD",
+        category: boardName.value,
         contents: htmlString,
         title,
       });
@@ -136,7 +136,6 @@ const Write: FC = () => {
   useEffect(() => {
     if (boardNum !== 0) {
       mutate({
-        // TODO: 옵셔널 체이닝 이유 찾기
         boardCategory: boardName ? boardName.value : "FREE_BOARD",
         boardStatus: "NORMAL",
         contents: htmlString,
@@ -150,7 +149,7 @@ const Write: FC = () => {
   useEffect(() => {
     if (writeData) {
       console.log(writeData);
-      // const { id } = writeData.data;edit-button.png
+      // const { id } = writeData.data;
       alert("글 저장에 성공했습니다");
       navi(`/board`);
     }

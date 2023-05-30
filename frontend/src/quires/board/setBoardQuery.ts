@@ -85,8 +85,7 @@ export const useEditBoardMutation = (boardId: number) => {
     ({ teamId, category, content, title }: any) =>
       editBoardFetcher({ teamId, boardId, category, content, title }),
     {
-      onSuccess: () => console.log("글이 성공적으로 수정됨"),
-      // onSuccess: () => queryClient.invalidateQueries([BOARD_LIST_QUERY, boardId]),
+      onSuccess: () => queryClient.invalidateQueries([BOARD_LIST_QUERY, boardId]),
     },
   );
 };

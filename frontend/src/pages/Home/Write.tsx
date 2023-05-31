@@ -1,26 +1,68 @@
 import React, { FC, useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import getTeamInfo from "quires/team/getTeamInfo";
 import Button from "components/common/Button";
 import Select from "components/common/Select";
 import Input from "components/common/Input";
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState, convertToRaw, AtomicBlockUtils } from "draft-js";
+import { EditorState, convertToRaw, AtomicBlockUtils, ContentState } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftjsToHtml from "draftjs-to-html";
 import { useRecoilValue } from "recoil";
 import UserState from "recoil/userAtom";
 import teamMemberId from "quires/team/getTeamMemberId";
-import { setBoardWriteMutation } from "quires/board/setBoardQuery";
-
-import axios from "axios";
+import { setBoardWriteMutation, useEditBoardMutation } from "quires/board/setBoardQuery";
 
 const Write: FC = () => {
+  // 글수정시에만 작동함
+  const a = useLocation();
+  const queryString = a?.search;
+  console.log(queryString);
+  const searchParams = new URLSearchParams(queryString);
+  const titleParam = searchParams?.get("param1"); // 'hello'
+  const contentsParam = searchParams?.get("param2"); // 'hi'
+  const text = contentsParam?.replace(/<[^>]+>/g, "");
+
+  const path = a.pathname;
+  const numbers = path.match(/\d+/g);
+  const {
+    mutate: editMutate,
+    isLoading: editLoad,
+    data: editData,
+  } = useEditBoardMutation(Number(numbers));
+
+  // --글수정시에만 작동함
   const { teamId } = useParams();
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const initialContentState = ContentState.createFromText(text || "");
+  const initialEditorState = EditorState.createWithContent(initialContentState);
+
+  const [editorState, setEditorState] = useState(initialEditorState);
   const [setTeamId] = useState(() => localStorage.getItem("selectedTeamId"));
   const [setBoardId] = useState(teamId);
-  const { data: getTeamId, isLoading: teamIdLoading } = teamMemberId(
+
+  const navi = useNavigate();
+  const {
+    mutate,
+    isLoading: load,
+    isError: error,
+    data: writeData,
+  } = setBoardWriteMutation();
+
+  const user = useRecoilValue(UserState);
+  const [title, setTitle] = useState(titleParam || "");
+  const [boardName, setBoardName] = useState({
+    label: "자유게시판",
+    value: "FREE_BOARD",
+  });
+  const img = process.env.PUBLIC_URL;
+  const option = [
+    { label: "자유게시판", value: "FREE_BOARD" },
+    { label: "공지게시판", value: "NOTICE_BOARD" },
+  ];
+  const [boardNum, setBoardNum] = useState(0);
+  const [htmlString, setHtmlString] = useState("");
+  const { data: teamInfoId, isLoading: isGetTeamInfoLoading } = teamMemberId(
     Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
     Number(JSON.parse(localStorage.getItem("userId"))),
   );
@@ -40,10 +82,11 @@ const Write: FC = () => {
     const formData = new FormData();
     formData.append("image", file);
 
-    axios
-      .post(`/api/teams/${setTeamId}/board/${setBoardId}/image`)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    // 작업예정-이미지API있어야 작업가능
+    // axios
+    //   .post(`/api/teams/${setTeamId}/board/${setBoardId}/image`)
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
     // fetch("https://your-image-upload-api-url", {
     //   method: "POST",
     //   body: formData,
@@ -57,33 +100,6 @@ const Write: FC = () => {
     //     console.error("Error uploading image: ", error);
     //   });
   };
-  console.log(editorState);
-
-  const navi = useNavigate();
-  const {
-    mutate,
-    isLoading: load,
-    isError: error,
-    data: writeData,
-  } = setBoardWriteMutation();
-
-  const user = useRecoilValue(UserState);
-  const [title, setTitle] = useState("");
-  const [boardName, setBoardName] = useState({
-    label: "자유게시판",
-    value: "FREE_BOARD",
-  });
-  const img = process.env.PUBLIC_URL;
-  const option = [
-    { label: "자유게시판", value: "FREE_BOARD" },
-    { label: "공지게시판", value: "NOTICE_BOARD" },
-  ];
-  const [boardNum, setBoardNum] = useState(0);
-  const [htmlString, setHtmlString] = useState("");
-  const { data: teamInfoId, isLoading: isGetTeamInfoLoading } = teamMemberId(
-    Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
-    Number(JSON.parse(localStorage.getItem("userId"))),
-  );
 
   const updateTextDescription = async (state: any) => {
     setEditorState(state);
@@ -94,8 +110,19 @@ const Write: FC = () => {
 
   const handleSubmit = async (e: React.MouseEvent) => {
     e.preventDefault();
-    const memberId = user.id;
 
+    if (queryString) {
+      editMutate({
+        teamId: JSON.parse(localStorage.getItem("selectedTeamId")),
+        boardId: Number(numbers),
+        category: boardName.value,
+        content: htmlString,
+        title,
+      });
+      alert("글 수정에 성공했습니다");
+      navi("/board");
+      return;
+    }
     user.teamInfo.forEach((el) => {
       // teamId
       if (el.teamId === Number(teamId) && teamInfoId.data) {
@@ -107,10 +134,7 @@ const Write: FC = () => {
 
   useEffect(() => {
     if (boardNum !== 0) {
-      console.log(error);
-
       mutate({
-        // TODO: 옵셔널 체이닝 이유 찾기
         boardCategory: boardName ? boardName.value : "FREE_BOARD",
         boardStatus: "NORMAL",
         contents: htmlString,
@@ -123,11 +147,12 @@ const Write: FC = () => {
 
   useEffect(() => {
     if (writeData) {
+      console.log(writeData);
       // const { id } = writeData.data;
       alert("글 저장에 성공했습니다");
       navi(`/board`);
     }
-  }, [writeData, htmlString]);
+  }, [writeData]);
 
   return (
     <div className="board write">

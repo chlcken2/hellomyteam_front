@@ -1,5 +1,6 @@
-import React, { FC, useEffect, useState, useRef, useMemo } from "react";
+import React, { FC, useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
+
 import PostItem from "components/Home/PostItem";
 import getBoardList from "quires/board/getBoardList";
 import Pagination from "components/common/Pagination";
@@ -47,7 +48,7 @@ const Board: FC = () => {
     refetch: listRefetch,
   } = getBoardList(
     item - 1,
-    user?.selectedTeamId || JSON.parse(localStorage.getItem("arrayData"))[0].teamId,
+    user?.selectedTeamId || JSON.parse(localStorage?.getItem("arrayData"))?.[0].teamId,
     "FREE_BOARD",
     sortType,
     searchKeyword,
@@ -420,6 +421,9 @@ const Board: FC = () => {
               </Link>
             ))}
           {loading && <Ring size={36} lineWeight={4} speed={2} color="#5E81FF" />}
+          {!listLoad && !openSearch && list.data.content.length === 0 && (
+            <li className="no-content">게시글이 없습니다.</li>
+          )}
           {!listLoad &&
             !openSearch &&
             list?.data.content.map((el: any, idx: number) => {

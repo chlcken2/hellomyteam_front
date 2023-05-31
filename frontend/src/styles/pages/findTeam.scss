@@ -83,6 +83,22 @@
     height: 1px;
   }
 
+  .no-team-found {
+    .no-team-found-search-value {
+      color: #1d1d1d;
+    }
+    min-height: 77vh;
+    font-size: 20px;
+    min-width: 80vw;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    > span {
+      color: #7a7a7a;
+    }
+  }
+
   @media only screen and (max-width: 1279px) {
     .find-team-container {
       width: 100%;
@@ -92,6 +108,9 @@
   @media only screen and (max-width: 767px) {
     .team-card-container {
       grid-template-columns: repeat(1, 1fr);
+    }
+    .no-team-found-mo {
+      display: block;
     }
   }
 }

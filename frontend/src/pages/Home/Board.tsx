@@ -48,7 +48,7 @@ const Board: FC = () => {
     refetch: listRefetch,
   } = getBoardList(
     item - 1,
-    user?.selectedTeamId || JSON.parse(localStorage.getItem("arrayData"))[0].teamId,
+    user?.selectedTeamId || JSON.parse(localStorage?.getItem("arrayData"))?.[0].teamId,
     "FREE_BOARD",
     sortType,
     searchKeyword,

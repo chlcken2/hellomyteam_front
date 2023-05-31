@@ -43,7 +43,7 @@ const Main = () => {
   const [userId, setUserId] = useState(
     Number(JSON.stringify(localStorage.getItem("userId"))) || useUser?.id,
   );
-  const [flag, setFlag] = useState(true);
+  const [changeDataFlag, setChangeDataFlag] = useState("initial");
 
   const [showTeamsModal, setShowTeamsModal] = useState(false);
   // User가 가입한 team list fetch (param - memberId)
@@ -81,7 +81,7 @@ const Main = () => {
   };
   // 타이틀바꾸기
   const handleMember = (name: string, id: number, imageUrl: string) => {
-    setFlag(true);
+    setChangeDataFlag("changed");
     setCurrentTeamTitle(name);
     setCurrentTeamId(id);
     setShowTeamsModal(false);
@@ -169,14 +169,18 @@ const Main = () => {
   useEffect(() => {
     if (isGetTeamInfoLoading) return;
 
-    if (team && team.data) {
-      setFlag(true);
+    if (team && team.data && useUser?.id) {
+      setChangeDataFlag("changed");
 
       if (!localStorage.getItem("arrayData")) {
         localStorage.setItem("arrayData", JSON.stringify(team.data));
-        setFlag(false);
+        setChangeDataFlag("unchanged");
       }
+    }
+  }, [team, useUser]);
 
+  useEffect(() => {
+    if (changeDataFlag === "changed") {
       // 로컬스토리지에서 배열 데이터 가져오기
       const arrayData = JSON.parse(localStorage.getItem("arrayData"));
 
@@ -184,9 +188,7 @@ const Main = () => {
       setLocalTitle(arrayData);
       setCurrentTeamTitle(arrayData?.[0].teamName);
 
-      if (!flag) return;
-
-      team.data.forEach((el, idx) => {
+      team?.data.forEach((el, idx) => {
         // 가져온 배열에 새로운 데이터 추가 또는 기존 데이터 수정
         arrayData[idx] = {
           teamName: el.teamName,
@@ -198,7 +200,7 @@ const Main = () => {
         localStorage.setItem("arrayData", JSON.stringify(arrayData));
       });
     }
-  }, [team]);
+  }, [changeDataFlag]);
 
   useEffect(() => {
     // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
@@ -211,15 +213,6 @@ const Main = () => {
       localStorage.setItem("selectedTeamId", localTitle?.[0].teamId.toString());
     }
   }, [team, localTitle]);
-
-  useEffect(() => {
-    if (teamId && teamId.data) {
-      setUseUser((prevUser) => ({
-        ...prevUser,
-        teamMemberInfoId: teamId.data,
-      }));
-    }
-  }, [teamId]);
 
   return (
     <div className="main-wrap">

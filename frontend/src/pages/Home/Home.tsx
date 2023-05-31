@@ -15,7 +15,7 @@ const Home: FC = () => {
     refetch: refetch1,
   } = getBoardList(
     0,
-    user?.selectedTeamId || JSON.parse(localStorage.getItem("arrayData"))[0].teamId,
+    user?.selectedTeamId || JSON.parse(localStorage?.getItem("arrayData"))?.[0].teamId,
     "NOTICE_BOARD",
     "created_date",
     "",
@@ -29,7 +29,7 @@ const Home: FC = () => {
     refetch: refetch2,
   } = getBoardList(
     0,
-    user?.selectedTeamId || JSON.parse(localStorage.getItem("arrayData"))[0].teamId,
+    user?.selectedTeamId || JSON.parse(localStorage?.getItem("arrayData"))?.[0].teamId,
     "FREE_BOARD",
     "created_date",
     "",
@@ -52,7 +52,7 @@ const Home: FC = () => {
           </div>
           <ul className="post-list">
             {!noticeListLoad &&
-              noticeList.data.content.map((el, idx) => (
+              noticeList?.data.content.map((el, idx) => (
                 <li key={idx}>
                   <PostItem
                     title={el.title}
@@ -94,7 +94,7 @@ const Home: FC = () => {
           </div>
           <ul className="post-list">
             {!freeListLoad &&
-              freeList.data.content.map((el, idx) => (
+              freeList?.data.content.map((el, idx) => (
                 <li key={idx}>
                   <PostItem
                     title={el.title}

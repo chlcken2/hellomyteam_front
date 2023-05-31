@@ -34,7 +34,6 @@ const getBoardList = (
   srchType: string,
   pageSize: number,
 ) => {
-  const client = useQueryClient();
   return useQuery([QUERY_KEY, category], () =>
     fetcher(num, teamId, category, sortType, srchKwd, srchType, pageSize),
   );

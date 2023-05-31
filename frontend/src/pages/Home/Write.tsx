@@ -17,7 +17,7 @@ const Write: FC = () => {
   // 글수정시에만 작동함
   const a = useLocation();
   const queryString = a?.search;
-
+  console.log(queryString);
   const searchParams = new URLSearchParams(queryString);
   const titleParam = searchParams?.get("param1"); // 'hello'
   const contentsParam = searchParams?.get("param2"); // 'hi'
@@ -41,10 +41,6 @@ const Write: FC = () => {
   const [setTeamId] = useState(() => localStorage.getItem("selectedTeamId"));
   const [setBoardId] = useState(teamId);
 
-  const { data: getTeamId, isLoading: teamIdLoading } = teamMemberId(
-    Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
-    Number(JSON.parse(localStorage.getItem("userId"))),
-  );
   const navi = useNavigate();
   const {
     mutate,
@@ -120,9 +116,11 @@ const Write: FC = () => {
         teamId: JSON.parse(localStorage.getItem("selectedTeamId")),
         boardId: Number(numbers),
         category: boardName.value,
-        contents: htmlString,
+        content: htmlString,
         title,
       });
+      alert("글 수정에 성공했습니다");
+      navi("/board");
       return;
     }
     user.teamInfo.forEach((el) => {

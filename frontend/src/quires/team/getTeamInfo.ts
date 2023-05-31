@@ -1,5 +1,5 @@
 import { instance } from "config";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { joinTeamTypes } from "types/UserTypes";
 import ApiResponseType from "types/ApiResponseType";
 
@@ -15,6 +15,7 @@ export const useTeamInfoFetcher = (memberId: number) =>
  * @returns
  */
 const getTeamInfo = (memberId: number) => {
+  const queryClient = useQueryClient();
   return useQuery([QUERY_KEY, memberId], () => useTeamInfoFetcher(memberId));
 };
 

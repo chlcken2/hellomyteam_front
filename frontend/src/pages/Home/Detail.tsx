@@ -65,9 +65,7 @@ const Detail: FC = () => {
   );
 
   const handleModify = () => {
-    navi(
-      `/board/${user.selectedTeamId}/write?param1=${info.title}&param2=${info.contents}`,
-    );
+    navi(`/board/${Number(param.id)}/write?param1=${info.title}&param2=${info.contents}`);
   };
   const handleDelete = () => {
     if (deleteLoad) return alert("게시글 삭제 중입니다.");

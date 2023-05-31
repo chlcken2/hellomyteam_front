@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { menuClassName } from "utils/common";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
@@ -46,9 +46,7 @@ const Main = () => {
 
   const [showTeamsModal, setShowTeamsModal] = useState(false);
   // User가 가입한 team list fetch (param - memberId)
-  const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(
-    Number(JSON.parse(localStorage.getItem("userId"))) || userId,
-  );
+  const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(true);
 
   // 모바일 탭바의 menuItem 배경 인터렉션관련 스타일 state
   const [menuItemBackgroundStyle, setMenuItemBackgroundStyle] = useState({
@@ -270,7 +268,9 @@ const Main = () => {
           ))}
         </ul>
       </div>
-      <Outlet />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 };

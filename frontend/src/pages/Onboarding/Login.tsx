@@ -1,27 +1,18 @@
-import { Dispatch, SetStateAction, useState, useEffect, ChangeEvent } from "react";
-import { useCookies } from "react-cookie"; // useCookies import
-import LoginState from "recoil/atom";
+import { useState, useEffect, ChangeEvent } from "react";
+import { useNavigate } from "react-router";
 
-import { useSetRecoilState, useRecoilState } from "recoil";
-import getMemberInfo from "quires/member/getMemberInfo";
-import UserState from "recoil/userAtom";
+import { useCookies } from "react-cookie"; // useCookies import
+
 import { setLocalStorage, getExpiredDate } from "../../utils/setAuthorization";
-import Input from "../common/Input";
+import Input from "../../components/common/Input";
 import useLoginMutation from "../../quires/certification/useLoginMutation";
 
-interface IHas {
-  setHasId: Dispatch<SetStateAction<boolean>>;
-  setLogin: Dispatch<SetStateAction<boolean>>;
-}
+const img = process.env.PUBLIC_URL;
 
-const Login = ({ setHasId, setLogin }: IHas) => {
-  const [cookies, setCookie] = useCookies(["refresh"]);
-  // userId를 리코일에 추가하기
-  const [useUser, setUseUser] = useRecoilState(UserState);
-  const [validUser, isValidUser] = useState(false);
-  const { data: userData, isLoading: userLoad } = getMemberInfo(validUser);
-  const setConfirmLogin = useSetRecoilState(LoginState);
-  const img = process.env.PUBLIC_URL;
+const Login = () => {
+  const navigate = useNavigate();
+
+  const [, setCookie] = useCookies(["refresh"]);
   const [text, setText] = useState({
     email: "",
     password: "",
@@ -39,21 +30,12 @@ const Login = ({ setHasId, setLogin }: IHas) => {
   useEffect(() => {
     if (loginError) return alert("올바른 이메일 or 비밀번호를 입력하세요");
     if (!loginResponse) return;
-
     const { accessToken, refreshToken } = loginResponse.data.data;
     setCookie("refresh", refreshToken, { path: "/", expires: getExpiredDate() });
     setLocalStorage(accessToken);
 
-    isValidUser(true);
+    navigate("/");
   }, [loginResponse, loginError]);
-
-  useEffect(() => {
-    if (validUser && !userLoad) {
-      setUseUser(userData.data);
-      setConfirmLogin(true);
-      localStorage.setItem("userId", userData.data.id.toString());
-    }
-  }, [isValidUser, userData]);
 
   const loginDisabled = () => {
     if (text.email.length > 5 && text.password.length > 5) {
@@ -61,12 +43,18 @@ const Login = ({ setHasId, setLogin }: IHas) => {
     }
     return true;
   };
+
+  const onEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && text.email.length > 5 && text.password.length > 5) {
+      loginMutate();
+    }
+  };
+
   return (
-    <div className="join-wrap">
+    <>
       <button
         onClick={() => {
-          setHasId(false);
-          setLogin(false);
+          navigate("/onboarding");
         }}
       >
         <img src={`${img}/common/ChevronLeftOutline.png`} alt="dd" />
@@ -89,6 +77,7 @@ const Login = ({ setHasId, setLogin }: IHas) => {
             const { value } = e.target;
             setText({ ...text, password: value });
           }}
+          keyDownHandler={onEnterPress}
           type="password"
           label="비밀번호"
         />
@@ -100,7 +89,7 @@ const Login = ({ setHasId, setLogin }: IHas) => {
       >
         로그인
       </button>
-    </div>
+    </>
   );
 };
 

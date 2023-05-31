@@ -1,6 +1,5 @@
 import { instance } from "config";
 import { useQuery } from "react-query";
-import ApiResponseType from "types/ApiResponseType";
 /**
  * teamMemberInfo_id 가져오기
  */

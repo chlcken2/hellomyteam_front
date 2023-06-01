@@ -46,7 +46,7 @@ const TeamCard = ({
         <p className="slogan">{slogan}</p>
         <div className="person">
           <span>
-            <img src={`${img}/common/person.png`} alt="인원수" />
+            <img width={18} height={18} src={`${img}/common/person.png`} alt="인원수" />
           </span>
           <p>{num}명</p>
         </div>

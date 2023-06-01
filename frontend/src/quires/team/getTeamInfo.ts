@@ -1,5 +1,5 @@
 import { instance } from "config";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { joinTeamTypes } from "types/UserTypes";
 import ApiResponseType from "types/ApiResponseType";
 

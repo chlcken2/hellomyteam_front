@@ -2,6 +2,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import "../../styles/pages/onboarding.scss";
 import Button from "components/common/Button";
+import LoadingSpinner from "components/common/LoadingSpinner";
 
 const img = process.env.PUBLIC_URL;
 const IMAGE_WIDTH = 300;
@@ -169,7 +170,7 @@ const Onboarding = () => {
           </div>
         </div>
       )}
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense fallback={<LoadingSpinner />}>
         <Outlet />
       </Suspense>
     </div>

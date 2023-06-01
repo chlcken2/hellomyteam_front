@@ -19,12 +19,15 @@ import UserState from "recoil/userAtom";
 import Toast from "components/common/Toast";
 import LoginState from "recoil/atom";
 
+import LoadingSpinner from "components/common/LoadingSpinner";
+import NotFound from "components/common/NotFound";
+
 import "./styles/style.scss";
 import "./styles/base.scss";
 import "./styles/layouts/main.scss";
 
 const FormWrap = lazy(() => import("./pages/Onboarding/FormWrap"));
-const SignupSecondPage = lazy(() => import("pages/Onboarding/SignupSecondPage"));
+const SignupSecondPage = lazy(() => import("./pages/Onboarding/SignupSecondPage"));
 const SignupSuccess = lazy(() => import("./pages/Onboarding/SignupSuccess"));
 const Login = lazy(() => import("./pages/Onboarding/Login"));
 const SignupFirstPage = lazy(() => import("./pages/Onboarding/SignupFirstPage"));
@@ -72,7 +75,8 @@ const App = () => {
       localStorage.removeItem("token");
       return redirect("/onboarding/login");
     }
-    localStorage.setItem("userId", userInfo.data.id.toString());
+    if (userInfo) localStorage.setItem("userId", userInfo.data.id.toString());
+
     if (!joinedTeamResponse || !joinedTeamResponse.data) return null;
     return joinedTeamResponse.data;
   };
@@ -89,7 +93,7 @@ const App = () => {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route errorElement={<div>Not found</div>}>
+      <Route errorElement={<NotFound />}>
         <Route loader={mainLoader} element={<Nav />}>
           <Route path="/" element={<Main />}>
             <Route path="" element={<Home />} />
@@ -105,7 +109,7 @@ const App = () => {
             loader={getUserIdLoader}
             path="/search/*"
             element={
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <FindTeam />
               </Suspense>
             }
@@ -113,7 +117,7 @@ const App = () => {
           <Route
             path="/alarm"
             element={
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <Alarm />
               </Suspense>
             }
@@ -128,6 +132,7 @@ const App = () => {
           </Route>
           <Route path="signup/3" element={<SignupSuccess />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Route>,
     ),
   );
@@ -135,7 +140,9 @@ const App = () => {
   return (
     <CookiesProvider>
       <Toast />
-      <RouterProvider router={router} />
+      <Suspense fallback={<LoadingSpinner />}>
+        <RouterProvider router={router} />
+      </Suspense>
     </CookiesProvider>
   );
 };

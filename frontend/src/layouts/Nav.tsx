@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { NavLink, Outlet, useLoaderData } from "react-router-dom";
 import { menuClassName } from "utils/common";
+import LoadingSpinner from "components/common/LoadingSpinner";
 
 const homePathname = ["/", "/notice", "/board", "/team"];
 const searchTeamPathname = ["/search"];
@@ -100,7 +101,7 @@ const Nav = () => {
           </ul>
         </header>
       )}
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingSpinner />}>
         <Outlet />
       </Suspense>
     </div>

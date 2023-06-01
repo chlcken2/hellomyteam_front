@@ -51,7 +51,11 @@ const Main = () => {
     Number(JSON.parse(localStorage.getItem("userId"))) || userId,
   );
 
-  const { data: teamId, isLoading: teamIdLoading } = teamMemberId(
+  const {
+    data: teamId,
+    isLoading: teamIdLoading,
+    refetch: teamIdRefetch,
+  } = teamMemberId(
     Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
     Number(JSON.parse(localStorage.getItem("userId"))),
   );
@@ -67,7 +71,9 @@ const Main = () => {
   );
   const [currentTeamId, setCurrentTeamId] = useState(0);
 
-  const [localTitle, setLocalTitle] = useState<titleType[]>(team?.data);
+  const [localTitle, setLocalTitle] = useState<titleType[]>(
+    JSON.parse(localStorage?.getItem("arrayData")) || team?.data,
+  );
 
   // 토글보이기
   const handleTeamsModal = () => {
@@ -81,7 +87,7 @@ const Main = () => {
   };
   // 타이틀바꾸기
   const handleMember = (name: string, id: number, imageUrl: string) => {
-    setChangeDataFlag("changed");
+    setChangeDataFlag("notInitUser");
     setCurrentTeamTitle(name);
     setCurrentTeamId(id);
     setShowTeamsModal(false);
@@ -94,23 +100,13 @@ const Main = () => {
 
     setLocalTitle(filtered);
     // 2023-04-02: teamMemberInfoId Atom에 추가함
-
     if (teamId.data) {
       setUseUser({
         ...useUser,
         teamMemberInfoId: teamId.data,
         selectedTeamId: filtered[0].teamId,
       });
-      // setUseUser({...useUser, changedTeamState: teamId.data})
     }
-    // teamMemberId(filtered[0].teamId, useUser.id).then((res) => {
-    //   setUseUser({
-    //     ...useUser,
-    //     teamMemberInfoId: res.data.data,
-    //     selectedTeamId: filtered[0].teamId,
-    //   });
-
-    // });
   };
 
   // recoil에 담긴 User의 정보가 있을시에, 사용자의 id값을 리액트 쿼리에 보냄
@@ -167,20 +163,19 @@ const Main = () => {
   }, []);
 
   useEffect(() => {
+    const arrayData = JSON.parse(localStorage.getItem("arrayData"));
     if (isGetTeamInfoLoading) return;
 
     if (team && team.data && useUser?.id) {
-      setChangeDataFlag("changed");
-
-      if (!localStorage.getItem("arrayData")) {
+      if (!arrayData) {
         localStorage.setItem("arrayData", JSON.stringify(team.data));
-        setChangeDataFlag("unchanged");
+        setChangeDataFlag("initUser");
       }
     }
   }, [team, useUser]);
 
   useEffect(() => {
-    if (changeDataFlag === "changed") {
+    if (changeDataFlag === "initUser") {
       // 로컬스토리지에서 배열 데이터 가져오기
       const arrayData = JSON.parse(localStorage.getItem("arrayData"));
 
@@ -200,6 +195,7 @@ const Main = () => {
         localStorage.setItem("arrayData", JSON.stringify(arrayData));
       });
     }
+    teamIdRefetch();
   }, [changeDataFlag]);
 
   useEffect(() => {

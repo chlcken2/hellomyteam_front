@@ -1,5 +1,5 @@
 import { instance } from "config";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { boardListTypes } from "types/UserTypes";
 import ApiResponseType from "types/ApiResponseType";
 
@@ -34,7 +34,7 @@ const getBoardList = (
   srchType: string,
   pageSize: number,
 ) => {
-  return useQuery([QUERY_KEY, teamId], () =>
+  return useQuery([QUERY_KEY, category], () =>
     fetcher(num, teamId, category, sortType, srchKwd, srchType, pageSize),
   );
 };

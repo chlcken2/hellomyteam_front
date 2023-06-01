@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import "../../styles/pages/onboarding.scss";
 import Button from "components/common/Button";
-import { Outlet, useLocation, useNavigate } from "react-router";
 
 const img = process.env.PUBLIC_URL;
 const IMAGE_WIDTH = 300;
@@ -169,7 +169,9 @@ const Onboarding = () => {
           </div>
         </div>
       )}
-      <Outlet />
+      <Suspense fallback={<div>loading...</div>}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 };

@@ -44,7 +44,7 @@ const EditProfile = lazy(() => import("./pages/Home/Profile/EditProfile"));
 const Alarm = lazy(() => import("./pages/Alarm/Alarm"));
 
 const App = () => {
-  const setUser = useSetRecoilState(UserState);
+  const [useUser, setUseUser] = useRecoilState(UserState);
   const setJoinedTeams = useSetRecoilState(joinedTeamsAtom);
   const [, setConfirmLogin] = useRecoilState(LoginState);
   const [loginBoolean, setLoginBoolean] = useState(false);
@@ -56,7 +56,7 @@ const App = () => {
       setConfirmLogin(true);
       setLoginBoolean(true);
       if (userInfo && joinedTeamResponse) {
-        setUser(userInfo.data);
+        setUseUser({ ...useUser, ...userInfo.data });
         setJoinedTeams(joinedTeamResponse.data);
       }
     }
@@ -91,7 +91,7 @@ const App = () => {
     createRoutesFromElements(
       <Route errorElement={<div>Not found</div>}>
         <Route loader={mainLoader} element={<Nav />}>
-          <Route loader={getJoinedTeamListLoader} path="/" element={<Main />}>
+          <Route path="/" element={<Main />}>
             <Route path="" element={<Home />} />
             <Route path="notice" element={<Notice />} />
             <Route path="board" element={<Board />} />

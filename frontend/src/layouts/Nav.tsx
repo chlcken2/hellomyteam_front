@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { NavLink, Outlet, useLoaderData } from "react-router-dom";
 import { menuClassName } from "utils/common";
 
@@ -99,7 +100,9 @@ const Nav = () => {
           </ul>
         </header>
       )}
-      <Outlet />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 };

@@ -1,6 +1,3 @@
-import Input from "components/common/Input";
-import useEmailCertificationQuery from "quires/certification/useEmailCertifictionQuery";
-import useEmailMatchQuery from "quires/certification/useEmailMatchQuery";
 import React, {
   useState,
   useEffect,
@@ -9,6 +6,10 @@ import React, {
   KeyboardEvent,
   useCallback,
 } from "react";
+import Input from "components/common/Input";
+import useEmailCertificationQuery from "quires/certification/useEmailCertifictionQuery";
+import useEmailMatchQuery from "quires/certification/useEmailMatchQuery";
+
 import "styles/components/common.scss";
 import { useNavigate } from "react-router";
 import { useRecoilState } from "recoil";

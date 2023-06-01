@@ -4,6 +4,7 @@ import { Link, Outlet, useLoaderData, useLocation, useNavigate } from "react-rou
 import { useRecoilState } from "recoil";
 import { joinTeamTypes } from "types/UserTypes";
 
+import LoadingSpinner from "components/common/LoadingSpinner";
 import Button from "components/common/Button";
 import teamMemberId from "quires/team/getTeamMemberId";
 import UserState from "../recoil/userAtom";
@@ -282,7 +283,7 @@ const Main = () => {
           ))}
         </ul>
       </div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingSpinner />}>
         <Outlet />
       </Suspense>
     </div>

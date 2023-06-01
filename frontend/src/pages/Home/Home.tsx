@@ -51,7 +51,9 @@ const Home: FC = () => {
             <h2>공지게시판</h2>
           </div>
           <ul className="post-list">
-            {!noticeListLoad &&
+            {noticeList?.data.content.length === 0 ? (
+              <div className="no-content">게시글이 없습니다.</div>
+            ) : (
               noticeList?.data.content.map((el, idx) => (
                 <li key={idx}>
                   <PostItem
@@ -64,7 +66,8 @@ const Home: FC = () => {
                     imageURL={null}
                   />
                 </li>
-              ))}
+              ))
+            )}
           </ul>
         </section>
       </div>
@@ -93,7 +96,9 @@ const Home: FC = () => {
             <h2>자유게시판</h2>
           </div>
           <ul className="post-list">
-            {!freeListLoad &&
+            {freeList?.data.content.length === 0 ? (
+              <div className="no-content">게시글이 없습니다.</div>
+            ) : (
               freeList?.data.content.map((el, idx) => (
                 <li key={idx}>
                   <PostItem
@@ -106,7 +111,8 @@ const Home: FC = () => {
                     imageURL={null}
                   />
                 </li>
-              ))}
+              ))
+            )}
           </ul>
         </section>
       </div>

@@ -19,6 +19,7 @@ interface PropsType {
   maxLength?: number;
   min?: number;
   max?: number;
+  name?: string;
 }
 
 const Input = ({
@@ -38,6 +39,7 @@ const Input = ({
   min,
   max,
   children,
+  name,
 }: PropsType) => {
   const [isViewPassword, setIsViewPassword] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -84,6 +86,7 @@ const Input = ({
           placeholder={placeholder}
           min={min}
           max={max}
+          name={name}
         />
         {type === "password" && (
           <svg

@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { menuClassName } from "utils/common";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import getTeamInfo from "quires/team/getTeamInfo";
+import { joinTeamTypes } from "types/UserTypes";
+
 import Button from "components/common/Button";
-import { useCookies } from "react-cookie"; // useCookies import
 import teamMemberId from "quires/team/getTeamMemberId";
 import UserState from "../recoil/userAtom";
 import "styles/pages/home.scss";
@@ -26,7 +26,7 @@ const MENU = [
 ];
 
 const Main = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(["keyword"]);
+  const teamInfo = useLoaderData() as joinTeamTypes[];
 
   const [isClicked, setIsClicked] = useState(0);
 
@@ -46,10 +46,6 @@ const Main = () => {
   const [changeDataFlag, setChangeDataFlag] = useState("initial");
 
   const [showTeamsModal, setShowTeamsModal] = useState(false);
-  // User가 가입한 team list fetch (param - memberId)
-  const { data: team, isLoading: isGetTeamInfoLoading } = getTeamInfo(
-    Number(JSON.parse(localStorage.getItem("userId"))) || userId,
-  );
 
   const {
     data: teamId,
@@ -72,7 +68,7 @@ const Main = () => {
   const [currentTeamId, setCurrentTeamId] = useState(0);
 
   const [localTitle, setLocalTitle] = useState<titleType[]>(
-    JSON.parse(localStorage?.getItem("arrayData")) || team?.data,
+    JSON.parse(localStorage?.getItem("arrayData")) || teamInfo,
   );
 
   // 토글보이기
@@ -118,10 +114,10 @@ const Main = () => {
 
   // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
   useEffect(() => {
-    if (team?.data) {
-      setUseUser({ ...useUser, teamInfo: [...team.data] });
+    if (teamInfo) {
+      setUseUser({ ...useUser, teamInfo: [...teamInfo] });
     }
-  }, [team]);
+  }, [teamInfo]);
 
   // 모바일 홈 탭바 인터랙션 관련 코드
   const handleMenuItemInteraction = () => {
@@ -164,15 +160,15 @@ const Main = () => {
 
   useEffect(() => {
     const arrayData = JSON.parse(localStorage.getItem("arrayData"));
-    if (isGetTeamInfoLoading) return;
+    if (!teamInfo) return;
 
-    if (team && team.data && useUser?.id) {
+    if (teamInfo && useUser?.id) {
       if (!arrayData) {
-        localStorage.setItem("arrayData", JSON.stringify(team.data));
+        localStorage.setItem("arrayData", JSON.stringify(teamInfo));
         setChangeDataFlag("initUser");
       }
     }
-  }, [team, useUser]);
+  }, [teamInfo, useUser]);
 
   useEffect(() => {
     if (changeDataFlag === "initUser") {
@@ -183,7 +179,7 @@ const Main = () => {
       setLocalTitle(arrayData);
       setCurrentTeamTitle(arrayData?.[0].teamName);
 
-      team?.data.forEach((el, idx) => {
+      teamInfo?.forEach((el: any, idx: number) => {
         // 가져온 배열에 새로운 데이터 추가 또는 기존 데이터 수정
         arrayData[idx] = {
           teamName: el.teamName,
@@ -200,15 +196,15 @@ const Main = () => {
 
   useEffect(() => {
     // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
-    if (team && localTitle) {
+    if (teamInfo && localTitle) {
       setUseUser({
         ...useUser,
-        teamInfo: [...team.data],
+        teamInfo: [...teamInfo],
         selectedTeamId: localTitle?.[0].teamId,
       });
       localStorage.setItem("selectedTeamId", localTitle?.[0].teamId.toString());
     }
-  }, [team, localTitle]);
+  }, [teamInfo, localTitle]);
 
   return (
     <div className="main-wrap">
@@ -286,7 +282,9 @@ const Main = () => {
           ))}
         </ul>
       </div>
-      <Outlet />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 };

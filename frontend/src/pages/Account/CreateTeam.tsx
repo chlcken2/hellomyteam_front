@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import FormWrap from "components/Form/FormWrap";
 import Input from "components/common/Input";
 import Select from "components/common/Select";
 import Button from "components/common/Button";

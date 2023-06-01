@@ -41,6 +41,7 @@ module.exports = {
         mjs: "never",
       },
     ],
+    "no-alert": "off",
     "import/namespace": "off",
     "import/default": "off",
     "no-return-await": "off",

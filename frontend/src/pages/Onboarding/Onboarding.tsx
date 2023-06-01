@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import "../styles/pages/onboarding.scss";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router";
+import "../../styles/pages/onboarding.scss";
 import Button from "components/common/Button";
 
 const img = process.env.PUBLIC_URL;
@@ -58,6 +59,8 @@ function useInterval(callback: () => void, delay: number | null) {
 }
 
 const Onboarding = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [slides, setSlides] = useState(SLIDES);
   const [slideTransition, setSlideTransition] = useState(TRANSITION_STYLE);
   const [blockClick, setBlockClick] = useState(false);
@@ -76,7 +79,8 @@ const Onboarding = () => {
     }, TRANSITION_TIME + 100);
   };
 
-  useInterval(() => handleSlide(slides.itemNumber + 1, 1), isSwiping ? 3000 : null);
+  if (location.pathname !== "/onboarding/success")
+    useInterval(() => handleSlide(slides.itemNumber + 1, 1), isSwiping ? 3000 : null);
 
   const handleSlide = (index: number, direction: 1 | -1) => {
     const addTranslate = direction * INITIONAL_TRANSLATE_X;
@@ -103,54 +107,71 @@ const Onboarding = () => {
       <div className="onboarding-logo">
         <img src={`${img}/common/hello-my-team.svg`} alt="hello-my-team-logo" />
       </div>
-      <div className="onboarding-slider-container">
-        <div
-          className="onboarding-slider-wrap"
-          style={{
-            transition: slideTransition,
-            transform: `translateX(calc(${slides.translateX}%))`,
-          }}
-        >
-          {SLIDES.items.map((el, idx) => {
-            return (
-              <div className="onboarding-slide-item" key={idx}>
-                <div>
-                  <h1>
-                    {el.textFirstLine}
-                    <br /> {el.textSecondLine}
-                  </h1>
-                </div>
-                <div>
-                  <img src={el.img} alt={`illust-page-${idx}`} width={IMAGE_WIDTH} />
-                </div>
-              </div>
-            );
-          })}
+      {location.pathname !== "/onboarding/signup/3" && (
+        <div>
+          <div className="onboarding-slider-container">
+            <div
+              className="onboarding-slider-wrap"
+              style={{
+                transition: slideTransition,
+                transform: `translateX(calc(${slides.translateX}%))`,
+              }}
+            >
+              {SLIDES.items.map((el, idx) => {
+                return (
+                  <div className="onboarding-slide-item" key={idx}>
+                    <div>
+                      <h1>
+                        {el.textFirstLine}
+                        <br /> {el.textSecondLine}
+                      </h1>
+                    </div>
+                    <div>
+                      <img src={el.img} alt={`illust-page-${idx}`} width={IMAGE_WIDTH} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div
+            className="onboarding-slide-button"
+            onMouseOver={() => setIsSwiping(false)}
+            onMouseOut={() => setIsSwiping(true)}
+            onBlur={() => null}
+            onFocus={() => null}
+          >
+            <button className={blockClick ? "block" : ""} onClick={() => handleSwipe(-1)}>
+              <img src={`${img}/icons/arrow-left-black.svg`} alt="arrow-left" />
+            </button>
+            <button className={blockClick ? "block" : ""} onClick={() => handleSwipe(1)}>
+              <img src={`${img}/icons/arrow-right-black.svg`} alt="arrow-right" />
+            </button>
+          </div>
+          <ul className="onboarding-bullet">
+            <li className={slides.itemNumber === 1 ? "bullet-highlit" : null} />
+            <li className={slides.itemNumber === 2 ? "bullet-highlit" : null} />
+            <li className={slides.itemNumber === 3 ? "bullet-highlit" : null} />
+          </ul>
+          <div className="onboarding-auth-button">
+            <Button
+              text="로그인"
+              handler={() => navigate("/onboarding/login")}
+              width="fullWidth"
+              color="blue"
+            />
+            <Button
+              text="회원가입"
+              handler={() => navigate("/onboarding/signup")}
+              width="fullWidth"
+              color="white"
+            />
+          </div>
         </div>
-      </div>
-      <div
-        className="onboarding-slide-button"
-        onMouseOver={() => setIsSwiping(false)}
-        onMouseOut={() => setIsSwiping(true)}
-        onBlur={() => null}
-        onFocus={() => null}
-      >
-        <button className={blockClick ? "block" : ""} onClick={() => handleSwipe(-1)}>
-          <img src={`${img}/icons/arrow-left-black.svg`} alt="arrow-left" />
-        </button>
-        <button className={blockClick ? "block" : ""} onClick={() => handleSwipe(1)}>
-          <img src={`${img}/icons/arrow-right-black.svg`} alt="arrow-right" />
-        </button>
-      </div>
-      <ul className="onboarding-bullet">
-        <li className={slides.itemNumber === 1 ? "bullet-highlit" : null} />
-        <li className={slides.itemNumber === 2 ? "bullet-highlit" : null} />
-        <li className={slides.itemNumber === 3 ? "bullet-highlit" : null} />
-      </ul>
-      <div className="onboarding-auth-button">
-        <Button text="로그인" handler={() => null} width="fullWidth" color="blue" />
-        <Button text="회원가입" handler={() => null} width="fullWidth" color="white" />
-      </div>
+      )}
+      <Suspense fallback={<div>loading...</div>}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 };

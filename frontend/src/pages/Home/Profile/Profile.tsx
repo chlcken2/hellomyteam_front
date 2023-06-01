@@ -128,6 +128,8 @@ const Profile: FC = () => {
     }
   }, [profileImage, bannerImage]);
 
+  console.log(profileImageData);
+
   useEffect(() => {
     if (profileImageData?.data) {
       setProfileImage(profileImageData.data.imgUrl);

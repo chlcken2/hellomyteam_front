@@ -9,10 +9,12 @@ const useOutsideClick = ({ onClickOutside }: PropsType) => {
 
   const handleClick: EventListenerOrEventListenerObject = useCallback(
     (e: Event) => {
-      const inside = ref.current.contains(e.target);
-      if (inside) return;
+      if (ref.current) {
+        const inside = ref.current.contains(e.target);
+        if (inside) return;
 
-      onClickOutside();
+        onClickOutside();
+      }
     },
     [onClickOutside, ref],
   );

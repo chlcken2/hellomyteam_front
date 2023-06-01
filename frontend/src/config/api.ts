@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import axios, { AxiosError } from "axios";
 import { getCookie, getExpiredDate, setLocalStorage } from "utils/setAuthorization";
 
 let isRefreshing = false;

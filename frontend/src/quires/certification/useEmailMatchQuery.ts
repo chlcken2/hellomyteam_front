@@ -10,14 +10,14 @@ interface APIDataType {
   message: null | string;
 }
 
-const EmailMatchFacher = (machingNumber: number) => {
+const EmailMatchFacher = (auth: string, machingNumber: number) => {
   if (!machingNumber) return null;
   return instance.get<ApiResponseType<APIDataType>>(
-    `/api/auth/match?num=${machingNumber}`,
+    `/api/auth/verify?auth=${auth}&authNumber=${machingNumber}`,
   );
 };
-const useEmailMatchQuery = (machingNumber: number) => {
-  return useQuery(QUERY_KEY, () => EmailMatchFacher(machingNumber));
+const useEmailMatchQuery = (auth: string, machingNumber: number) => {
+  return useQuery(QUERY_KEY, () => EmailMatchFacher(auth, machingNumber));
 };
 
 export default useEmailMatchQuery;

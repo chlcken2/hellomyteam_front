@@ -7,6 +7,7 @@ import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
 
 const Home: FC = () => {
+  const img = process.env.PUBLIC_URL;
   const user = useRecoilValue(UserState);
   const reg = /<[^>]*>?/g;
   const {
@@ -48,24 +49,34 @@ const Home: FC = () => {
       <div className="home-wrapper sub-notice">
         <section className="section-container">
           <div className="section-top">
-            <h2>공지게시판</h2>
+            <h2>
+              <span>공지게시판</span>
+              <span>
+                <Link to="/notice">
+                  <img src={`${img}/common/arrow-right.png`} alt="더보기" />
+                </Link>
+              </span>
+            </h2>
           </div>
+
           <ul className="post-list">
             {noticeList?.data.content.length === 0 ? (
               <div className="no-content">게시글이 없습니다.</div>
             ) : (
-              noticeList?.data.content.map((el, idx) => (
-                <li key={idx}>
-                  <PostItem
-                    title={el.title}
-                    content={el.contents.replace(reg, "")}
-                    commentCount={el.commentCount}
-                    likeCount={el.likeCount}
-                    createdAt={el.createdDate}
-                    author={el.writer}
-                    imageURL={null}
-                  />
-                </li>
+              noticeList?.data.content.map((el: any, idx: number) => (
+                <Link to={`/board/${el.id}?likeCount=${el.likeCount}`} key={idx}>
+                  <li key={idx}>
+                    <PostItem
+                      title={el.title}
+                      content={el.contents.replace(reg, "")}
+                      commentCount={el.commentCount}
+                      likeCount={el.likeCount}
+                      createdAt={el.createdDate}
+                      author={el.writer}
+                      imageURL={null}
+                    />
+                  </li>
+                </Link>
               ))
             )}
           </ul>
@@ -74,7 +85,14 @@ const Home: FC = () => {
       <div className="home-wrapper sub-team">
         <section className="section-container">
           <div className="section-top">
-            <h2>팀원</h2>
+            <h2>
+              <span>팀원</span>
+              <span>
+                <Link to="/team">
+                  <img src={`${img}/common/arrow-right.png`} alt="더보기" />
+                </Link>
+              </span>
+            </h2>
           </div>
           <div className="team-list">
             <div className="team-list-item">
@@ -93,23 +111,32 @@ const Home: FC = () => {
       <div className="home-wrapper sub-board">
         <section className="section-container">
           <div className="section-top">
-            <h2>자유게시판</h2>
+            <h2>
+              <span>자유게시판</span>
+              <span>
+                <Link to="/board">
+                  <img src={`${img}/common/arrow-right.png`} alt="더보기" />
+                </Link>
+              </span>
+            </h2>
           </div>
           <ul className="post-list">
             {freeList?.data.content.length === 0 ? (
               <div className="no-content">게시글이 없습니다.</div>
             ) : (
-              freeList?.data.content.map((el, idx) => (
+              freeList?.data.content.map((el: any, idx: number) => (
                 <li key={idx}>
-                  <PostItem
-                    title={el.title}
-                    content={el.contents.replace(reg, "")}
-                    commentCount={el.commentCount}
-                    likeCount={el.likeCount}
-                    createdAt={el.createdDate}
-                    author={el.writer}
-                    imageURL={null}
-                  />
+                  <Link to={`/board/${el.id}?likeCount=${el.likeCount}`} key={idx}>
+                    <PostItem
+                      title={el.title}
+                      content={el.contents.replace(reg, "")}
+                      commentCount={el.commentCount}
+                      likeCount={el.likeCount}
+                      createdAt={el.createdDate}
+                      author={el.writer}
+                      imageURL={null}
+                    />
+                  </Link>
                 </li>
               ))
             )}

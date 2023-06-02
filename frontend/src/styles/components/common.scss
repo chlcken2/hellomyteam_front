@@ -164,6 +164,9 @@
       box-shadow: none;
     }
   }
+  + div {
+    display: block;
+  }
 }
 
 .children-wrapper {
@@ -719,5 +722,29 @@
   .not-found-button {
     width: 112px;
     margin: 24px auto;
+  }
+}
+.textarea-container {
+  .wrapper {
+    display: flex;
+    align-items: center;
+    .label-container {
+      display: inline-block;
+      color: #7a7a7a;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 22px;
+      flex-shrink: 0;
+      width: 120px;
+    }
+    .input-wrapper {
+      textarea {
+        outline: none;
+        border: none;
+        width: 100%;
+        resize: none;
+        font-size: 14px;
+      }
+    }
   }
 }

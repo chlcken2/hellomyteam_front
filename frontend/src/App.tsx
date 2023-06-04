@@ -45,13 +45,14 @@ const Onboarding = lazy(() => import("./pages/Onboarding/Onboarding"));
 const CreateTeam = lazy(() => import("./pages/Account/CreateTeam"));
 const EditProfile = lazy(() => import("./pages/Home/Profile/EditProfile"));
 const Alarm = lazy(() => import("./pages/Alarm/Alarm"));
+const MyTeam = lazy(() => import("./pages/Account/MyTeam"));
 
 const App = () => {
   const [useUser, setUseUser] = useRecoilState(UserState);
   const setJoinedTeams = useSetRecoilState(joinedTeamsAtom);
   const [, setConfirmLogin] = useRecoilState(LoginState);
   const [loginBoolean, setLoginBoolean] = useState(false);
-  const { data: userInfo } = getMemberInfo(loginBoolean);
+  const { data: userInfo } = getMemberInfo(true);
   const { data: joinedTeamResponse } = getTeamInfo(loginBoolean);
 
   useEffect(() => {
@@ -68,6 +69,8 @@ const App = () => {
 
   const mainLoader = async () => {
     if (!localStorage.getItem("token") && !getCookie("refresh")) {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("token");
       return redirect("/onboarding");
     }
     if (!getCookie("refresh")) {
@@ -122,7 +125,10 @@ const App = () => {
               </Suspense>
             }
           />
-          <Route path="/create" element={<CreateTeam />} />
+          <Route path="/account">
+            <Route path="create" element={<CreateTeam />} />
+            <Route loader={getJoinedTeamListLoader} path="" element={<MyTeam />} />
+          </Route>
         </Route>
         <Route path="/onboarding" element={<Onboarding />}>
           <Route element={<FormWrap />}>

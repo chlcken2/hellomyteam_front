@@ -13,6 +13,7 @@ interface NotiType {
   isTeamJoined: boolean;
   buttonText: string;
   buttonColor?: "blue" | "white";
+  hoverTransition?: boolean;
 }
 
 const img = process.env.PUBLIC_URL;
@@ -27,7 +28,26 @@ const TeamCard = ({
   buttonText,
   buttonColor,
   joinHandler,
+  hoverTransition = true,
 }: NotiType) => {
+  const joinButtonClassName = hoverTransition
+    ? "team-card-join-button"
+    : "team-card-join-button-no-transition";
+
+  const teamCardButton = () => {
+    if ((hoverTransition && !isTeamJoined) || (!hoverTransition && isTeamJoined)) {
+      return (
+        <Button
+          text={buttonText}
+          width="fullWidth"
+          handler={joinHandler}
+          color={buttonColor}
+        />
+      );
+    }
+
+    return null;
+  };
   return (
     <div className="team-card">
       <div className="team-card-contents">
@@ -46,21 +66,12 @@ const TeamCard = ({
         <p className="slogan">{slogan}</p>
         <div className="person">
           <span>
-            <img width={18} height={18} src={`${img}/common/person.png`} alt="인원수" />
+            <img width={18} height={14} src={`${img}/common/person.png`} alt="인원수" />
           </span>
           <p>{num}명</p>
         </div>
       </div>
-      <div className="team-card-join-button">
-        {!isTeamJoined && (
-          <Button
-            text={buttonText}
-            width="fullWidth"
-            handler={joinHandler}
-            color={buttonColor}
-          />
-        )}
-      </div>
+      <div className={joinButtonClassName}>{teamCardButton()}</div>
     </div>
   );
 };

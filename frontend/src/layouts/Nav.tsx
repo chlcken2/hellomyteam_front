@@ -3,10 +3,10 @@ import { NavLink, Outlet, useLoaderData } from "react-router-dom";
 import { menuClassName } from "utils/common";
 import LoadingSpinner from "components/common/LoadingSpinner";
 
-const homePathname = ["/", "/notice", "/board", "/team"];
+const homePathname = ["/", "/notice", "/board", "/team", "/profile"];
 const searchTeamPathname = ["/search"];
 const alarmPathname = ["/alarm"];
-const profilePathname = ["/profile"];
+const profilePathname = ["/account"];
 
 const Nav = () => {
   const loaderData = useLoaderData();
@@ -78,7 +78,7 @@ const Nav = () => {
               </NavLink>
             </li>
             <li className={`btn ${menuClassName(profilePathname, "active")}`}>
-              <NavLink to="/profile" style={({ isActive }) => (isActive ? style : {})}>
+              <NavLink to="/account" style={({ isActive }) => (isActive ? style : {})}>
                 <span className="wrap">
                   <span>
                     <svg

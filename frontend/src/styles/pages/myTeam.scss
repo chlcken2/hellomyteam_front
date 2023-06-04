@@ -1,0 +1,31 @@
+.my-team-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  > .main-title {
+    margin-bottom: 0px;
+  }
+  .my-team-button-wrap {
+    :nth-child(1) {
+      margin-right: 16px;
+    }
+  }
+}
+
+.my-team-container {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+
+  .my-team-main-title {
+    margin-bottom: 24px;
+    font-size: 24px;
+  }
+  .my-team-card {
+    width: 100%;
+    .my-team-line {
+      border-bottom: 1px solid #efefef;
+    }
+  }
+}

@@ -17,7 +17,6 @@ const Write: FC = () => {
   // 글수정시에만 작동함
   const a = useLocation();
   const queryString = a?.search;
-  console.log(queryString);
   const searchParams = new URLSearchParams(queryString);
   const titleParam = searchParams?.get("param1"); // 'hello'
   const contentsParam = searchParams?.get("param2"); // 'hi'
@@ -38,8 +37,6 @@ const Write: FC = () => {
   const initialEditorState = EditorState.createWithContent(initialContentState);
 
   const [editorState, setEditorState] = useState(initialEditorState);
-  const [setTeamId] = useState(() => localStorage.getItem("selectedTeamId"));
-  const [setBoardId] = useState(teamId);
 
   const navi = useNavigate();
   const {
@@ -110,7 +107,6 @@ const Write: FC = () => {
 
   const handleSubmit = async (e: React.MouseEvent) => {
     e.preventDefault();
-
     if (queryString) {
       editMutate({
         teamId: JSON.parse(localStorage.getItem("selectedTeamId")),
@@ -174,12 +170,12 @@ const Write: FC = () => {
           placeholder="게시글을 작성해주세요"
           editorState={editorState}
           onEditorStateChange={updateTextDescription}
-          toolbar={{
-            image: {
-              uploadCallback: handleImageUpload,
-              alt: { present: true, mandatory: true },
-            },
-          }}
+          // toolbar={{
+          //   image: {
+          //     uploadCallback: handleImageUpload,
+          //     alt: { present: true, mandatory: true },
+          //   },
+          // }}
           localization={{ locale: "ko" }}
           editorStyle={{
             height: "400px",

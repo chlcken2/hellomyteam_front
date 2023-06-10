@@ -1,12 +1,20 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { menuClassName } from "utils/common";
-import { Link, Outlet, useLoaderData, useLocation, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import {
+  Link,
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  Route,
+} from "react-router-dom";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { joinTeamTypes } from "types/UserTypes";
 
 import LoadingSpinner from "components/common/LoadingSpinner";
 import Button from "components/common/Button";
 import teamMemberId from "quires/team/getTeamMemberId";
+import Board from "pages/Home/Board";
 import UserState from "../recoil/userAtom";
 import "styles/pages/home.scss";
 import "styles/layouts/main.scss";
@@ -29,6 +37,7 @@ const MENU = [
 const Main = () => {
   const teamInfo = useLoaderData() as joinTeamTypes[];
 
+  const [mobileSize, setMobileSize] = useState(false);
   const [isClicked, setIsClicked] = useState(0);
 
   const handleClick = (idx: number) => {
@@ -39,6 +48,7 @@ const Main = () => {
   const { pathname } = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
   const [useUser, setUseUser] = useRecoilState(UserState);
+  const changeUser = useSetRecoilState(UserState);
 
   // userId 리턴해야하므로 리코일값을 가져와야한다 (4/27)
   const [userId, setUserId] = useState(
@@ -52,10 +62,7 @@ const Main = () => {
     data: teamId,
     isLoading: teamIdLoading,
     refetch: teamIdRefetch,
-  } = teamMemberId(
-    Number(JSON.parse(localStorage.getItem("selectedTeamId"))),
-    Number(JSON.parse(localStorage.getItem("userId"))),
-  );
+  } = teamMemberId(useUser?.selectedTeamId || teamInfo?.[0].teamId || 0, useUser.id);
 
   // 모바일 탭바의 menuItem 배경 인터렉션관련 스타일 state
   const [menuItemBackgroundStyle, setMenuItemBackgroundStyle] = useState({
@@ -69,7 +76,7 @@ const Main = () => {
   const [currentTeamId, setCurrentTeamId] = useState(0);
 
   const [localTitle, setLocalTitle] = useState<titleType[]>(
-    JSON.parse(localStorage?.getItem("arrayData")) || teamInfo,
+    () => JSON.parse(localStorage?.getItem("arrayData")) || teamInfo,
   );
 
   // 토글보이기
@@ -96,29 +103,31 @@ const Main = () => {
     localStorage.setItem("arrayData", JSON.stringify(filtered));
 
     setLocalTitle(filtered);
+
     // 2023-04-02: teamMemberInfoId Atom에 추가함
     if (teamId.data) {
       setUseUser({
         ...useUser,
         teamMemberInfoId: teamId.data,
+        teamInfo: [...filtered],
         selectedTeamId: filtered[0].teamId,
       });
     }
   };
 
   // recoil에 담긴 User의 정보가 있을시에, 사용자의 id값을 리액트 쿼리에 보냄
-  useEffect(() => {
-    if (useUser) {
-      setUserId(useUser.id);
-    }
-  }, [useUser]);
+  // useEffect(() => {
+  //   if (useUser) {
+  //     setUserId(useUser.id);
+  //   }
+  // }, [useUser]);
 
   // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
-  useEffect(() => {
-    if (teamInfo) {
-      setUseUser({ ...useUser, teamInfo: [...teamInfo] });
-    }
-  }, [teamInfo]);
+  // useEffect(() => {
+  //   if (teamInfo) {
+  //     setUseUser({ ...useUser, teamInfo: [...teamInfo] });
+  //   }
+  // }, [teamInfo]);
 
   // 모바일 홈 탭바 인터랙션 관련 코드
   const handleMenuItemInteraction = () => {
@@ -179,7 +188,6 @@ const Main = () => {
       setCurrentTeamId(arrayData?.[0].teamId);
       setLocalTitle(arrayData);
       setCurrentTeamTitle(arrayData?.[0].teamName);
-
       teamInfo?.forEach((el: any, idx: number) => {
         // 가져온 배열에 새로운 데이터 추가 또는 기존 데이터 수정
         arrayData[idx] = {
@@ -196,17 +204,34 @@ const Main = () => {
   }, [changeDataFlag]);
 
   useEffect(() => {
-    // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
-    if (teamInfo && localTitle) {
-      setUseUser({
-        ...useUser,
-        teamInfo: [...teamInfo],
-        selectedTeamId: localTitle?.[0].teamId,
-      });
-      localStorage.setItem("selectedTeamId", localTitle?.[0].teamId.toString());
-    }
-  }, [teamInfo, localTitle]);
+    localStorage.setItem("selectedTeamId", localTitle?.[0].teamId.toString());
+  }, [localTitle]);
 
+  useEffect(() => {
+    if (useUser?.id) {
+      teamIdRefetch();
+    }
+  }, [useUser]);
+  // useEffect(() => {
+  //   const windowWidth = window.innerWidth;
+  //   const mediaQuery = window.matchMedia("(max-width: 768px)");
+
+  //   const handleMediaQueryChange = (event: any) => {
+  //     if (windowWidth <= 768) {
+  //       setMobileSize(true);
+  //     } else {
+  //       setMobileSize(false);
+  //     }
+  //   };
+
+  //   mediaQuery.addListener(handleMediaQueryChange);
+
+  //   return () => {
+  //     mediaQuery.removeListener(handleMediaQueryChange);
+  //   };
+  // }, []);
+
+  console.log(useUser);
   return (
     <div className="main-wrap">
       <div className="main-buttons">
@@ -260,29 +285,32 @@ const Main = () => {
           <li>
             <Button
               text="글쓰기"
-              handler={() => handleTeamWrite(currentTeamId)}
+              handler={() => handleTeamWrite(useUser.selectedTeamId || 0)}
               color="blue"
             />
           </li>
         </ul>
       </div>
 
-      <div ref={menuRef} className="main-menu-wrapper">
-        <ul className="main-menu">
-          <div
-            className="active-item-background"
-            style={{
-              transform: `translateX(${menuItemBackgroundStyle.offsetLeft}px)`,
-              width: `${menuItemBackgroundStyle.width}px`,
-            }}
-          />
-          {MENU.map((menuItem, idx) => (
-            <li key={idx} className={menuClassName(menuItem.path, "active")}>
-              <Link to={`/${menuItem.path}`}>{menuItem.name}</Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {useUser?.changedToMobile === false ||
+        (useUser?.changedToMobile === undefined && (
+          <div ref={menuRef} className="main-menu-wrapper">
+            <ul className="main-menu">
+              <div
+                className="active-item-background"
+                style={{
+                  transform: `translateX(${menuItemBackgroundStyle.offsetLeft}px)`,
+                  width: `${menuItemBackgroundStyle.width}px`,
+                }}
+              />
+              {MENU.map((menuItem, idx) => (
+                <li key={idx} className={menuClassName(menuItem.path, "active")}>
+                  <Link to={`/${menuItem.path}`}>{menuItem.name}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       <Suspense fallback={<LoadingSpinner />}>
         <Outlet />
       </Suspense>

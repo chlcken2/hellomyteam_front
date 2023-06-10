@@ -21,6 +21,7 @@ export interface UserType {
   teamMemberInfoId?: number;
   selectedTeamId?: number;
   changedTeamState?: string;
+  changedToMobile?: boolean;
 }
 
 interface teamInfoType {

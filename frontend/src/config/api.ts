@@ -1,4 +1,5 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { API_URL } from "constants/urls";
 import { getCookie, getExpiredDate, setLocalStorage } from "utils/setAuthorization";
 
 let isRefreshing = false;
@@ -45,7 +46,7 @@ const getRefreshToken = async (): Promise<string | void> => {
 
 const createInstance = () => {
   return axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: process.env.NODE_ENV === "development" ? "http://localhost:3000" : API_URL,
     timeout: 9000,
     withCredentials: true,
     headers: { "Content-Type": "application/json" },

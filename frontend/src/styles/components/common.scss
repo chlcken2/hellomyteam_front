@@ -1,6 +1,5 @@
 @import "../abstracts/variables.scss";
 @import "../abstracts/mixins.scss";
-@import "../colors.scss";
 @import "../pages/board.scss";
 .normal-white-button {
   @include white-button;
@@ -71,43 +70,6 @@
 // label end
 
 // input start
-
-.join-wrap2 {
-  .file-button {
-    .btnStart {
-      padding-bottom: 14px;
-      font-size: 14px;
-    }
-    label {
-      font-size: inherit;
-      line-height: normal;
-      vertical-align: middle;
-      cursor: pointer;
-    }
-    input[type="file"] {
-      position: absolute;
-      width: 0;
-      height: 0;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      border: 0;
-    }
-    p {
-      width: 100%;
-      border: 1px solid $gray-100;
-      border-radius: 8px;
-      outline: none;
-      color: $gray-400;
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 50px;
-      padding: 0 4px;
-      height: 50px;
-    }
-  }
-}
 
 .input-container {
   width: 100%;
@@ -201,6 +163,9 @@
     &:focus-within {
       box-shadow: none;
     }
+  }
+  + div {
+    display: block;
   }
 }
 
@@ -506,13 +471,12 @@
 //team card
 .team-card {
   background: $white;
-  display: inline-block;
   position: relative;
   height: 225px;
   padding: 24px;
   border-radius: 16px;
   > .team-card-contents {
-    padding-bottom: 30px;
+    padding-bottom: 24px;
     > span {
       margin-bottom: 20px;
       display: block;
@@ -578,6 +542,11 @@
     .team-card-join-button {
       opacity: 1;
     }
+  }
+
+  .team-card-join-button-no-transition {
+    @extend .team-card-join-button;
+    opacity: 1;
   }
 }
 
@@ -722,5 +691,64 @@
     padding: 20px 16px;
     background: white;
     column-gap: 12px;
+  }
+}
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  bottom: 0;
+  left: 0%;
+  right: 0;
+  margin: auto;
+}
+
+.not-found {
+  position: absolute;
+  top: 40%;
+  bottom: 0;
+  left: 0%;
+  right: 0;
+  margin: auto;
+  text-align: center;
+  > p {
+    color: #1d1d1d;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    line-height: 38px;
+  }
+  > span {
+    color: #7a7a7a;
+    font-size: 24px;
+    line-height: 29px;
+  }
+  .not-found-button {
+    width: 112px;
+    margin: 24px auto;
+  }
+}
+.textarea-container {
+  .wrapper {
+    display: flex;
+    align-items: center;
+    .label-container {
+      display: inline-block;
+      color: #7a7a7a;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 22px;
+      flex-shrink: 0;
+      width: 120px;
+    }
+    .input-wrapper {
+      textarea {
+        outline: none;
+        border: none;
+        width: 100%;
+        resize: none;
+        font-size: 14px;
+      }
+    }
   }
 }

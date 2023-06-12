@@ -15,10 +15,9 @@ type boardLikeType = {
 
 const fetcher = ({ boardId, teamMemberInfoId, teamId }: boardLikeType) =>
   instance
-    .post<ApiResponseType<boardDetailTypes>>(
-      `/api/teams/${teamId}/boards/${boardId}/like`,
-      { teamMemberInfoId: `${teamMemberInfoId}` },
-    )
+    .post<ApiResponseType<boolean>>(`/api/teams/${teamId}/boards/${boardId}/like`, {
+      teamMemberInfoId: `${teamMemberInfoId}`,
+    })
     .then(({ data }) => data);
 
 /**

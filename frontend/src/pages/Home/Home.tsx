@@ -1,44 +1,104 @@
+import React, { FC, useEffect, useState, useRef } from "react";
 import PostItem from "components/Home/PostItem";
 import TeamItem from "components/Home/TeamItem";
-import { FC } from "react";
+import { Link } from "react-router-dom";
+import getBoardList from "quires/board/getBoardList";
+import UserState from "recoil/userAtom";
+import { useRecoilValue, useRecoilState } from "recoil";
 
 const Home: FC = () => {
+  const img = process.env.PUBLIC_URL;
+  const user = useRecoilValue(UserState);
+  const [useUser, setUseUser] = useRecoilState(UserState);
+
+  const reg = /<[^>]*>?/g;
+  const {
+    data: noticeList,
+    isLoading: noticeListLoad,
+    refetch: refetch1,
+  } = getBoardList(
+    0,
+    user?.selectedTeamId ||
+      JSON.parse(localStorage?.getItem("arrayData"))?.[0].teamId ||
+      0,
+    "NOTICE_BOARD",
+    "created_date",
+    "",
+    "",
+    2,
+  );
+  // (4/27) selectedTeamId가 없을 경우 localStorage에서 가져오게
+  const {
+    data: freeList,
+    isLoading: freeListLoad,
+    refetch: refetch2,
+  } = getBoardList(
+    0,
+    user?.selectedTeamId ||
+      JSON.parse(localStorage?.getItem("arrayData"))?.[0].teamId ||
+      0,
+    "FREE_BOARD",
+    "created_date",
+    "",
+    "",
+    5,
+  );
+
+  useEffect(() => {
+    if ((user && user.selectedTeamId) || user.id) {
+      refetch1();
+      refetch2();
+    }
+  }, [user]);
   return (
     <div className="home-container">
       <div className="home-wrapper sub-notice">
         <section className="section-container">
           <div className="section-top">
-            <h2>공지게시판</h2>
+            <h2>
+              <span>공지게시판</span>
+              <span>
+                <Link to="/notice">
+                  <img src={`${img}/common/arrow-right.png`} alt="더보기" />
+                </Link>
+              </span>
+            </h2>
           </div>
+
           <ul className="post-list">
-            <li>
-              <PostItem
-                title="백엔드 v0.0.3 배포"
-                content="안녕하세요 백엔드 v0.0.3 이 배포 되었습니다. 감사합니다."
-                commentCount={7}
-                likeCount={7}
-                createdAt="2022.12.12"
-                author="유비"
-                imageURL="https://imagedelivery.net/R2WiK4wfRK3oBXTwjgzQfA/a6e027fa-1910-4a45-47f7-61d89bd30a00/blogThumbnail"
-              />
-            </li>
-            <li>
-              <PostItem
-                title="[점검 완료] 익명게시판 관련 긴급 공지.."
-                content="익명게시판에 긴급 버그를 발견해서 익명게시판 글쓰기는 잠시 닫도록 하겠습니다 ?"
-                commentCount={7}
-                likeCount={7}
-                createdAt="2022.12.12"
-                author="ycha"
-              />
-            </li>
+            {noticeList?.data.content.length === 0 ? (
+              <div className="no-content">게시글이 없습니다.</div>
+            ) : (
+              noticeList?.data.content.map((el: any, idx: number) => (
+                <Link to={`/board/${el.id}?likeCount=${el.likeCount}`} key={idx}>
+                  <li key={idx}>
+                    <PostItem
+                      title={el.title}
+                      content={el.contents.replace(reg, "")}
+                      commentCount={el.commentCount}
+                      likeCount={el.likeCount}
+                      createdAt={el.createdDate}
+                      author={el.writer}
+                      imageURL={null}
+                    />
+                  </li>
+                </Link>
+              ))
+            )}
           </ul>
         </section>
       </div>
       <div className="home-wrapper sub-team">
         <section className="section-container">
           <div className="section-top">
-            <h2>팀원</h2>
+            <h2>
+              <span>팀원</span>
+              <span>
+                <Link to="/team">
+                  <img src={`${img}/common/arrow-right.png`} alt="더보기" />
+                </Link>
+              </span>
+            </h2>
           </div>
           <div className="team-list">
             <div className="team-list-item">
@@ -57,62 +117,35 @@ const Home: FC = () => {
       <div className="home-wrapper sub-board">
         <section className="section-container">
           <div className="section-top">
-            <h2>자유게시판</h2>
+            <h2>
+              <span>자유게시판</span>
+              <span>
+                <Link to="/board">
+                  <img src={`${img}/common/arrow-right.png`} alt="더보기" />
+                </Link>
+              </span>
+            </h2>
           </div>
           <ul className="post-list">
-            <li>
-              <PostItem
-                title="새로 프로젝트 완성했습니다~!"
-                content="깃허브 활동에 따른 티어와 랭킹을 제공해주는 서비스입니다."
-                commentCount={7}
-                likeCount={7}
-                createdAt="2022.12.12"
-                author="sikang"
-                imageURL="https://imagedelivery.net/R2WiK4wfRK3oBXTwjgzQfA/7bd138f3-42d6-468d-3fca-fd218099c900/blogThumbnail"
-              />
-            </li>
-            <li>
-              <PostItem
-                title="새로 프로젝트 완성했습니다~!"
-                content="깃허브 활동에 따른 티어와 랭킹을 제공해주는 서비스입니다."
-                commentCount={7}
-                likeCount={7}
-                createdAt="2022.12.12"
-                author="sikang"
-                imageURL="https://imagedelivery.net/R2WiK4wfRK3oBXTwjgzQfA/de760e86-c99d-4bc3-6fd0-2f765756b000/blogThumbnail"
-              />
-            </li>
-            <li>
-              <PostItem
-                title="새로 프로젝트 완성했습니다~!"
-                content="깃허브 활동에 따른 티어와 랭킹을 제공해주는 서비스입니다."
-                commentCount={7}
-                likeCount={7}
-                createdAt="2022.12.12"
-                author="sikang"
-              />
-            </li>
-            <li>
-              <PostItem
-                title="새로 프로젝트 완성했습니다~!"
-                content="깃허브 활동에 따른 티어와 랭킹을 제공해주는 서비스입니다."
-                commentCount={7}
-                likeCount={7}
-                createdAt="2022.12.12"
-                author="sikang"
-              />
-            </li>
-            <li>
-              <PostItem
-                title="여러분은 맥북 청소할때 스피커 부분은 어떻게 청소하시나요?"
-                content="액정클리너 같은걸로 닦고있는데 스피커 사이에 낀 손떼는 안지워지더라고요"
-                commentCount={7}
-                likeCount={7}
-                createdAt="2022.12.12"
-                author="juhpark"
-                imageURL="https://imagedelivery.net/R2WiK4wfRK3oBXTwjgzQfA/21a6cc15-e13e-4e6e-1a80-38ec12630b00/blogThumbnail"
-              />
-            </li>
+            {freeList?.data.content.length === 0 ? (
+              <div className="no-content">게시글이 없습니다.</div>
+            ) : (
+              freeList?.data.content.map((el: any, idx: number) => (
+                <li key={idx}>
+                  <Link to={`/board/${el.id}?likeCount=${el.likeCount}`} key={idx}>
+                    <PostItem
+                      title={el.title}
+                      content={el.contents.replace(reg, "")}
+                      commentCount={el.commentCount}
+                      likeCount={el.likeCount}
+                      createdAt={el.createdDate}
+                      author={el.writer}
+                      imageURL={null}
+                    />
+                  </Link>
+                </li>
+              ))
+            )}
           </ul>
         </section>
       </div>

@@ -7,14 +7,15 @@ import locals from "utils/locals";
 interface PropsType {
   profileInfo: ProfileInfoType;
   setProfileInfo: React.Dispatch<React.SetStateAction<ProfileInfoType>>;
+  isCreateTeam?: boolean;
 }
 
-const LocalSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
+const LocalSelector = ({ profileInfo, setProfileInfo, isCreateTeam }: PropsType) => {
   const [selectedLocalList, setSelectedLocalList] = useState<SelectedLocalListType[]>([]);
   const [isViewModal, setIsViewModal] = useState(false);
   const [selectedLocalIndex, setSelectedLocalIndex] = useState(0);
   const selectedLocal = locals.find((_, idx) => idx === selectedLocalIndex);
-
+  const [alert, setAlert] = useState(false);
   const activeLocalItemClassName = (title: string, localName: string) => {
     const isInclude = selectedLocalList.find(
       (item) => item.title === title && item.localName === localName,
@@ -22,9 +23,13 @@ const LocalSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
     return isInclude ? "active" : "";
   };
 
-  const handleIsViewModal = () => setIsViewModal((prev) => !prev);
+  const handleIsViewModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsViewModal((prev) => !prev);
+  };
 
   const handleSelectedLocalList = (title: string, localName: string) => {
+    setAlert(false);
     const isInclude = selectedLocalList.find(
       (item) => item.title === title && item.localName === localName,
     );
@@ -32,6 +37,12 @@ const LocalSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
     if (isInclude) {
       removeSelectedLocal(title, localName);
     } else {
+      if (isCreateTeam) {
+        if (selectedLocalList.length === 1) {
+          setAlert(true);
+          return;
+        }
+      }
       if (selectedLocalList.length === 5) return;
 
       const addedLocalList = [...selectedLocalList, { title, localName }];
@@ -131,7 +142,10 @@ const LocalSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
             <div className="local-modal-content">
               <div className="title-wrapper local">
                 <h3>활동 지역</h3>
-                <p>주요 활동 지역을 선택해주세요. (최대 5개)</p>
+                <p>
+                  주요 활동 지역을 선택해주세요. {!isCreateTeam && "(최대 5개)"}
+                  {alert && "(1개의 지역만 가능)"}
+                </p>
               </div>
               <div className="local-container">
                 <div className="local-select-container">
@@ -183,45 +197,49 @@ const LocalSelector = ({ profileInfo, setProfileInfo }: PropsType) => {
               </div>
               {selectedLocalList.length > 0 && (
                 <div className="selected-local-viewer">
-                  <div className="content">
-                    <div>
-                      선택한 지역 <span>{selectedLocalList.length}개</span>
-                    </div>
-                    <ul>
-                      {selectedLocalList.map((local, idx) => (
-                        <li key={idx}>
-                          <span>{`${local.title} - ${local.localName}`}</span>
-                          <button
-                            onClick={() =>
-                              removeSelectedLocal(local.title, local.localName)
-                            }
-                          >
-                            <svg
-                              width="10"
-                              height="10"
-                              viewBox="0 0 10 10"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                  {!isCreateTeam && (
+                    <div className="content">
+                      <div>
+                        선택한 지역 <span>{selectedLocalList.length}개</span>
+                      </div>
+                      <ul>
+                        {selectedLocalList.map((local, idx) => (
+                          <li key={idx}>
+                            <span>{`${local.title} - ${local.localName}`}</span>
+                            <button
+                              onClick={() =>
+                                removeSelectedLocal(local.title, local.localName)
+                              }
                             >
-                              <path
-                                d="M1 8.91963L8.9196 1.00003M1 1L8.9196 8.9196"
-                                stroke="#7A7A7A"
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="button-wrapper">
-                    <div className="init">
-                      <Button
-                        text="초기화"
-                        width="fullWidth"
-                        handler={() => setSelectedLocalList([])}
-                      />
+                              <svg
+                                width="10"
+                                height="10"
+                                viewBox="0 0 10 10"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M1 8.91963L8.9196 1.00003M1 1L8.9196 8.9196"
+                                  stroke="#7A7A7A"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
+                  )}
+                  <div className="button-wrapper">
+                    {!isCreateTeam && (
+                      <div className="init">
+                        <Button
+                          text="초기화"
+                          width="fullWidth"
+                          handler={() => setSelectedLocalList([])}
+                        />
+                      </div>
+                    )}
                     <div className="save">
                       <Button
                         text="저장"

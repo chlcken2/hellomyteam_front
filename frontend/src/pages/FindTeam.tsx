@@ -5,7 +5,6 @@ import "../styles/components/common.scss";
 import "../styles/pages/findTeam.scss";
 import useInfiniteTeamListQuery from "quires/team/useTeamList";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import UserState from "recoil/userAtom";
 import { Ring } from "@uiball/loaders";
 import color from "constants/color";
 import { useTeamJoin, useJoinTeamCancel } from "quires/team/useTeamJoinMutation";
@@ -16,6 +15,7 @@ import Toast from "components/common/Toast";
 import ToastState from "recoil/toastAtom";
 import { useLocation, useNavigate } from "react-router-dom";
 import joinedTeamsAtom from "recoil/joinedTeams";
+import NoTeamFound from "components/FindTeam/NoTeamFound";
 
 const img = process.env.PUBLIC_URL;
 
@@ -46,7 +46,6 @@ const reducer = (state: TeamCardContentsType[], action: ActionType) => {
 
 const FindTeam = () => {
   const joinedTeams = useRecoilValue(joinedTeamsAtom);
-  const userState = useRecoilValue(UserState);
   const setToastModal = useSetRecoilState(ToastState);
   const [dropDownMenuOpen, setDropDownMenuOpen] = useState<boolean>(false);
   const [dropDownUnit, setDropDownUnit] = useState<DropDownMenuType>("all");
@@ -67,7 +66,7 @@ const FindTeam = () => {
     data: searchTeamListResponse,
     isLoading: searchTeamIsLoading,
     refetch: searchTeamListRefetch,
-  } = useSearchTeamQuery(value);
+  } = useSearchTeamQuery(memberId, value);
 
   const {
     data: teamListResponse,
@@ -91,13 +90,7 @@ const FindTeam = () => {
         teamListDispatch({ type: "SET_TEAM_LIST", value: data.data.data }),
       );
     } else {
-      navigate("");
-      fetchNextPage().then((data) =>
-        teamListDispatch({
-          type: "SET_TEAM_LIST",
-          value: data.data.pages.flatMap((el) => el.data.data.content),
-        }),
-      );
+      fetchNextPage();
     }
   }, [location.search]);
 
@@ -135,7 +128,7 @@ const FindTeam = () => {
 
   const handleJoinButton = (teamId: number, memberAuthority: MemberAuthorityType) => {
     if (memberAuthority === "WAIT") {
-      useJoinTeamCancel(teamId, userState.id);
+      useJoinTeamCancel(teamId, memberId);
       setToastModal({
         message: "가입 취소가 완료되었습니다.",
         visible: true,
@@ -177,6 +170,7 @@ const FindTeam = () => {
     } else {
       teamCardData = searchTeamListResponse.data;
     }
+    if (!teamCardData.length) return <NoTeamFound searchValue={value} />;
     return teamCardData.map((el) => {
       return (
         <TeamCard
@@ -193,7 +187,7 @@ const FindTeam = () => {
         />
       );
     });
-  }, [dropDownUnit, teamListState, joinedTeams]);
+  }, [dropDownUnit, teamListState, joinedTeams, searchQuery]);
 
   const drowDownRef = useOutsideClick({
     onClickOutside: () => {
@@ -224,7 +218,12 @@ const FindTeam = () => {
                 onChange={({ target: { checked } }) => setDropDownMenuOpen(checked)}
               />
               <label htmlFor="checked">
-                <img src={`${img}/icons/arrow-sort.svg`} alt="arrow-sort-icon" />
+                <img
+                  width={16}
+                  height={19}
+                  src={`${img}/icons/arrow-sort.svg`}
+                  alt="arrow-sort-icon"
+                />
               </label>
               <ul>
                 <li

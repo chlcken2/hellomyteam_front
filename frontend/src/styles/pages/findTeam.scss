@@ -70,28 +70,44 @@
     column-gap: 30px;
   }
 
-  .team-card-loading-spinner {
-    position: absolute;
-    top: 50%;
-    bottom: 0;
-    left: 50%;
-    right: 0;
-    margin: auto;
-  }
-
   .find-team-observer {
     height: 1px;
+  }
+
+  .no-team-found {
+    min-height: 77vh;
+    font-size: 20px;
+    width: 1090px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .no-team-found-search-value {
+      color: #1d1d1d;
+    }
+    > span {
+      color: #7a7a7a;
+    }
   }
 
   @media only screen and (max-width: 1279px) {
     .find-team-container {
       width: 100%;
     }
+    .no-team-found {
+      width: 200%;
+    }
   }
 
   @media only screen and (max-width: 767px) {
     .team-card-container {
       grid-template-columns: repeat(1, 1fr);
+    }
+    .no-team-found-mo {
+      display: block;
+    }
+    .no-team-found {
+      width: 100%;
     }
   }
 }

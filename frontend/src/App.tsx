@@ -1,83 +1,150 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 
-import { useQuery } from "react-query";
 import getMemberInfo from "quires/member/getMemberInfo";
-import { useTeamInfoFetcher } from "quires/team/getTeamInfo";
+import getTeamInfo from "quires/team/getTeamInfo";
 import joinedTeamsAtom from "recoil/joinedTeams";
+import { getCookie } from "utils/setAuthorization";
+import { CookiesProvider, useCookies } from "react-cookie";
 
-import { CookiesProvider } from "react-cookie";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  Route,
+  redirect,
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+} from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
-import Home from "pages/Home/Home";
-import Notice from "pages/Home/Notice";
-import Board from "pages/Home/Board";
-import Team from "pages/Home/Team";
-import CreateTeam from "pages/Account/CreateTeam";
-import Detail from "pages/Home/Detail";
-import Write from "pages/Home/Write";
-import Profile from "pages/Home/Profile/Profile";
-import EditProfile from "pages/Home/Profile/EditProfile";
-import LoginState from "recoil/atom";
 import UserState from "recoil/userAtom";
-import Alarm from "pages/Alarm/Alarm";
 import Toast from "components/common/Toast";
-import Nav from "layouts/Nav";
-import Login from "components/Form/Login";
-import Main from "./layouts/Main";
-import FormWrap from "./components/Form/FormWrap";
-import Join from "./components/Form/Join";
-import Preview from "./components/Form/Preview";
+import LoginState from "recoil/atom";
+
+import LoadingSpinner from "components/common/LoadingSpinner";
+import NotFound from "components/common/NotFound";
+
 import "./styles/style.scss";
 import "./styles/base.scss";
-import FindTeam from "./pages/FindTeam";
+import "./styles/layouts/main.scss";
+
+const FormWrap = lazy(() => import("./pages/Onboarding/FormWrap"));
+const SignupSecondPage = lazy(() => import("./pages/Onboarding/SignupSecondPage"));
+const SignupSuccess = lazy(() => import("./pages/Onboarding/SignupSuccess"));
+const Login = lazy(() => import("./pages/Onboarding/Login"));
+const SignupFirstPage = lazy(() => import("./pages/Onboarding/SignupFirstPage"));
+const Nav = lazy(() => import("./layouts/Nav"));
+const Main = lazy(() => import("./layouts/Main"));
+const Home = lazy(() => import("./pages/Home/Home"));
+const Notice = lazy(() => import("./pages/Home/Notice"));
+const Board = lazy(() => import("./pages/Home/Board"));
+const Detail = lazy(() => import("./pages/Home/Detail"));
+const Write = lazy(() => import("./pages/Home/Write"));
+const Profile = lazy(() => import("./pages/Home/Profile/Profile"));
+const Team = lazy(() => import("./pages/Home/Team"));
+const FindTeam = lazy(() => import("./pages/FindTeam"));
+const Onboarding = lazy(() => import("./pages/Onboarding/Onboarding"));
+const CreateTeam = lazy(() => import("./pages/Account/CreateTeam"));
+const EditProfile = lazy(() => import("./pages/Home/Profile/EditProfile"));
+const Alarm = lazy(() => import("./pages/Alarm/Alarm"));
+const MyTeam = lazy(() => import("./pages/Account/MyTeam"));
 
 const App = () => {
-  const setUser = useSetRecoilState(UserState);
+  const [, , removeCookie] = useCookies(["refresh"]);
+  const [useUser, setUseUser] = useRecoilState(UserState);
   const setJoinedTeams = useSetRecoilState(joinedTeamsAtom);
-  const [login, setLogin] = useState(false);
-  const [hasId, setHasId] = useState(false);
-  const [confirmLogin, setConfirmLogin] = useRecoilState(LoginState);
+  const [, setConfirmLogin] = useRecoilState(LoginState);
   const [loginBoolean, setLoginBoolean] = useState(false);
-  const { data: info, isLoading: load } = getMemberInfo(loginBoolean);
-  const { data: joinedTeamResponse } = useQuery(
-    "/team/memberId",
-    () => useTeamInfoFetcher(info.data.id),
-    {
-      enabled: !!info,
-    },
-  );
-
+  const { data: userInfo, refetch: userRefetch } = getMemberInfo(true);
+  const { data: joinedTeamResponse, refetch: dataRefetch } = getTeamInfo(loginBoolean);
+  const [hideNav, setHideNav] = useState<boolean>(false);
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setConfirmLogin(true);
       setLoginBoolean(true);
-      if (info && joinedTeamResponse) {
-        setUser(info.data);
-        setJoinedTeams(joinedTeamResponse.data);
-      }
+
+      userRefetch().then((res) => {
+        dataRefetch().then((data) => {
+          if (data.data.data === null) {
+            // 처음 가입
+            if (userInfo) {
+              setUseUser({
+                ...useUser,
+                teamInfo: [],
+                selectedTeamId: null,
+                ...userInfo.data,
+              });
+            }
+          }
+          // 가입된 팀이 있지만 로컬스토리지를 비우고 새로고침 햇을경우
+          else {
+            setUseUser({
+              ...useUser,
+              teamInfo: [...data.data.data],
+              selectedTeamId: [...data.data.data][0].teamId,
+              ...userInfo.data,
+            });
+          }
+          localStorage.setItem("arrayData", JSON.stringify(data.data.data));
+        });
+      });
     }
     // 의존성 배열에 info가 있어야 한다.
-  }, [info, joinedTeamResponse]);
+  }, [userInfo, joinedTeamResponse]);
+  // 컴포넌트 마운트시마다 데이터 갱신
+  useEffect(() => {
+    dataRefetch().then((data) => {
+      setUseUser({
+        ...useUser,
+        teamInfo: [...data.data.data],
+        selectedTeamId: [...data.data.data][0].teamId,
+        ...userInfo.data,
+      });
+    });
+  }, []);
 
-  return (
-    <CookiesProvider>
-      <Router>
-        <Toast />
-        {!confirmLogin && (
-          <FormWrap>
-            {login && !hasId ? <Login setHasId={setHasId} setLogin={setLogin} /> : null}
-            {!login &&
-              (hasId ? (
-                <Join setHasId={setHasId} />
-              ) : (
-                <Preview setLogin={setLogin} setHasId={setHasId} />
-              ))}
-          </FormWrap>
-        )}
-        <Nav />
-        <Routes>
-          <Route path="/" element={<Main />}>
+  const mainLoader = async () => {
+    if (!localStorage.getItem("token") && !getCookie("refresh")) {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("token");
+      return redirect("/onboarding");
+    }
+    if (!getCookie("refresh")) {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("token");
+      return redirect("/onboarding/login");
+    }
+    // 새로 로그인할 경우 로컬스토리지 초기화
+
+    if (userInfo) localStorage.setItem("userId", userInfo.data.id.toString());
+
+    if (!joinedTeamResponse || !joinedTeamResponse.data) return null;
+    return joinedTeamResponse.data;
+  };
+
+  const getUserIdLoader = () => {
+    if (!userInfo) return null;
+    return userInfo.data.id;
+  };
+
+  const getJoinedTeamListLoader = () => {
+    if (!joinedTeamResponse) return null;
+    return joinedTeamResponse.data;
+  };
+
+  // 다른 아이디로 로그인할 경우 로컬스토리지 비움
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("selectedTeamId");
+      localStorage.removeItem("arrayData");
+      removeCookie("refresh");
+    }
+  }, []);
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route errorElement={<NotFound />}>
+        <Route loader={mainLoader} element={<Nav hideNav={hideNav} />}>
+          <Route loader={mainLoader} path="/" element={<Main />}>
             <Route path="" element={<Home />} />
             <Route path="notice" element={<Notice />} />
             <Route path="board" element={<Board />} />
@@ -87,11 +154,47 @@ const App = () => {
             <Route path="/profile" element={<Profile />} />
           </Route>
           <Route path="/profile/edit" element={<EditProfile />} />
-          <Route path="/search/*" element={<FindTeam />} />
-          <Route path="/alarm" element={<Alarm />} />
-          <Route path="/create" element={<CreateTeam />} />
-        </Routes>
-      </Router>
+          <Route
+            loader={getUserIdLoader}
+            path="/search/*"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <FindTeam />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/alarm"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <Alarm />
+              </Suspense>
+            }
+          />
+          <Route path="/account">
+            <Route path="create" element={<CreateTeam data={setHideNav} />} />
+            <Route loader={getJoinedTeamListLoader} path="" element={<MyTeam />} />
+          </Route>
+        </Route>
+        <Route path="/onboarding" element={<Onboarding />}>
+          <Route element={<FormWrap />}>
+            <Route path="signup" element={<SignupFirstPage />} />
+            <Route path="signup/2" element={<SignupSecondPage />} />
+            <Route path="login" element={<Login />} />
+          </Route>
+          <Route path="signup/3" element={<SignupSuccess />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Route>,
+    ),
+  );
+
+  return (
+    <CookiesProvider>
+      <Toast />
+      <Suspense fallback={<LoadingSpinner />}>
+        <RouterProvider router={router} />
+      </Suspense>
     </CookiesProvider>
   );
 };

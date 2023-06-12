@@ -51,7 +51,7 @@ const Main = () => {
 
   // userId 리턴해야하므로 리코일값을 가져와야한다 (4/27)
   const [userId, setUserId] = useState(
-    Number(JSON.stringify(localStorage.getItem("userId"))) || useUser?.id,
+    Number(JSON.stringify(localStorage.getItem("userId"))) || useUser?.id || 0,
   );
   const [changeDataFlag, setChangeDataFlag] = useState("initial");
 

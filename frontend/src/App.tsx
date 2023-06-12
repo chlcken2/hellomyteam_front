@@ -4,8 +4,8 @@ import getMemberInfo from "quires/member/getMemberInfo";
 import getTeamInfo from "quires/team/getTeamInfo";
 import joinedTeamsAtom from "recoil/joinedTeams";
 import { getCookie } from "utils/setAuthorization";
+import { CookiesProvider, useCookies } from "react-cookie";
 
-import { CookiesProvider } from "react-cookie";
 import {
   Route,
   redirect,
@@ -48,24 +48,58 @@ const Alarm = lazy(() => import("./pages/Alarm/Alarm"));
 const MyTeam = lazy(() => import("./pages/Account/MyTeam"));
 
 const App = () => {
+  const [, , removeCookie] = useCookies(["refresh"]);
   const [useUser, setUseUser] = useRecoilState(UserState);
   const setJoinedTeams = useSetRecoilState(joinedTeamsAtom);
   const [, setConfirmLogin] = useRecoilState(LoginState);
   const [loginBoolean, setLoginBoolean] = useState(false);
-  const { data: userInfo } = getMemberInfo(true);
-  const { data: joinedTeamResponse } = getTeamInfo(loginBoolean);
-
+  const { data: userInfo, refetch: userRefetch } = getMemberInfo(true);
+  const { data: joinedTeamResponse, refetch: dataRefetch } = getTeamInfo(loginBoolean);
+  const [hideNav, setHideNav] = useState<boolean>(false);
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setConfirmLogin(true);
       setLoginBoolean(true);
-      if (userInfo && joinedTeamResponse) {
-        setUseUser({ ...useUser, ...userInfo.data });
-        setJoinedTeams(joinedTeamResponse.data);
-      }
+
+      userRefetch().then((res) => {
+        dataRefetch().then((data) => {
+          if (data.data.data === null) {
+            // 처음 가입
+            if (userInfo) {
+              setUseUser({
+                ...useUser,
+                teamInfo: [],
+                selectedTeamId: null,
+                ...userInfo.data,
+              });
+            }
+          }
+          // 가입된 팀이 있지만 로컬스토리지를 비우고 새로고침 햇을경우
+          else {
+            setUseUser({
+              ...useUser,
+              teamInfo: [...data.data.data],
+              selectedTeamId: [...data.data.data][0].teamId,
+              ...userInfo.data,
+            });
+          }
+          localStorage.setItem("arrayData", JSON.stringify(data.data.data));
+        });
+      });
     }
     // 의존성 배열에 info가 있어야 한다.
   }, [userInfo, joinedTeamResponse]);
+  // 컴포넌트 마운트시마다 데이터 갱신
+  useEffect(() => {
+    dataRefetch().then((data) => {
+      setUseUser({
+        ...useUser,
+        teamInfo: [...data.data.data],
+        selectedTeamId: [...data.data.data][0].teamId,
+        ...userInfo.data,
+      });
+    });
+  }, []);
 
   const mainLoader = async () => {
     if (!localStorage.getItem("token") && !getCookie("refresh")) {
@@ -78,6 +112,8 @@ const App = () => {
       localStorage.removeItem("token");
       return redirect("/onboarding/login");
     }
+    // 새로 로그인할 경우 로컬스토리지 초기화
+
     if (userInfo) localStorage.setItem("userId", userInfo.data.id.toString());
 
     if (!joinedTeamResponse || !joinedTeamResponse.data) return null;
@@ -94,11 +130,21 @@ const App = () => {
     return joinedTeamResponse.data;
   };
 
+  // 다른 아이디로 로그인할 경우 로컬스토리지 비움
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("selectedTeamId");
+      localStorage.removeItem("arrayData");
+      removeCookie("refresh");
+    }
+  }, []);
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route errorElement={<NotFound />}>
-        <Route loader={mainLoader} element={<Nav />}>
-          <Route path="/" element={<Main />}>
+        <Route loader={mainLoader} element={<Nav hideNav={hideNav} />}>
+          <Route loader={mainLoader} path="/" element={<Main />}>
             <Route path="" element={<Home />} />
             <Route path="notice" element={<Notice />} />
             <Route path="board" element={<Board />} />
@@ -126,7 +172,7 @@ const App = () => {
             }
           />
           <Route path="/account">
-            <Route path="create" element={<CreateTeam />} />
+            <Route path="create" element={<CreateTeam data={setHideNav} />} />
             <Route loader={getJoinedTeamListLoader} path="" element={<MyTeam />} />
           </Route>
         </Route>

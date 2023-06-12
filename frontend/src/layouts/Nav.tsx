@@ -8,11 +8,14 @@ const searchTeamPathname = ["/search"];
 const alarmPathname = ["/alarm"];
 const profilePathname = ["/account"];
 
-const Nav = () => {
+const Nav: React.FC<any> = ({ hideNav }) => {
   const loaderData = useLoaderData();
+  // console.log(loaderData);
+
   const style = {
     backgroundColor: "#F4F6FB",
   };
+
   return (
     <div style={{ display: "flex" }}>
       {loaderData && (

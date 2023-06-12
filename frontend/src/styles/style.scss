@@ -382,3 +382,34 @@ input[type="number"] {
   line-height: 48px;
   color: #b3b3b3;
 }
+
+@media all and (max-width: 390px) {
+  .join-wrapper {
+    padding: 0;
+  }
+  .join-form.create-team {
+    padding-right: 0;
+  }
+  .join-form {
+    &.create-team {
+      .input-container {
+        display: block;
+      }
+    }
+  }
+  .word-limit {
+    padding-left: 0;
+  }
+  .textarea-container .wrapper {
+    display: block;
+  }
+  .join-form.create-team .edit-content-wrapper {
+    display: block;
+  }
+  .join-form.create-team .select-container {
+    display: block;
+  }
+  .join-form.create-team .file-button label {
+    display: block;
+  }
+}

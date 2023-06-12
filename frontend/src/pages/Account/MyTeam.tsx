@@ -36,6 +36,8 @@ const MyTeam = () => {
   const handleLogout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("token");
+    localStorage.removeItem("arrayData");
+    localStorage.removeItem("selectedTeamId");
     removeCookie("refresh");
     navigate("/onboarding");
   };
@@ -61,7 +63,7 @@ const MyTeam = () => {
       <div className="my-team-container">
         <h1 className="my-team-main-title">나의 팀</h1>
         <div className="my-team-card">
-          {myTeamList.map((el) => (
+          {myTeamList?.map((el) => (
             <div key={el.teamId}>
               <TeamCard
                 isTeamJoined={isTeamJoined}

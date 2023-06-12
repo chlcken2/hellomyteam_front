@@ -4,11 +4,13 @@ import TeamItem from "components/Home/TeamItem";
 import { Link } from "react-router-dom";
 import getBoardList from "quires/board/getBoardList";
 import UserState from "recoil/userAtom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 
 const Home: FC = () => {
   const img = process.env.PUBLIC_URL;
   const user = useRecoilValue(UserState);
+  const [useUser, setUseUser] = useRecoilState(UserState);
+
   const reg = /<[^>]*>?/g;
   const {
     data: noticeList,
@@ -16,7 +18,9 @@ const Home: FC = () => {
     refetch: refetch1,
   } = getBoardList(
     0,
-    user?.selectedTeamId || JSON.parse(localStorage?.getItem("arrayData"))?.[0].teamId,
+    user?.selectedTeamId ||
+      JSON.parse(localStorage?.getItem("arrayData"))?.[0].teamId ||
+      0,
     "NOTICE_BOARD",
     "created_date",
     "",
@@ -30,7 +34,9 @@ const Home: FC = () => {
     refetch: refetch2,
   } = getBoardList(
     0,
-    user?.selectedTeamId || JSON.parse(localStorage?.getItem("arrayData"))?.[0].teamId,
+    user?.selectedTeamId ||
+      JSON.parse(localStorage?.getItem("arrayData"))?.[0].teamId ||
+      0,
     "FREE_BOARD",
     "created_date",
     "",
@@ -39,7 +45,7 @@ const Home: FC = () => {
   );
 
   useEffect(() => {
-    if (user && user.selectedTeamId) {
+    if ((user && user.selectedTeamId) || user.id) {
       refetch1();
       refetch2();
     }

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, Dispatch, SetStateAction } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Input from "components/common/Input";
@@ -11,7 +11,10 @@ import { ProfileInfoType } from "types/profileType";
 import { instance } from "../../config/api";
 import UserState from "../../recoil/userAtom";
 
-const CreateTeam: FC = () => {
+interface CreateTeamProps {
+  data: Dispatch<SetStateAction<boolean>>;
+}
+const CreateTeam: FC<CreateTeamProps> = ({ data }) => {
   const navi = useNavigate();
   const { mutate, data: createTeam, isLoading: isGetTeamLoading } = teamCreateQuery();
   const DEFAULT_PROFILE_INFO: ProfileInfoType = {
@@ -58,13 +61,18 @@ const CreateTeam: FC = () => {
     if (regex.test(name)) return alert("숫자만 섞인 팀이름은 사용할 수 없습니다");
     if (name.length < 2 || name.length > 12)
       return alert("팀 이름은 2글자 이상 12글자 이하로 해주세요.");
-    const formData = new FormData();
-    formData.append("detailIntro", text);
 
+    // detail, profileInfo
+    const formData = new FormData();
+    formData.append("detailIntro", detail);
     formData.append("memberId", user.id.toString());
     formData.append("oneIntro", text);
     formData.append("teamName", name);
     formData.append("tacticalStyleStatus", tactic.value);
+    formData.append(
+      "location",
+      `${profileInfo.address[0].title}${profileInfo.address[0].localName}`,
+    );
 
     if (file) {
       formData.append("image", file, `${file.name}`); // Blob 객체를 FormData에 추가
@@ -139,8 +147,15 @@ const CreateTeam: FC = () => {
       setFlag(true);
     }
   }, [err]);
+  console.log(createTeam);
 
-  console.log(profileInfo.address.length, err, flag);
+  useEffect(() => {
+    if (user?.teamInfo.length === 0) {
+      data(true);
+    } else {
+      data(false);
+    }
+  }, [user]);
   return (
     <div className="main-wrap">
       {flag}
@@ -214,7 +229,7 @@ const CreateTeam: FC = () => {
 
             <div className="file-button">
               <label htmlFor="input-file">
-                <div className="btnStart">로고</div>
+                <div className="btnStart">로고*</div>
                 <p>
                   {file?.name ? file.name : "10MB 이내 png 이미지"}{" "}
                   {file?.name ? (

@@ -4,7 +4,7 @@ module.exports = (app) => {
   app.use(
     "/api",
     createProxyMiddleware({
-      target: "http://158.247.223.18/",
+      target: "https://hellomyteam.store",
       changeOrigin: true,
     }),
   );

@@ -229,7 +229,7 @@ const CreateTeam: FC<CreateTeamProps> = ({ data }) => {
 
             <div className="file-button">
               <label htmlFor="input-file">
-                <div className="btnStart">로고</div>
+                <div className="btnStart">로고*</div>
                 <p>
                   {file?.name ? file.name : "10MB 이내 png 이미지"}{" "}
                   {file?.name ? (

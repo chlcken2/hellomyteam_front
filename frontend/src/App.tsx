@@ -61,47 +61,45 @@ const App = () => {
       setConfirmLogin(true);
       setLoginBoolean(true);
 
-      if (userInfo && joinedTeamResponse) {
-        setJoinedTeams(joinedTeamResponse.data);
-        if (JSON.parse(localStorage?.getItem("arrayData")) !== null) {
-          setUseUser({
-            ...useUser,
-            teamInfo: [...JSON.parse(localStorage.getItem("arrayData"))],
-            selectedTeamId: [...JSON.parse(localStorage.getItem("arrayData"))][0].teamId,
-            ...userInfo.data,
-          });
-        } else {
-          userRefetch().then((res) => {
-            dataRefetch().then((data) => {
-              console.log(data.data.data);
-              if (data.data.data === null) {
-                // 처음 가입
-                if (userInfo) {
-                  setUseUser({
-                    ...useUser,
-                    teamInfo: [],
-                    selectedTeamId: null,
-                    ...userInfo.data,
-                  });
-                }
-              }
-              // 가입된 팀이 있지만 로컬스토리지를 비우고 새로고침 햇을경우
-              else {
-                setUseUser({
-                  ...useUser,
-                  teamInfo: [...data.data.data],
-                  selectedTeamId: [...data.data.data][0].teamId,
-                  ...userInfo.data,
-                });
-              }
-              localStorage.setItem("arrayData", JSON.stringify(data.data.data));
+      userRefetch().then((res) => {
+        dataRefetch().then((data) => {
+          if (data.data.data === null) {
+            // 처음 가입
+            if (userInfo) {
+              setUseUser({
+                ...useUser,
+                teamInfo: [],
+                selectedTeamId: null,
+                ...userInfo.data,
+              });
+            }
+          }
+          // 가입된 팀이 있지만 로컬스토리지를 비우고 새로고침 햇을경우
+          else {
+            setUseUser({
+              ...useUser,
+              teamInfo: [...data.data.data],
+              selectedTeamId: [...data.data.data][0].teamId,
+              ...userInfo.data,
             });
-          });
-        }
-      }
+          }
+          localStorage.setItem("arrayData", JSON.stringify(data.data.data));
+        });
+      });
     }
     // 의존성 배열에 info가 있어야 한다.
   }, [userInfo, joinedTeamResponse]);
+  // 컴포넌트 마운트시마다 데이터 갱신
+  useEffect(() => {
+    dataRefetch().then((data) => {
+      setUseUser({
+        ...useUser,
+        teamInfo: [...data.data.data],
+        selectedTeamId: [...data.data.data][0].teamId,
+        ...userInfo.data,
+      });
+    });
+  }, []);
 
   const mainLoader = async () => {
     if (!localStorage.getItem("token") && !getCookie("refresh")) {

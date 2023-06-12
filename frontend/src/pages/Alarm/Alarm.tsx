@@ -41,20 +41,23 @@ const Alarm: FC = () => {
       <h1 className="main-title">알림</h1>
       <div className="alram-container">
         <ul className="alram-list">
-          {JoinAlarmResponse?.data.map((joinAlarmItem, idx) => (
-            <li key={idx}>
-              <NotiCard
-                onClickAcceptButton={() =>
-                  handleJoinTeamAlarm("accept", joinAlarmItem.memberId)
-                }
-                onClickRejectButton={() =>
-                  handleJoinTeamAlarm("reject", joinAlarmItem.memberId)
-                }
-                applyTime={1}
-                userName={joinAlarmItem.name}
-              />
-            </li>
-          ))}
+          {typeof JoinAlarmResponse?.data !== "string" &&
+            JoinAlarmResponse?.data.map((joinAlarmItem, idx) => {
+              return (
+                <li key={idx}>
+                  <NotiCard
+                    onClickAcceptButton={() =>
+                      handleJoinTeamAlarm("accept", joinAlarmItem.memberId)
+                    }
+                    onClickRejectButton={() =>
+                      handleJoinTeamAlarm("reject", joinAlarmItem.memberId)
+                    }
+                    applyTime={1}
+                    userName={joinAlarmItem.name}
+                  />
+                </li>
+              );
+            })}
         </ul>
       </div>
     </div>

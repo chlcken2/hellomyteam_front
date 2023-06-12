@@ -48,7 +48,6 @@ const Main = () => {
   const { pathname } = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
   const [useUser, setUseUser] = useRecoilState(UserState);
-  const changeUser = useSetRecoilState(UserState);
 
   // userId 리턴해야하므로 리코일값을 가져와야한다 (4/27)
   const [userId, setUserId] = useState(
@@ -62,7 +61,10 @@ const Main = () => {
     data: teamId,
     isLoading: teamIdLoading,
     refetch: teamIdRefetch,
-  } = teamMemberId(useUser?.selectedTeamId || teamInfo?.[0].teamId || 0, useUser.id);
+  } = teamMemberId(
+    useUser?.selectedTeamId || teamInfo?.[0].teamId || 0,
+    useUser?.id || 0,
+  );
 
   // 모바일 탭바의 menuItem 배경 인터렉션관련 스타일 state
   const [menuItemBackgroundStyle, setMenuItemBackgroundStyle] = useState({
@@ -212,6 +214,9 @@ const Main = () => {
       teamIdRefetch();
     }
   }, [useUser]);
+  useEffect(() => {
+    teamIdRefetch();
+  }, []);
   // useEffect(() => {
   //   const windowWidth = window.innerWidth;
   //   const mediaQuery = window.matchMedia("(max-width: 768px)");

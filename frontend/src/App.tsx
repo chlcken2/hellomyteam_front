@@ -61,31 +61,32 @@ const App = () => {
       setConfirmLogin(true);
       setLoginBoolean(true);
 
-      userRefetch().then((res) => {
-        dataRefetch().then((data) => {
-          if (data.data.data === null) {
-            // 처음 가입
-            if (userInfo) {
+      if (userInfo)
+        userRefetch().then((res) => {
+          dataRefetch().then((data) => {
+            if (data.data.data === null) {
+              // 처음 가입
+              if (userInfo) {
+                setUseUser({
+                  ...useUser,
+                  teamInfo: [],
+                  selectedTeamId: null,
+                  ...userInfo.data,
+                });
+              }
+            }
+            // 가입된 팀이 있지만 로컬스토리지를 비우고 새로고침 햇을경우
+            else {
               setUseUser({
                 ...useUser,
-                teamInfo: [],
-                selectedTeamId: null,
+                teamInfo: [...data.data.data],
+                selectedTeamId: [...data.data.data][0].teamId,
                 ...userInfo.data,
               });
             }
-          }
-          // 가입된 팀이 있지만 로컬스토리지를 비우고 새로고침 햇을경우
-          else {
-            setUseUser({
-              ...useUser,
-              teamInfo: [...data.data.data],
-              selectedTeamId: [...data.data.data][0].teamId,
-              ...userInfo.data,
-            });
-          }
-          localStorage.setItem("arrayData", JSON.stringify(data.data.data));
+            localStorage.setItem("arrayData", JSON.stringify(data.data.data));
+          });
         });
-      });
     }
     // 의존성 배열에 info가 있어야 한다.
   }, [userInfo, joinedTeamResponse]);
@@ -96,7 +97,6 @@ const App = () => {
         ...useUser,
         teamInfo: [...data.data.data],
         selectedTeamId: [...data.data.data][0].teamId,
-        ...userInfo.data,
       });
     });
   }, []);

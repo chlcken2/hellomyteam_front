@@ -4,6 +4,8 @@
 <img src="https://postfiles.pstatic.net/MjAyMzA2MTJfMTA3/MDAxNjg2NTQ3ODkyOTMy.SqasjL-feznrH4xz2Zpen6wwW0j-GdOijiXHqE3AQxwg.kZNRO6gVexiq_MuAF8LfVkry9HLjsLBAFKD2chnbVdAg.GIF.home124/hellomyteam.gif?type=w773" alt="썸네일"/>
 </div>
 
+<h3>프로젝트 바로가기 => <a href="https://hellomyteam.com" target="_blank">헬로마이팀 링크</a></h3>
+
 <p>축구 인사관리 서비스입니다. 축구 팀원들이 사용할 만한 플랫폼을 만들기 위해 시작되었습니다. </p>
 <p>버젼 1은 회원가입, 로그인, 가입, 팀 생성, 팀 가입, 팀 탈퇴, 팀 찾기, 프로필, 팀 권한변경, 공지/자유게시판 으로 구성되어 있습니다.</p>
 <hr/>

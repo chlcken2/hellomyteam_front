@@ -35,6 +35,7 @@ const MENU = [
 ];
 
 const Main = () => {
+  const img = process.env.PUBLIC_URL;
   const teamInfo = useLoaderData() as joinTeamTypes[];
 
   const [mobileSize, setMobileSize] = useState(false);
@@ -172,8 +173,6 @@ const Main = () => {
 
   useEffect(() => {
     const arrayData = JSON.parse(localStorage.getItem("arrayData"));
-    if (!teamInfo) return;
-
     if (teamInfo && useUser?.id) {
       if (!arrayData) {
         localStorage.setItem("arrayData", JSON.stringify(teamInfo));
@@ -202,7 +201,6 @@ const Main = () => {
         localStorage.setItem("arrayData", JSON.stringify(arrayData));
       });
     }
-    teamIdRefetch();
   }, [changeDataFlag]);
 
   useEffect(() => {
@@ -214,9 +212,7 @@ const Main = () => {
       teamIdRefetch();
     }
   }, [useUser]);
-  useEffect(() => {
-    teamIdRefetch();
-  }, []);
+
   // useEffect(() => {
   //   const windowWidth = window.innerWidth;
   //   const mediaQuery = window.matchMedia("(max-width: 768px)");
@@ -236,7 +232,6 @@ const Main = () => {
   //   };
   // }, []);
 
-  console.log(useUser);
   return (
     <div className="main-wrap">
       <div className="main-buttons">
@@ -285,6 +280,9 @@ const Main = () => {
               </div>
             </div>
           )}
+          <span className={showTeamsModal ? "on" : "off"}>
+            <img src={`${path}/common/arrow_black.png`} alt="더보기" />
+          </span>
         </h1>
         <ul>
           <li>
@@ -293,6 +291,11 @@ const Main = () => {
               handler={() => handleTeamWrite(useUser.selectedTeamId || 0)}
               color="blue"
             />
+          </li>
+          <li className="mo-write">
+            <button>
+              <img src={`${img}/common/mo-write.png`} alt="모바일글쓰기" />
+            </button>
           </li>
         </ul>
       </div>

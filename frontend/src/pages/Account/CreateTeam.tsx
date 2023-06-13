@@ -147,7 +147,6 @@ const CreateTeam: FC<CreateTeamProps> = ({ data }) => {
       setFlag(true);
     }
   }, [err]);
-  console.log(createTeam);
 
   useEffect(() => {
     if (user?.teamInfo.length === 0) {

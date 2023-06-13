@@ -143,7 +143,6 @@ const Write: FC = () => {
 
   useEffect(() => {
     if (writeData) {
-      console.log(writeData);
       // const { id } = writeData.data;
       alert("글 저장에 성공했습니다");
       navi(`/board`);

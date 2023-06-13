@@ -64,7 +64,7 @@ const App = () => {
       if (userInfo) {
         userRefetch().then((res) => {
           dataRefetch().then((data) => {
-            if (data?.data?.data === null) {
+            if (data.data?.data === null) {
               // 처음 가입
               setUseUser({
                 ...useUser,

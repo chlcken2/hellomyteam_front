@@ -293,32 +293,30 @@ const Main = () => {
             />
           </li>
           <li className="mo-write">
-            <button>
+            <button onClick={() => handleTeamWrite(useUser.selectedTeamId || 0)}>
               <img src={`${img}/common/mo-write.png`} alt="모바일글쓰기" />
             </button>
           </li>
         </ul>
       </div>
 
-      {useUser?.changedToMobile === false ||
-        (useUser?.changedToMobile === undefined && (
-          <div ref={menuRef} className="main-menu-wrapper">
-            <ul className="main-menu">
-              <div
-                className="active-item-background"
-                style={{
-                  transform: `translateX(${menuItemBackgroundStyle.offsetLeft}px)`,
-                  width: `${menuItemBackgroundStyle.width}px`,
-                }}
-              />
-              {MENU.map((menuItem, idx) => (
-                <li key={idx} className={menuClassName(menuItem.path, "active")}>
-                  <Link to={`/${menuItem.path}`}>{menuItem.name}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+      <div ref={menuRef} className="main-menu-wrapper">
+        <ul className="main-menu">
+          <div
+            className="active-item-background"
+            style={{
+              transform: `translateX(${menuItemBackgroundStyle.offsetLeft}px)`,
+              width: `${menuItemBackgroundStyle.width}px`,
+            }}
+          />
+          {MENU.map((menuItem, idx) => (
+            <li key={idx} className={menuClassName(menuItem.path, "active")}>
+              <Link to={`/${menuItem.path}`}>{menuItem.name}</Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <Suspense fallback={<LoadingSpinner />}>
         <Outlet />
       </Suspense>

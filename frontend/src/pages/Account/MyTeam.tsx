@@ -68,12 +68,12 @@ const MyTeam = () => {
               <TeamCard
                 isTeamJoined={isTeamJoined}
                 title={el.teamName}
-                slogan="sub text data 필요"
+                slogan={el.oneIntro}
                 imageUrl={el.imageUrl}
                 joinHandler={() => handleTeamExit(el.teamId)}
                 buttonText="탈퇴"
                 buttonColor="blue"
-                num={24}
+                num={el.memberCount}
                 hoverTransition={false}
               />
               <div className="my-team-line" />

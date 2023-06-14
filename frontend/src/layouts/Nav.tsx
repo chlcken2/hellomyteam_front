@@ -10,7 +10,6 @@ const profilePathname = ["/account"];
 
 const Nav: React.FC<any> = ({ hideNav }) => {
   const loaderData = useLoaderData();
-  // console.log(loaderData);
 
   const style = {
     backgroundColor: "#F4F6FB",

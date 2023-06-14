@@ -61,22 +61,19 @@ const App = () => {
       setConfirmLogin(true);
       setLoginBoolean(true);
 
-      if (userInfo)
+      if (userInfo) {
         userRefetch().then((res) => {
           dataRefetch().then((data) => {
-            if (data.data.data === null) {
+            if (data.data?.data === null) {
               // 처음 가입
-              if (userInfo) {
-                setUseUser({
-                  ...useUser,
-                  teamInfo: [],
-                  selectedTeamId: null,
-                  ...userInfo.data,
-                });
-              }
-            }
-            // 가입된 팀이 있지만 로컬스토리지를 비우고 새로고침 햇을경우
-            else {
+              setUseUser({
+                ...useUser,
+                teamInfo: [],
+                selectedTeamId: null,
+                ...userInfo.data,
+              });
+            } else {
+              // 다른 유저로 로그인시
               setUseUser({
                 ...useUser,
                 teamInfo: [...data.data.data],
@@ -87,19 +84,11 @@ const App = () => {
             localStorage.setItem("arrayData", JSON.stringify(data.data.data));
           });
         });
-    }
-    // 의존성 배열에 info가 있어야 한다.
+      }
+    } else {
+      setLoginBoolean(false);
+    } // 의존성 배열에 info가 있어야 한다.
   }, [userInfo, joinedTeamResponse]);
-  // 컴포넌트 마운트시마다 데이터 갱신
-  useEffect(() => {
-    dataRefetch().then((data) => {
-      setUseUser({
-        ...useUser,
-        teamInfo: [...data.data.data],
-        selectedTeamId: [...data.data.data][0].teamId,
-      });
-    });
-  }, []);
 
   const mainLoader = async () => {
     if (!localStorage.getItem("token") && !getCookie("refresh")) {
@@ -111,6 +100,13 @@ const App = () => {
       localStorage.removeItem("userId");
       localStorage.removeItem("token");
       return redirect("/onboarding/login");
+    }
+    // 다른 아이디로 로그인할 경우 로컬스토리지 비움
+    if (!localStorage.getItem("token")) {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("selectedTeamId");
+      localStorage.removeItem("arrayData");
+      removeCookie("refresh");
     }
     // 새로 로그인할 경우 로컬스토리지 초기화
 
@@ -129,16 +125,6 @@ const App = () => {
     if (!joinedTeamResponse) return null;
     return joinedTeamResponse.data;
   };
-
-  // 다른 아이디로 로그인할 경우 로컬스토리지 비움
-  useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      localStorage.removeItem("userId");
-      localStorage.removeItem("selectedTeamId");
-      localStorage.removeItem("arrayData");
-      removeCookie("refresh");
-    }
-  }, []);
 
   const router = createBrowserRouter(
     createRoutesFromElements(

@@ -62,28 +62,37 @@ const App = () => {
       setLoginBoolean(true);
 
       if (userInfo) {
-        userRefetch().then((res) => {
-          dataRefetch().then((data) => {
-            if (data.data?.data === null) {
-              // 처음 가입
-              setUseUser({
-                ...useUser,
-                teamInfo: [],
-                selectedTeamId: null,
-                ...userInfo.data,
-              });
-            } else {
-              // 다른 유저로 로그인시
-              setUseUser({
-                ...useUser,
-                teamInfo: [...data.data.data],
-                selectedTeamId: [...data.data.data][0].teamId,
-                ...userInfo.data,
-              });
-            }
-            localStorage.setItem("arrayData", JSON.stringify(data.data.data));
+        if (JSON.parse(localStorage?.getItem("arrayData")) !== null) {
+          setUseUser({
+            ...useUser,
+            teamInfo: [...JSON.parse(localStorage.getItem("arrayData"))],
+            selectedTeamId: [...JSON.parse(localStorage.getItem("arrayData"))][0].teamId,
+            ...userInfo.data,
           });
-        });
+        } else {
+          userRefetch().then((res) => {
+            dataRefetch().then((data) => {
+              if (data.data?.data === null) {
+                // 처음 가입
+                setUseUser({
+                  ...useUser,
+                  teamInfo: [],
+                  selectedTeamId: null,
+                  ...userInfo.data,
+                });
+              } else {
+                // 다른 유저로 로그인시
+                setUseUser({
+                  ...useUser,
+                  teamInfo: [...data.data.data],
+                  selectedTeamId: [...data.data.data][0].teamId,
+                  ...userInfo.data,
+                });
+              }
+              localStorage.setItem("arrayData", JSON.stringify(data.data.data));
+            });
+          });
+        }
       }
     } else {
       setLoginBoolean(false);

@@ -53,7 +53,7 @@ const App = () => {
   const setJoinedTeams = useSetRecoilState(joinedTeamsAtom);
   const [, setConfirmLogin] = useRecoilState(LoginState);
   const [loginBoolean, setLoginBoolean] = useState(false);
-  const { data: userInfo, refetch: userRefetch } = getMemberInfo(true);
+  const { data: userInfo, refetch: userRefetch } = getMemberInfo(loginBoolean);
   const { data: joinedTeamResponse, refetch: dataRefetch } = getTeamInfo(loginBoolean);
   const [hideNav, setHideNav] = useState<boolean>(false);
   useEffect(() => {

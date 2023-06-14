@@ -1,6 +1,7 @@
 import Checkbox from "components/common/Checkbox";
 import Input from "components/common/Input";
 import Select, { OptionType } from "components/common/Select";
+import { verify } from "constants/verify";
 import useSignupMutation from "quires/certification/useSignupMutation";
 import { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -14,8 +15,6 @@ interface PrivacyType {
   birthday: string;
 }
 
-const verifyName = /^[가-힣]{2,6}$|[a-zA-Z]{2,6}$/;
-const verifyBirthday = /([0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1,2][0-9]|3[0,1]))/;
 const EMAIL_DUPLICATION_ERROR = "Email address already in use.";
 
 const SELECT_LIST = [
@@ -80,8 +79,8 @@ const SignupSecondPage = () => {
   const submitDisabled = () => {
     if (
       isChecked &&
-      verifyName.test(privacy.name) &&
-      verifyBirthday.test(privacy.birthday)
+      verify.name.test(privacy.name) &&
+      verify.birthday.test(privacy.birthday)
     ) {
       return false;
     }
@@ -108,7 +107,7 @@ const SignupSecondPage = () => {
           label="이름*"
           maxLength={6}
           errorMessage={`${
-            !verifyName.test(privacy.name) && privacy.name.length > 0
+            !verify.name.test(privacy.name) && privacy.name.length > 0
               ? "한글, 영문 5글자까지 입력 가능"
               : ""
           }`}
@@ -121,7 +120,7 @@ const SignupSecondPage = () => {
           label="생년월일(YYMMDD)*"
           keyDownHandler={handleKeyDown}
           errorMessage={`${
-            !verifyBirthday.test(privacy.birthday) && privacy.birthday.length > 0
+            !verify.birthday.test(privacy.birthday) && privacy.birthday.length > 0
               ? "생년월일 형식 불일치"
               : ""
           }`}

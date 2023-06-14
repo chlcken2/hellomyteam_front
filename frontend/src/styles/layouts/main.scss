@@ -313,6 +313,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    max-height: 80vh;
+    overflow-x: auto;
   }
   .close-teams {
     z-index: 20;
@@ -345,5 +347,14 @@
   .main-buttons h1 .main-teams__wrap {
     position: fixed;
     top: 0;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 3;
+    background: rgba(0, 0, 0, 0.3);
   }
 }

@@ -45,7 +45,7 @@ const Home: FC = () => {
   );
 
   useEffect(() => {
-    if ((user && user.selectedTeamId) || user?.id) {
+    if (user?.id || (user && user.selectedTeamId)) {
       refetch1();
       refetch2();
     }

@@ -60,7 +60,6 @@ const App = () => {
     if (localStorage.getItem("token")) {
       setConfirmLogin(true);
       setLoginBoolean(true);
-
       if (userInfo) {
         if (JSON.parse(localStorage?.getItem("arrayData")) !== null) {
           setUseUser({

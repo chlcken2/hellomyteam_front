@@ -358,3 +358,34 @@
     background: rgba(0, 0, 0, 0.3);
   }
 }
+@media all and (min-width: 769px) {
+  .main-title {
+    + ul {
+      li {
+        &:first-child {
+          display: block;
+        }
+        &:last-child {
+          display: none;
+        }
+      }
+    }
+  }
+}
+@media all and (max-width: 768px) {
+  .main-title {
+    + ul {
+      li {
+        &:first-child {
+          display: none;
+        }
+        &:last-child {
+          display: block;
+          position: fixed;
+          bottom: 100px;
+          right: 0;
+        }
+      }
+    }
+  }
+}

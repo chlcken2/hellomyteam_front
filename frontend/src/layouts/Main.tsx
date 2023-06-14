@@ -81,7 +81,7 @@ const Main = () => {
   const [localTitle, setLocalTitle] = useState<titleType[]>(
     () => JSON.parse(localStorage?.getItem("arrayData")) || teamInfo,
   );
-
+  console.log(useUser);
   // 토글보이기
   const handleTeamsModal = () => {
     setShowTeamsModal(!showTeamsModal);
@@ -117,21 +117,6 @@ const Main = () => {
       });
     }
   };
-
-  // recoil에 담긴 User의 정보가 있을시에, 사용자의 id값을 리액트 쿼리에 보냄
-  // useEffect(() => {
-  //   if (useUser) {
-  //     setUserId(useUser.id);
-  //   }
-  // }, [useUser]);
-
-  // 리코일에 사용자 정보와 사용자가 가입한 팀을 모두 담는다
-  // useEffect(() => {
-  //   if (teamInfo) {
-  //     setUseUser({ ...useUser, teamInfo: [...teamInfo] });
-  //   }
-  // }, [teamInfo]);
-
   // 모바일 홈 탭바 인터랙션 관련 코드
   const handleMenuItemInteraction = () => {
     const screenWidth = window.innerWidth;
@@ -196,7 +181,6 @@ const Main = () => {
           imageUrl: el.imageUrl,
           teamId: el.teamId,
         };
-
         // 수정된 배열 다시 로컬스토리지에 저장
         localStorage.setItem("arrayData", JSON.stringify(arrayData));
       });
@@ -293,32 +277,30 @@ const Main = () => {
             />
           </li>
           <li className="mo-write">
-            <button>
+            <button onClick={() => handleTeamWrite(useUser.selectedTeamId || 0)}>
               <img src={`${img}/common/mo-write.png`} alt="모바일글쓰기" />
             </button>
           </li>
         </ul>
       </div>
 
-      {useUser?.changedToMobile === false ||
-        (useUser?.changedToMobile === undefined && (
-          <div ref={menuRef} className="main-menu-wrapper">
-            <ul className="main-menu">
-              <div
-                className="active-item-background"
-                style={{
-                  transform: `translateX(${menuItemBackgroundStyle.offsetLeft}px)`,
-                  width: `${menuItemBackgroundStyle.width}px`,
-                }}
-              />
-              {MENU.map((menuItem, idx) => (
-                <li key={idx} className={menuClassName(menuItem.path, "active")}>
-                  <Link to={`/${menuItem.path}`}>{menuItem.name}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+      <div ref={menuRef} className="main-menu-wrapper">
+        <ul className="main-menu">
+          <div
+            className="active-item-background"
+            style={{
+              transform: `translateX(${menuItemBackgroundStyle.offsetLeft}px)`,
+              width: `${menuItemBackgroundStyle.width}px`,
+            }}
+          />
+          {MENU.map((menuItem, idx) => (
+            <li key={idx} className={menuClassName(menuItem.path, "active")}>
+              <Link to={`/${menuItem.path}`}>{menuItem.name}</Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <Suspense fallback={<LoadingSpinner />}>
         <Outlet />
       </Suspense>

@@ -81,7 +81,7 @@ const Main = () => {
   const [localTitle, setLocalTitle] = useState<titleType[]>(
     () => JSON.parse(localStorage?.getItem("arrayData")) || teamInfo,
   );
-  console.log(useUser);
+
   // 토글보이기
   const handleTeamsModal = () => {
     setShowTeamsModal(!showTeamsModal);

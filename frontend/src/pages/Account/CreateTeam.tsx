@@ -185,7 +185,7 @@ const CreateTeam: FC<CreateTeamProps> = ({ data }) => {
               value={text}
               setValue={setText}
             >
-              {name.length <= 30 ? name.length : 30}/20자까지 입력 가능
+              {text.length <= 30 ? text.length : 30}/30자까지 입력 가능
             </Input>
             <div className="textarea-container">
               <div className="wrapper">

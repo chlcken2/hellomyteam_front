@@ -1,5 +1,5 @@
 import { instance } from "config";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import ApiResponseType from "types/ApiResponseType";
 
 interface fetcherPropsType {

@@ -1,21 +1,20 @@
 import TeamCard from "components/common/TeamCard";
 import Input from "components/common/Input";
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import "../styles/components/common.scss";
 import "../styles/pages/findTeam.scss";
 import useInfiniteTeamListQuery from "quires/team/useTeamList";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { Ring } from "@uiball/loaders";
-import color from "constants/color";
+import { useSetRecoilState } from "recoil";
 import { useTeamJoin, useJoinTeamCancel } from "quires/team/useTeamJoinMutation";
 import useSearchTeamQuery from "quires/team/useSearchTeamQuery";
 import { TeamCardContentsType } from "types/teamCardType";
 import useOutsideClick from "hooks/useOutsideClick";
 import Toast from "components/common/Toast";
 import ToastState from "recoil/toastAtom";
-import { useLocation, useNavigate } from "react-router-dom";
-import joinedTeamsAtom from "recoil/joinedTeams";
+import { useLocation, useNavigate, useRouteLoaderData } from "react-router-dom";
 import NoTeamFound from "components/FindTeam/NoTeamFound";
+import LoadingSpinner from "components/common/LoadingSpinner";
+import { joinTeamTypes } from "types/UserTypes";
 
 const img = process.env.PUBLIC_URL;
 
@@ -45,7 +44,7 @@ const reducer = (state: TeamCardContentsType[], action: ActionType) => {
 };
 
 const FindTeam = () => {
-  const joinedTeams = useRecoilValue(joinedTeamsAtom);
+  const joinedTeams = useRouteLoaderData("nav") as joinTeamTypes[];
   const setToastModal = useSetRecoilState(ToastState);
   const [dropDownMenuOpen, setDropDownMenuOpen] = useState<boolean>(false);
   const [dropDownUnit, setDropDownUnit] = useState<DropDownMenuType>("all");
@@ -94,14 +93,9 @@ const FindTeam = () => {
     }
   }, [location.search]);
 
-  const userJoinedTeam = useCallback(
-    (teamId: number) => {
-      if (joinedTeams) {
-        return joinedTeams.some((el) => el.teamId === teamId);
-      }
-    },
-    [joinedTeams],
-  );
+  const userJoinedTeam = (teamId: number) => {
+    return joinedTeams.some((el) => el.teamId === teamId);
+  };
 
   useEffect(() => {
     teamListDispatch({
@@ -170,7 +164,13 @@ const FindTeam = () => {
     } else {
       teamCardData = searchTeamListResponse.data;
     }
+
+    if (teamListIsLoading || searchTeamIsLoading) return <LoadingSpinner />;
+
     if (!teamCardData.length) return <NoTeamFound searchValue={value} />;
+
+    teamCardData = teamCardData.filter((el) => el.teamId !== 1);
+
     return teamCardData.map((el) => {
       return (
         <TeamCard
@@ -254,11 +254,6 @@ const FindTeam = () => {
             </div>
           </div>
           <div className="team-card-container">{teamCardComponent}</div>
-          {(teamListIsLoading || searchTeamIsLoading) && (
-            <div className="team-card-loading-spinner">
-              <Ring size={40} lineWeight={5} speed={2} color={color["--main-blue-100"]} />
-            </div>
-          )}
         </div>
       </div>
       <div className="find-team-observer" ref={bottomObserver} />

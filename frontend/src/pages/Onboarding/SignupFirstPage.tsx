@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  FormEvent,
-  KeyboardEvent,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, KeyboardEvent, useCallback } from "react";
 import Input from "components/common/Input";
 import useEmailCertificationQuery from "quires/certification/useEmailCertifictionQuery";
 import useEmailMatchQuery from "quires/certification/useEmailMatchQuery";
@@ -50,17 +43,13 @@ const SignupFirstPage = () => {
     timeout: false,
   });
 
-  const {
-    data: EmailCertificationResponse,
-    refetch: CertificationRefetch,
-    error: EmailCertificationError,
-  } = useEmailCertificationQuery(signupState.email);
+  const { data: EmailCertificationResponse, refetch: CertificationRefetch } =
+    useEmailCertificationQuery(signupState.email);
 
-  const {
-    data: EmailMatchResponse,
-    refetch: EmailMatchRefetch,
-    error: EmailMatchError,
-  } = useEmailMatchQuery(emailMatch.auth, Number(emailMatch.number));
+  const { data: EmailMatchResponse, refetch: EmailMatchRefetch } = useEmailMatchQuery(
+    emailMatch.auth,
+    Number(emailMatch.number),
+  );
 
   useEffect(() => {
     if (
@@ -146,7 +135,7 @@ const SignupFirstPage = () => {
     setEmail((prev) => ({ ...prev, certification: true }));
   };
 
-  const requestMatchingNumber = (e: FormEvent<HTMLButtonElement>) => {
+  const requestMatchingNumber = () => {
     if (emailMatch.number.length < 6) {
       alert("인증번호 6자리를 입력해주세요");
     } else {

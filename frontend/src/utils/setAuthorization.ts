@@ -16,3 +16,11 @@ export const getCookie = (name: string) => {
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop().split(";").shift();
 };
+
+export const removeLocalCookie = () => {
+  localStorage.removeItem("userId");
+  localStorage.removeItem("selectedTeamId");
+  localStorage.removeItem("arrayData");
+  localStorage.removeItem("token");
+  document.cookie = "refresh=; Max-Age=0";
+};

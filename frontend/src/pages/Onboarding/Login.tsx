@@ -37,6 +37,7 @@ const Login = () => {
     const { accessToken, refreshToken } = loginResponse.data.data;
     setCookie("refresh", refreshToken, { path: "/", expires: getExpiredDate() });
     setLocalStorage(accessToken);
+    memberIdRefetch();
 
     navigate("/");
   }, [loginResponse, loginError]);
@@ -51,7 +52,6 @@ const Login = () => {
   const onEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && text.email.length > 5 && text.password.length > 5) {
       loginMutate();
-      memberIdRefetch();
     }
   };
 

@@ -2,6 +2,7 @@ import Checkbox from "components/common/Checkbox";
 import Input from "components/common/Input";
 import Select, { OptionType } from "components/common/Select";
 import { verify } from "constants/verify";
+import useLoginMutation from "quires/certification/useLoginMutation";
 import useSignupMutation from "quires/certification/useSignupMutation";
 import { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -43,6 +44,12 @@ const SignupSecondPage = () => {
     privacyYn: isChecked && "YES",
     termsOfServiceYn: isChecked && "YES",
   });
+
+  const { mutate: loginMutate } = useLoginMutation({
+    email: signupState.email,
+    password: signupState.password,
+  });
+
   const handlePrivacy = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length > 6) {
       return;
@@ -52,6 +59,7 @@ const SignupSecondPage = () => {
 
   useEffect(() => {
     if (signupResponse && signupResponse.data.status === "success") {
+      loginMutate();
       navigate("/onboarding/signup/3");
     }
     if (signupResponse && signupResponse.data.message === EMAIL_DUPLICATION_ERROR) {

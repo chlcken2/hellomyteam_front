@@ -94,6 +94,7 @@ const FindTeam = () => {
   }, [location.search]);
 
   const userJoinedTeam = (teamId: number) => {
+    if (!joinedTeams) return false;
     return joinedTeams.some((el) => el.teamId === teamId);
   };
 

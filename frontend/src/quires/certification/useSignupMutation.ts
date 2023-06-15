@@ -13,25 +13,27 @@ interface fetcherPropsType {
 }
 
 interface APIDataType {
-  status: string;
-  data: {
-    createdDate: string;
-    modifiedDate: string;
-    id: number;
-    email: string;
-    name: string;
-    birthday: string;
-    memberStatus: string;
-    joinPurpose: string;
-    termsAndCond: [{ id: number; termsOfServiceYn: string; privacyYn: string }];
-  } | null;
-  message: string;
+  createdDate: string;
+  modifiedDate: string;
+  id: number;
+  email: string;
+  name: string;
+  birthday: string;
+  memberStatus: string;
+  joinPurpose: string;
+  termsAndCond: [{ id: number; termsOfServiceYn: string; privacyYn: string }];
 }
 
 const QUERY_KEY = "/signup";
 
 const SignupFetcher = (signupRequest: fetcherPropsType) =>
-  instance.post<ApiResponseType<APIDataType>>(`/api/auth/signup`, signupRequest);
+  instance
+    .post<ApiResponseType<APIDataType | null>>(`/api/auth/signup`, signupRequest)
+    .then((data) => {
+      const userId = data.data.data.id;
+      localStorage.setItem("userId", userId.toString());
+      return data;
+    });
 
 const useSignupMutation = (signupRequest: fetcherPropsType) => {
   const queryClient = useQueryClient();

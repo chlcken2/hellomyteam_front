@@ -52,7 +52,7 @@ const SignupSecondPage = () => {
 
   useEffect(() => {
     if (signupResponse && signupResponse.data.status === "success") {
-      navigate("/onboarding/success");
+      navigate("/onboarding/signup/3");
     }
     if (signupResponse && signupResponse.data.message === EMAIL_DUPLICATION_ERROR) {
       alert("중복된 이메일 입니다. \n확인 후 다시 입력해주세요.");

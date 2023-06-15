@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import axios, { AxiosError } from "axios";
 import { API_URL } from "constants/urls";
 import { getCookie, getExpiredDate, setLocalStorage } from "utils/setAuthorization";
 

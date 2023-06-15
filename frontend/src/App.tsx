@@ -2,9 +2,8 @@ import { Suspense, lazy, useEffect, useState } from "react";
 
 import getMemberInfo from "quires/member/getMemberInfo";
 import getTeamInfo from "quires/team/getTeamInfo";
-import joinedTeamsAtom from "recoil/joinedTeams";
-import { getCookie } from "utils/setAuthorization";
-import { CookiesProvider, useCookies } from "react-cookie";
+import { getCookie, removeLocalCookie } from "utils/setAuthorization";
+import { CookiesProvider } from "react-cookie";
 
 import {
   Route,
@@ -13,7 +12,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 
 import UserState from "recoil/userAtom";
 import Toast from "components/common/Toast";
@@ -48,14 +47,13 @@ const Alarm = lazy(() => import("./pages/Alarm/Alarm"));
 const MyTeam = lazy(() => import("./pages/Account/MyTeam"));
 
 const App = () => {
-  const [, , removeCookie] = useCookies(["refresh"]);
   const [useUser, setUseUser] = useRecoilState(UserState);
-  const setJoinedTeams = useSetRecoilState(joinedTeamsAtom);
   const [, setConfirmLogin] = useRecoilState(LoginState);
   const [loginBoolean, setLoginBoolean] = useState(false);
   const { data: userInfo, refetch: userRefetch } = getMemberInfo(loginBoolean);
   const { data: joinedTeamResponse, refetch: dataRefetch } = getTeamInfo(loginBoolean);
   const [hideNav, setHideNav] = useState<boolean>(false);
+
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setConfirmLogin(true);
@@ -100,21 +98,16 @@ const App = () => {
 
   const mainLoader = async () => {
     if (!localStorage.getItem("token") && !getCookie("refresh")) {
-      localStorage.removeItem("userId");
-      localStorage.removeItem("token");
+      removeLocalCookie();
       return redirect("/onboarding");
     }
     if (!getCookie("refresh")) {
-      localStorage.removeItem("userId");
-      localStorage.removeItem("token");
+      removeLocalCookie();
       return redirect("/onboarding/login");
     }
     // 다른 아이디로 로그인할 경우 로컬스토리지 비움
     if (!localStorage.getItem("token")) {
-      localStorage.removeItem("userId");
-      localStorage.removeItem("selectedTeamId");
-      localStorage.removeItem("arrayData");
-      removeCookie("refresh");
+      removeLocalCookie();
     }
     // 새로 로그인할 경우 로컬스토리지 초기화
 
@@ -124,20 +117,10 @@ const App = () => {
     return joinedTeamResponse.data;
   };
 
-  const getUserIdLoader = () => {
-    if (!userInfo) return null;
-    return userInfo.data.id;
-  };
-
-  const getJoinedTeamListLoader = () => {
-    if (!joinedTeamResponse) return null;
-    return joinedTeamResponse.data;
-  };
-
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route errorElement={<NotFound />}>
-        <Route loader={mainLoader} element={<Nav hideNav={hideNav} />}>
+        <Route id="nav" loader={mainLoader} element={<Nav hideNav={hideNav} />}>
           <Route loader={mainLoader} path="/" element={<Main />}>
             <Route path="" element={<Home />} />
             <Route path="notice" element={<Notice />} />
@@ -149,7 +132,6 @@ const App = () => {
           </Route>
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route
-            loader={getUserIdLoader}
             path="/search/*"
             element={
               <Suspense fallback={<LoadingSpinner />}>
@@ -167,7 +149,7 @@ const App = () => {
           />
           <Route path="/account">
             <Route path="create" element={<CreateTeam data={setHideNav} />} />
-            <Route loader={getJoinedTeamListLoader} path="" element={<MyTeam />} />
+            <Route path="" element={<MyTeam />} />
           </Route>
         </Route>
         <Route path="/onboarding" element={<Onboarding />}>

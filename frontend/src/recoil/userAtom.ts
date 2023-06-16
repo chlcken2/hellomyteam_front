@@ -1,4 +1,3 @@
-import getMemberInfo from "quires/member/getMemberInfo";
 import { atom } from "recoil";
 
 interface termsAndCondType {

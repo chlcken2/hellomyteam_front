@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from "react";
-import { MutateOptions } from "react-query";
 import Button from "./Button";
 import DefaultAvatar from "./DefaultAvatar";
 

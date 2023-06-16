@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  FormEvent,
-  KeyboardEvent,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, KeyboardEvent, useCallback } from "react";
 import Input from "components/common/Input";
 import useEmailCertificationQuery from "quires/certification/useEmailCertifictionQuery";
 import useEmailMatchQuery from "quires/certification/useEmailMatchQuery";
@@ -14,6 +7,7 @@ import "styles/components/common.scss";
 import { useNavigate } from "react-router";
 import { useRecoilState } from "recoil";
 import SignupAtom from "recoil/signupAtom";
+import { verify } from "constants/verify";
 
 interface EmailType {
   verify: boolean;
@@ -30,8 +24,6 @@ interface CertificationType {
 
 const img = process.env.PUBLIC_URL;
 const TIMER_UNIT = 300;
-const verifyEng = /[a-zA-Z]/;
-const verifyNum = /[0-9]/;
 
 const SignupFirstPage = () => {
   const navigate = useNavigate();
@@ -51,17 +43,13 @@ const SignupFirstPage = () => {
     timeout: false,
   });
 
-  const {
-    data: EmailCertificationResponse,
-    refetch: CertificationRefetch,
-    error: EmailCertificationError,
-  } = useEmailCertificationQuery(signupState.email);
+  const { data: EmailCertificationResponse, refetch: CertificationRefetch } =
+    useEmailCertificationQuery(signupState.email);
 
-  const {
-    data: EmailMatchResponse,
-    refetch: EmailMatchRefetch,
-    error: EmailMatchError,
-  } = useEmailMatchQuery(emailMatch.auth, Number(emailMatch.number));
+  const { data: EmailMatchResponse, refetch: EmailMatchRefetch } = useEmailMatchQuery(
+    emailMatch.auth,
+    Number(emailMatch.number),
+  );
 
   useEffect(() => {
     if (
@@ -110,9 +98,7 @@ const SignupFirstPage = () => {
 
   // verify
   const handleEmailChagne = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const verifyEmail =
-      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-    if (!verifyEmail.test(signupState.email)) {
+    if (!verify.email.test(signupState.email)) {
       setEmail((prev) => ({ ...prev, verify: true }));
     } else {
       setEmail((prev) => ({ ...prev, verify: false }));
@@ -149,7 +135,7 @@ const SignupFirstPage = () => {
     setEmail((prev) => ({ ...prev, certification: true }));
   };
 
-  const requestMatchingNumber = (e: FormEvent<HTMLButtonElement>) => {
+  const requestMatchingNumber = () => {
     if (emailMatch.number.length < 6) {
       alert("인증번호 6자리를 입력해주세요");
     } else {
@@ -176,10 +162,10 @@ const SignupFirstPage = () => {
   const passwordVerify = () => {
     return (
       <div className="verify-password">
-        <span className={`${verifyEng.test(signupState.password) && "highlight"}`}>
+        <span className={`${verify.eng.test(signupState.password) && "highlight"}`}>
           영문포함
         </span>
-        <span className={`${verifyNum.test(signupState.password) && "highlight"}`}>
+        <span className={`${verify.number.test(signupState.password) && "highlight"}`}>
           숫자포함
         </span>
         <span className={`${signupState.password.length >= 8 && "highlight"}`}>
@@ -207,7 +193,7 @@ const SignupFirstPage = () => {
   };
 
   return (
-    <div className="join-wrap">
+    <>
       <button onClick={() => navigate("/onboarding")}>
         <img src={`${img}/common/ChevronLeftOutline.png`} alt="go-back" />
       </button>
@@ -296,7 +282,7 @@ const SignupFirstPage = () => {
       >
         다음으로
       </button>
-    </div>
+    </>
   );
 };
 

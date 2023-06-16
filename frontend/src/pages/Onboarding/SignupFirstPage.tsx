@@ -193,7 +193,7 @@ const SignupFirstPage = () => {
   };
 
   return (
-    <div className="join-wrap">
+    <>
       <button onClick={() => navigate("/onboarding")}>
         <img src={`${img}/common/ChevronLeftOutline.png`} alt="go-back" />
       </button>
@@ -282,7 +282,7 @@ const SignupFirstPage = () => {
       >
         다음으로
       </button>
-    </div>
+    </>
   );
 };
 

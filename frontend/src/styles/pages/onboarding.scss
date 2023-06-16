@@ -4,6 +4,7 @@
   }
   .onboarding-slider-container {
     overflow: hidden;
+    touch-action: pan-x;
     .onboarding-slider-wrap {
       display: flex;
       .onboarding-slide-item {
@@ -56,6 +57,18 @@
     padding-top: 60px;
     :nth-child(1) {
       margin-bottom: 8px;
+    }
+  }
+  @media screen and (max-width: 767px) {
+    .onboarding-slide-button {
+      display: none;
+    }
+    .onboarding-logo {
+      visibility: hidden;
+      padding: 10px 40px 12px 40px;
+    }
+    .onboarding-bullet {
+      margin-top: 24px;
     }
   }
 }

@@ -36,8 +36,11 @@ const SignupSuccess = () => {
     <Suspense fallback={<div>asdf</div>}>
       <div className="signup-success-container">
         <div className="signup-success-guide-text">
-          <h1>회원가입 완료!</h1>
-          <p>나만의 팀을 만들거나 원하는 팀에 가입해보세요</p>
+          <h1>헬로마이팀 시작하기</h1>
+          <p>
+            회원가입 완료! <br />
+            나만의 팀을 만들거나 원하는 팀에 가입해보세요
+          </p>
         </div>
         <div className="signup-success-button">
           {buttonElements.map((el, idx) =>

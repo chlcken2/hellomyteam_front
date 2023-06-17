@@ -1,20 +1,19 @@
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate, useRouteLoaderData } from "react-router-dom";
 import "../../styles/pages/myTeam.scss";
 import TeamCard from "components/common/TeamCard";
 import { joinTeamTypes } from "types/UserTypes";
 import Button from "components/common/Button";
-import { useCookies } from "react-cookie";
 import teamMemberId from "quires/team/getTeamMemberId";
 import { useEffect, useState } from "react";
 import useTeamExitQuery from "quires/team/useTeamExitQuery";
+import { removeLocalCookie } from "utils/setAuthorization";
 
 const isTeamJoined = true;
 
 const MyTeam = () => {
-  const myTeamList = useLoaderData() as joinTeamTypes[];
+  const myTeamList = useRouteLoaderData("nav") as joinTeamTypes[];
   const navigate = useNavigate();
   const memberId = Number(localStorage.getItem("userId"));
-  const [, , removeCookie] = useCookies(["refresh"]);
   const [exitTeamId, setExitTeamId] = useState<number>(null);
 
   const { data: teamMemeberIdResponse, refetch: teamMemberIdRefetch } = teamMemberId(
@@ -34,9 +33,7 @@ const MyTeam = () => {
   }, [exitTeamId]);
 
   const handleLogout = () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("token");
-    removeCookie("refresh");
+    removeLocalCookie();
     navigate("/onboarding");
   };
 
@@ -61,17 +58,17 @@ const MyTeam = () => {
       <div className="my-team-container">
         <h1 className="my-team-main-title">나의 팀</h1>
         <div className="my-team-card">
-          {myTeamList.map((el) => (
+          {myTeamList?.map((el) => (
             <div key={el.teamId}>
               <TeamCard
                 isTeamJoined={isTeamJoined}
                 title={el.teamName}
-                slogan="sub text data 필요"
+                slogan={el.oneIntro}
                 imageUrl={el.imageUrl}
                 joinHandler={() => handleTeamExit(el.teamId)}
                 buttonText="탈퇴"
                 buttonColor="blue"
-                num={24}
+                num={el.memberCount}
                 hoverTransition={false}
               />
               <div className="my-team-line" />

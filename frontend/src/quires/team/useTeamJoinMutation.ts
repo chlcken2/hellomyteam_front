@@ -1,6 +1,5 @@
 import { instance } from "config";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { UserType } from "recoil/userAtom";
+import { useMutation, useQueryClient } from "react-query";
 import ApiResponseType from "types/ApiResponseType";
 
 interface APIDataType {

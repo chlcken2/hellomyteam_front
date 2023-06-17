@@ -1,9 +1,9 @@
 import { instance } from "config";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import { joinTeamTypes } from "types/UserTypes";
 import ApiResponseType from "types/ApiResponseType";
 
-export const QUERY_KEY = "/teams/memberId";
+export const USER_INFO_QUERY_KEY = "/teams/memberId";
 
 export const useTeamInfoFetcher = (memberId: number) =>
   instance
@@ -16,7 +16,7 @@ export const useTeamInfoFetcher = (memberId: number) =>
  */
 const getTeamInfo = (enabled: boolean) => {
   const memberId = Number(localStorage.getItem("userId"));
-  return useQuery([QUERY_KEY, memberId], () => useTeamInfoFetcher(memberId), {
+  return useQuery([USER_INFO_QUERY_KEY, memberId], () => useTeamInfoFetcher(memberId), {
     enabled,
   });
 };

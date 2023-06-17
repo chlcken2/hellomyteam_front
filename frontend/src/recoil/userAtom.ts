@@ -1,4 +1,3 @@
-import getMemberInfo from "quires/member/getMemberInfo";
 import { atom } from "recoil";
 
 interface termsAndCondType {
@@ -21,6 +20,7 @@ export interface UserType {
   teamMemberInfoId?: number;
   selectedTeamId?: number;
   changedTeamState?: string;
+  changedToMobile?: boolean;
 }
 
 interface teamInfoType {

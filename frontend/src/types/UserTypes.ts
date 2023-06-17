@@ -20,6 +20,8 @@ export interface joinTeamTypes {
   teamName: string;
   teamId: number;
   imageUrl: string | null;
+  memberCount: number;
+  oneIntro: string;
 }
 
 export interface boardDetailTypes {

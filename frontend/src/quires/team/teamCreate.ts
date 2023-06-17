@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "react-query";
 import ApiResponseType from "types/ApiResponseType";
 import { instance } from "config";
-import { QUERY_KEY } from "./getTeamInfo";
+import { USER_INFO_QUERY_KEY } from "./getTeamInfo";
 
 const fetcher = (formData: FormData) =>
   instance
@@ -22,6 +22,6 @@ export const teamCreateQuery = () => {
   return useMutation(fetcher, {
     // mutate 요청이 성공한 후 queryClient.invalidateQueries 함수를 통해
     // boardReadQuery에서 불러온 API Response의 Cache를 초기화
-    onSuccess: () => queryClient.invalidateQueries(QUERY_KEY),
+    onSuccess: () => queryClient.invalidateQueries(USER_INFO_QUERY_KEY),
   });
 };

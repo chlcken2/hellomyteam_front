@@ -15,7 +15,7 @@ const Notice: FC = () => {
 
   const searchRef = useRef<HTMLInputElement>(null);
   const path = process.env.PUBLIC_URL;
-  const reg = /<[^>]*>?/g;
+  const reg = /<[^>]*>|&nbsp;/g;
   const user = useRecoilValue(UserState);
 
   const [item, setItem] = useState(1);
@@ -47,7 +47,9 @@ const Notice: FC = () => {
     refetch: listRefetch,
   } = getBoardList(
     item - 1,
-    user?.selectedTeamId || JSON.parse(localStorage.getItem("arrayData"))[0].teamId,
+    user?.selectedTeamId ||
+      JSON.parse(localStorage.getItem("arrayData"))?.[0].teamId ||
+      0,
     "NOTICE_BOARD",
     sortType,
     searchKeyword,
@@ -70,7 +72,7 @@ const Notice: FC = () => {
     listRefetch().then((res) => {
       if (res.data.data) {
         setLoading(false);
-        if (list.data) setData((prevData) => [...prevData, ...list.data.content]);
+        if (list?.data) setData((prevData) => [...prevData, ...list.data.content]);
         setPage((prevPage) => prevPage + 20);
         setHasMore(res.data.data.content.length > 0);
       }

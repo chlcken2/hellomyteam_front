@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, TouchEvent, useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import "../../styles/pages/onboarding.scss";
 import Button from "components/common/Button";
@@ -66,6 +66,7 @@ const Onboarding = () => {
   const [slideTransition, setSlideTransition] = useState(TRANSITION_STYLE);
   const [blockClick, setBlockClick] = useState(false);
   const [isSwiping, setIsSwiping] = useState(true);
+  const [moTouchPosition, setMoTouchPosition] = useState<number>(0);
 
   const replaceSlide = (translateX: number, itemNumber: number) => {
     setTimeout(() => {
@@ -103,6 +104,24 @@ const Onboarding = () => {
     handleSlide(slides.itemNumber + direction, direction);
   };
 
+  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+    setMoTouchPosition(e.changedTouches[0].clientX);
+    setIsSwiping(false);
+  };
+
+  const handleTouchEnd = (e: TouchEvent<HTMLDivElement>) => {
+    const touchEndPosition = e.changedTouches[0].clientX;
+    const distanceX = touchEndPosition - moTouchPosition;
+    if (distanceX > 30) {
+      handleSwipe(-1);
+    }
+    if (distanceX < -30) {
+      handleSwipe(1);
+    }
+    setMoTouchPosition(0);
+    setIsSwiping(true);
+  };
+
   return (
     <div className="onboarding-container">
       <div className="onboarding-logo">
@@ -110,7 +129,11 @@ const Onboarding = () => {
       </div>
       {location.pathname !== "/onboarding/signup/3" && (
         <div>
-          <div className="onboarding-slider-container">
+          <div
+            className="onboarding-slider-container"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             <div
               className="onboarding-slider-wrap"
               style={{

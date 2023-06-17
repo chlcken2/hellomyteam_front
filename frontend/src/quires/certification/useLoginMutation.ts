@@ -1,7 +1,6 @@
 import { instance } from "config";
 import { useMutation, useQueryClient } from "react-query";
 import ApiResponseType from "types/ApiResponseType";
-import { setToken } from "utils/setAuthorization";
 
 export const QUERY_KEY = "/login";
 

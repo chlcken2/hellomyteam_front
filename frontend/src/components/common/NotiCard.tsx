@@ -26,10 +26,10 @@ const NotiCard = ({
       </div>
       <ul className="buttons">
         <li>
-          <Button text="거절" handler={onClickAcceptButton} />
+          <Button text="거절" handler={onClickRejectButton} />
         </li>
         <li>
-          <Button text="수락" handler={onClickRejectButton} />
+          <Button text="수락" handler={onClickAcceptButton} />
         </li>
       </ul>
     </div>

@@ -4,6 +4,19 @@
   width: 100%;
 }
 
+.alart-null-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  line-height: 29px;
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 4px;
+}
+
 .alram-list {
   width: 100%;
   display: flex;

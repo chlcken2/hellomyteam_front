@@ -1,7 +1,9 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import { useNavigate } from "react-router";
+import { useCookies } from "react-cookie";
 
 import getMemberInfo from "quires/member/getMemberInfo";
+import { getExpiredDate, setLocalStorage } from "utils/setAuthorization";
 
 import Input from "../../components/common/Input";
 import useLoginMutation from "../../quires/certification/useLoginMutation";
@@ -10,6 +12,7 @@ const img = process.env.PUBLIC_URL;
 
 const Login = () => {
   const navigate = useNavigate();
+  const [, setCookie] = useCookies(["refresh"]);
 
   const [text, setText] = useState({
     email: "",
@@ -24,12 +27,15 @@ const Login = () => {
     email: text.email,
     password: text.password,
   });
-
   const { refetch: memberIdRefetch } = getMemberInfo(!!loginResponse);
 
   useEffect(() => {
     if (loginError) return alert("올바른 이메일 or 비밀번호를 입력하세요");
     if (!loginResponse) return;
+
+    const { accessToken, refreshToken } = loginResponse.data.data;
+    setCookie("refresh", refreshToken, { path: "/", expires: getExpiredDate() });
+    setLocalStorage(accessToken);
 
     memberIdRefetch();
 

@@ -38,7 +38,7 @@ const registCommentFetcher = ({
   parentId,
 }: RegistCommentFetcherPropsType) =>
   instance.post<ApiResponseType<RegistCommentResponseType>>(
-    `/api/board/${boardId}/comment`,
+    `/api/boards/${boardId}/comment`,
     {
       teamMemberInfoId,
       content,
@@ -51,13 +51,13 @@ const editCommentFetcher = ({
   content,
   teamMemberInfoId,
 }: EditCommentFetcherPropsType) =>
-  instance.put<ApiResponseType<RegistCommentResponseType>>(`/api/comment/${commentId}`, {
+  instance.put<ApiResponseType<RegistCommentResponseType>>(`/api/comments/${commentId}`, {
     teamMemberInfoId,
     content,
   });
 
 const deleteCommentFetcher = (commentId: number) =>
-  instance.delete<ApiResponseType<string>>(`/api/comment/${commentId}`);
+  instance.delete<ApiResponseType<string>>(`/api/comments/${commentId}`);
 
 // mutation part
 export const useRegistCommentMutation = (boardId: number) => {

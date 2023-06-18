@@ -5,20 +5,21 @@ import getBoardDetail from "quires/board/getBoardDetail";
 import Input from "components/common/Input";
 import useGetCommentsQuery from "quires/comment/useCommentQuery";
 import { useRegistCommentMutation } from "quires/comment/useCommentMutation";
-import Comment from "components/common/Comment";
 import UserState from "recoil/userAtom";
 import { useRecoilValue } from "recoil";
 import teamMemberId from "quires/team/getTeamMemberId";
 import { setBoardLikeMutation } from "quires/board/setBoardLikes";
 import { boardDeleteMutation, useEditBoardMutation } from "quires/board/setBoardQuery";
+import CommentTextarea from "components/Comment/CommentTextarea";
+import ReplyInput from "components/Comment/ReplyInput";
+import Comment from "components/Comment/Comment";
+import { CommentType } from "types/commentType";
 
 interface infoType {
   name: string;
   title: string;
   contents: string;
 }
-// 댓글 테스트를 위한 teamMemberInfoId, 로그인한 계정의 teamMemberrInfoId입력
-const TEMP_TEAM_MEMBER_INFO_ID = 148;
 
 const Detail: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -120,25 +121,23 @@ const Detail: FC = () => {
 
   /* Comment part Start */
 
-  const commentRegistFormRef = useRef<HTMLFormElement>(null);
+  const commentRegistFormRef = useRef<HTMLDivElement>(null);
 
   const [commentText, setCommentText] = useState("");
   const [replyCommentId, setReplyCommentId] = useState<null | number>(null);
-  const [replyText, setReplyText] = useState("");
 
-  const { data: commentData } = useGetCommentsQuery(Number(param.id));
+  const { data: commentData } = useGetCommentsQuery(Number(param.id), 0, 30);
+
+  const comments = useMemo(() => {
+    let comments: CommentType[] = [];
+    if (commentData && commentData.data?.content?.length > 0)
+      comments = [...commentData.data.content];
+
+    return comments;
+  }, [commentData]);
 
   const commentCount = useMemo(() => {
-    let count = 0;
-    if (commentData?.data) {
-      for (let i = 0; i < commentData.data.length; i++) {
-        if (commentData.data[i].commentStatus === "NORMAL") count++;
-        for (let j = 0; j < commentData.data[i].children.length; j++) {
-          if (commentData.data[i].children[j].commentStatus === "NORMAL") count++;
-        }
-      }
-    }
-    return count;
+    return commentData?.data?.totalElements || 0;
   }, [commentData]);
 
   const {
@@ -155,17 +154,21 @@ const Detail: FC = () => {
     error: registReplyError,
   } = useRegistCommentMutation(Number(param.id));
 
-  const handleRegistComment = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleRegistComment = () => {
     if (isRegistCommentLoading) return alert("댓글 등록 중입니다.");
-    registComment({ content: commentText, teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID });
+    if (!user.teamMemberInfoId) return alert("팀을 선택해주세요.");
+    if (commentText.length === 0) return alert("내용을 입력해주세요.");
+    registComment({ content: commentText, teamMemberInfoId: user.teamMemberInfoId });
   };
 
-  const handleRegistReply = () => {
+  const handleRegistReply = (replyText: string) => {
     if (isRegistReplyLoading) return alert("답글 등록 중입니다.");
+    if (!user.teamMemberInfoId) return alert("팀을 선택해주세요.");
+    if (replyText.length === 0) return alert("내용을 입력해주세요.");
+
     registReply({
       content: replyText,
-      teamMemberInfoId: TEMP_TEAM_MEMBER_INFO_ID,
+      teamMemberInfoId: user.teamMemberInfoId,
       parentId: replyCommentId,
     });
   };
@@ -180,11 +183,12 @@ const Detail: FC = () => {
   useEffect(() => {
     if (registReplyData && registReplyData.data?.status === "success") {
       setReplyCommentId(null);
-      setReplyText("");
     }
   }, [registReplyData]);
 
   /* Comment Part End */
+
+  console.log(comments, "comments");
 
   return (
     <>
@@ -247,53 +251,39 @@ const Detail: FC = () => {
           댓글 <span>{commentCount}개</span>
         </div>
         <ul>
-          {commentData?.data?.map((comment) => (
+          {comments?.map((comment) => (
             <li key={comment.commentId}>
               <Comment
-                isPostWriter={detail?.data.writer === comment.writer}
+                imgUrl={comment.imgUrl}
+                isPostWriter={comment.author}
                 onClickWriteReplyButton={() => {
-                  setReplyText("");
                   setReplyCommentId(comment.commentId);
                 }}
                 boardId={Number(param.id)}
-                myComment={comment.teamMemberInfoId === TEMP_TEAM_MEMBER_INFO_ID}
+                myComment={
+                  user?.teamMemberInfoId &&
+                  comment.teamMemberInfoId === user.teamMemberInfoId
+                }
                 comment={comment}
               />
               {replyCommentId && replyCommentId === comment.commentId && (
-                <div className="reply-regist-form">
-                  <div className="reply-regist-input-wrapper">
-                    <span />
-                    <Input value={replyText} setValue={setReplyText} />
-                  </div>
-                  <div className="comment-button-box">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setReplyText("");
-                        setReplyCommentId(null);
-                      }}
-                      className="cancel-button"
-                    >
-                      취소
-                    </button>
-                    <button
-                      onClick={handleRegistReply}
-                      type="submit"
-                      className="regist-button"
-                    >
-                      등록
-                    </button>
-                  </div>
-                </div>
+                <ReplyInput
+                  handleRegistReply={handleRegistReply}
+                  setReplyCommentId={setReplyCommentId}
+                />
               )}
               {comment.children.length > 0 && (
                 <ul className="reply-list">
                   {comment.children.map((reply) => (
                     <li key={reply.commentId}>
                       <Comment
-                        isPostWriter={detail?.data.writer === reply.writer}
+                        imgUrl={comment.imgUrl}
+                        isPostWriter={reply.author}
                         boardId={Number(param.id)}
-                        myComment={reply.teamMemberInfoId === TEMP_TEAM_MEMBER_INFO_ID}
+                        myComment={
+                          user?.teamMemberInfoId &&
+                          reply.teamMemberInfoId === user.teamMemberInfoId
+                        }
                         isReply
                         comment={reply}
                       />
@@ -304,16 +294,22 @@ const Detail: FC = () => {
             </li>
           ))}
         </ul>
-        <form
-          ref={commentRegistFormRef}
-          className="comment-regist-form"
-          onSubmit={(e) => handleRegistComment(e)}
-        >
+        <div ref={commentRegistFormRef} className="comment-regist-form">
           <span>
-            <img src="/common/join-1.png" alt="유저 프로필 이미지" />
+            <img src="/common/logo.png" alt="logo" />
           </span>
-          <Input value={commentText} setValue={setCommentText} />
-        </form>
+          <div className="comment-content">
+            <CommentTextarea value={commentText} setValue={setCommentText} isComment />
+            <div className="comment-button-box">
+              <button onClick={() => setCommentText("")} className="cancel-button">
+                취소
+              </button>
+              <button onClick={handleRegistComment} className="regist-button">
+                등록
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       {/* Comment Part End */}
     </>

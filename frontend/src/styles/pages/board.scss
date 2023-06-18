@@ -40,19 +40,32 @@
   margin-top: 64px;
   padding: 0 32px;
   display: flex;
-  align-items: center;
-  gap: 5px;
+  column-gap: 8px;
+
   span {
     display: block;
-    width: 50px;
+    margin-top: 4px;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+
     img {
-      width: 100%;
+      width: 40px;
+      height: 40px;
     }
   }
 
   @media screen and (max-width: 600px) {
     margin-top: 48px;
   }
+}
+
+.comment-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  row-gap: 16px;
 }
 
 .reply-regist-form {
@@ -66,10 +79,9 @@
   }
 }
 
-.reply-regist-input-wrapper {
+.reply-regist-textarea-wrapper {
   width: 100%;
   display: flex;
-  align-items: center;
   column-gap: 8px;
   margin-bottom: 16px;
 
@@ -78,6 +90,33 @@
     height: 32px;
     border-radius: 32px;
     background-color: $green-100;
+    margin-top: 8px;
+  }
+}
+
+.reply-regist-textarea {
+  width: 100%;
+  min-height: 48px;
+  height: 48px;
+  max-height: 466px;
+  padding: 12px 16px;
+  outline: none;
+  color: $black;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+  border: 1px solid $gray-100;
+  border-radius: 8px;
+  color: $gray-400;
+  resize: none;
+  overflow-y: auto;
+
+  &::placeholder {
+    color: $gray-200;
+  }
+
+  &:focus {
+    border: 1px solid $main-blue-100;
   }
 }
 

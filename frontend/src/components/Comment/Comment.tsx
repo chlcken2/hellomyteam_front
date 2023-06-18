@@ -6,6 +6,7 @@ import { memo, useState, useRef, useEffect } from "react";
 import { CommentType } from "types/commentType";
 import { formatDate } from "utils/common";
 import "../../styles/components/common.scss";
+import CommentTextarea from "./CommentTextarea";
 
 interface PropsTyeps {
   isPostWriter: boolean;
@@ -13,6 +14,7 @@ interface PropsTyeps {
   comment: CommentType;
   myComment: boolean;
   isReply?: boolean;
+  imgUrl: string | null;
   onClickWriteReplyButton?: () => void;
 }
 
@@ -22,6 +24,7 @@ const Comment = ({
   myComment,
   isReply,
   comment,
+  imgUrl,
   onClickWriteReplyButton,
 }: PropsTyeps) => {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -136,21 +139,20 @@ const Comment = ({
   });
 
   return (
-    <div
-      className={`comment-wrap ${myComment && !isDeleted && "isWriter"} ${
-        isReply && "isReply"
-      }`}
-    >
-      <div className="comment-avatar" />
+    <div className={`comment-wrap ${isReply && "isReply"}`}>
+      <div className="comment-avatar">
+        <img src={imgUrl || "/common/logo.png"} alt="logo" />
+      </div>
       <div className="comment-main-box">
         <div className="comment-header">
           <div className="comment-writer">{comment.writer}</div>
+          {myComment && <div className="comment-post-writer-mark">내댓글</div>}
           {isPostWriter && <div className="comment-post-writer-mark">작성자</div>}
           <div className="comment-date">{formatDate(comment.createdDate)}</div>
         </div>
         <div className="comment-box">
           {isEdit ? (
-            <textarea value={editText} onChange={(e) => setEditText(e.target.value)} />
+            <CommentTextarea value={editText} setValue={setEditText} />
           ) : (
             <p className={`${isDeleted && "isDelete"}`}>{comment.content}</p>
           )}
@@ -158,7 +160,7 @@ const Comment = ({
         <div className="comment-footer">
           <div className="comment-button-box">
             <button className="comment-like">좋아요 {comment.likeCount}</button>
-            {!isReply && onClickWriteReplyButton && (
+            {!isReply && !isDeleted && onClickWriteReplyButton && (
               <button onClick={onClickWriteReplyButton} className="comment-to-comment">
                 답글쓰기
               </button>
@@ -166,7 +168,7 @@ const Comment = ({
           </div>
 
           {myComment &&
-            isDeleted &&
+            !isDeleted &&
             (isEdit ? (
               <div className="comment-button-box">
                 <button onClick={() => setIsEdit(false)} className="cancel-button">

@@ -1,24 +1,22 @@
-import React, { FC, useEffect, useState, useRef, useLayoutEffect } from "react";
+import React, { FC, useEffect, useState, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
-
 import PostItem from "components/Home/PostItem";
 import getBoardList from "quires/board/getBoardList";
 import Pagination from "components/common/Pagination";
 import UserState from "recoil/userAtom";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import Select from "components/common/Select";
 import Input from "components/common/Input";
 import { useCookies } from "react-cookie"; // useCookies import
 import { Ring } from "@uiball/loaders";
-import MediaQuery from "react-responsive";
 
-const Board: FC = () => {
-  const [user, setUser] = useRecoilState(UserState);
+const Notice: FC = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["keyword"]);
 
   const searchRef = useRef<HTMLInputElement>(null);
   const path = process.env.PUBLIC_URL;
-  const reg = /<[^>]*>|&nbsp;/g;
+  const reg = /<[^>]*>/g;
+  const user = useRecoilValue(UserState);
 
   const [item, setItem] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
@@ -36,7 +34,7 @@ const Board: FC = () => {
   const [searchType, setSearchType] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [inputValue, setInputValue] = useState("");
-  const [openTab, setOpenTab] = useState(true);
+  const [openTab, setOpenTab] = useState(false);
   const [moTotalPage, setMoTotalPage] = useState(0);
   const [moIdx, setMoIdx] = useState(0);
   const [changeSearch, setChangeSearch] = useState(false);
@@ -50,7 +48,7 @@ const Board: FC = () => {
   } = getBoardList(
     item - 1,
     user?.selectedTeamId ||
-      JSON.parse(localStorage?.getItem("arrayData"))?.[0].teamId ||
+      JSON.parse(localStorage.getItem("arrayData"))?.[0].teamId ||
       0,
     "FREE_BOARD",
     sortType,
@@ -62,6 +60,7 @@ const Board: FC = () => {
   const [moFlag, setMoFlag] = useState("small");
   const [open, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
+
   // 무한스크롤
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -70,7 +69,7 @@ const Board: FC = () => {
 
   const fetchData = () => {
     setLoading(true);
-    listRefetch().then((res: any) => {
+    listRefetch().then((res) => {
       if (res.data.data) {
         setLoading(false);
         if (list?.data) setData((prevData) => [...prevData, ...list.data.content]);
@@ -148,14 +147,6 @@ const Board: FC = () => {
     listRefetch();
   }, [item, sortType, searchKeyword, searchType]);
 
-  useEffect(() => {
-    listRefetch().then((res: any) => {
-      if (res.data.data) {
-        setData(res.data.data.content);
-      }
-    });
-  }, [moIdx]);
-
   const option = [
     { label: "제목", value: "title" },
     { label: "내용", value: "contents" },
@@ -171,6 +162,7 @@ const Board: FC = () => {
       const currentValue = cookies?.keyword || [];
       const newValue = [inputValue, ...currentValue];
       setCookie("keyword", newValue, { path: "/", expires });
+      setOpenTab(true);
       setSearchKeyword(inputValue);
       setBoardName({ label: "제목", value: "title" });
       setSearchType("title");
@@ -179,11 +171,10 @@ const Board: FC = () => {
   };
 
   const handleMobile = () => {
+    // setMoFlag(!moFlag);
     if (open) {
-      setUser({ ...user, changedToMobile: true });
       setOpenSearch(true);
     } else {
-      setUser({ ...user, changedToMobile: false });
       setOpenSearch(false);
     }
   };
@@ -214,24 +205,35 @@ const Board: FC = () => {
     }
   }, [list, searchType, openTab]);
 
-  const handleMediaQueryChange = (event: any) => {
-    if (event.matches && cookies?.keyword?.length) {
+  useEffect(() => {
+    const windowWidth = window.innerWidth;
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+
+    const handleMediaQueryChange = (event: any) => {
+      if (event.matches && cookies?.keyword?.length) {
+        setOpenSearch(true);
+        setOpenTab(true);
+        setChangeSearch(true);
+        setScrollOpacity(true);
+      } else {
+        setOpenSearch(false);
+        setOpenTab(false);
+        setChangeSearch(false);
+        setScrollOpacity(false);
+      }
+    };
+
+    if (windowWidth <= 768 && cookies?.keyword?.length) {
       setOpenSearch(true);
-      setOpenTab(false);
+      setOpenTab(true);
       setChangeSearch(true);
       setScrollOpacity(true);
     } else {
       setOpenSearch(false);
-      setOpenTab(true);
+      setOpenTab(false);
       setChangeSearch(false);
       setScrollOpacity(false);
     }
-  };
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const windowWidth = window.innerWidth;
-
     mediaQuery.addListener(handleMediaQueryChange);
 
     return () => {
@@ -253,15 +255,15 @@ const Board: FC = () => {
             />
             <button
               onClick={() => {
-                setUser({ ...user, changedToMobile: false });
                 setOpenSearch(false);
+                setOpenTab(false);
                 setChangeSearch(false);
               }}
             >
               <img src={`${path}/common/close.png`} alt="닫기" />
             </button>
           </div>
-          {openSearch && (
+          {openTab && (
             <ul className="open-tab">
               {[{ title: "제목" }, { content: "내용" }, { writer: "작성자" }].map(
                 (el: any, idx: number) => {
@@ -283,7 +285,7 @@ const Board: FC = () => {
               )}
             </ul>
           )}
-          {!openTab && openSearch && (
+          {!openTab && (
             <div className="search-bottom">
               <ul>
                 <li>
@@ -333,7 +335,7 @@ const Board: FC = () => {
       )}
       <section className="section-container">
         <div className={`section-top  ${changeSearch ? "search-sort__mo" : ""}`}>
-          <h2>자유게시판 {openSearch && `검색결과 ${moTotalPage}건`}</h2>
+          <h2>자유게시판 {openTab && `검색결과 ${moTotalPage}건`}</h2>
           <div className="option-box board-input">
             <ul>
               <li className="search-icon" onClick={handleMobile} onKeyDown={handleMobile}>
@@ -404,9 +406,8 @@ const Board: FC = () => {
           </div>
         </div>
         <ul className="post-list">
-          {openSearch && !data.length && <p>데이터가 없습니다.</p>}
           {openSearch &&
-            data?.map((el: any, idx: number) => (
+            data.map((el: any, idx: number) => (
               <Link to={`/board/${el.id}?likeCount=${el.likeCount}`} key={idx}>
                 <PostItem
                   title={el.title}
@@ -457,4 +458,4 @@ const Board: FC = () => {
   );
 };
 
-export default Board;
+export default Notice;

@@ -82,7 +82,7 @@ const Detail: FC = () => {
     navi("/board");
   };
 
-  const handleLikes = useCallback(() => {
+  const handleLikes = () => {
     if (teamId.data) {
       likeMutate({
         boardId: Number(param.id),
@@ -91,7 +91,7 @@ const Detail: FC = () => {
       });
       // setLikeCounts(LikeData.data)
     }
-  }, [teamId]);
+  };
 
   useEffect(() => {
     if (teamId?.data) {
@@ -110,9 +110,13 @@ const Detail: FC = () => {
   }, [detail]);
 
   useEffect(() => {
-    if (LikeData && LikeData.data === true) {
+    console.log(LikeData);
+
+    if (LikeData?.data === true) {
       setLikeCounts(likeCounts + 1);
-    } else if (LikeData && LikeData.data === false) {
+      return;
+    }
+    if (LikeData?.data === false) {
       setLikeCounts(likeCounts - 1);
     }
   }, [LikeData]);

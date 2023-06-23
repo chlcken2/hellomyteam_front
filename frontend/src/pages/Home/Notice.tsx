@@ -15,7 +15,7 @@ const Notice: FC = () => {
 
   const searchRef = useRef<HTMLInputElement>(null);
   const path = process.env.PUBLIC_URL;
-  const reg = /<[^>]*>|&nbsp;/g;
+  const reg = /<[^>]*>/g;
   const user = useRecoilValue(UserState);
 
   const [item, setItem] = useState(1);

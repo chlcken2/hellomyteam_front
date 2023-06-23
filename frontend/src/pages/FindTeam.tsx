@@ -176,14 +176,14 @@ const FindTeam = () => {
       teamCardData = searchTeamListResponse.data;
     }
 
-    // if (
-    //   (teamListIsLoading ||
-    //     searchTeamIsLoading ||
-    //     teamListIsFetching ||
-    //     searchTeamListIsFetching) &&
-    //   !isFetchingNextPage
-    // )
-    //   return <LoadingSpinner />;
+    if (
+      (teamListIsLoading ||
+        searchTeamIsLoading ||
+        teamListIsFetching ||
+        searchTeamListIsFetching) &&
+      !isFetchingNextPage
+    )
+      return <LoadingSpinner />;
 
     if (!teamCardData.length) return <NoTeamFound searchValue={value} />;
 

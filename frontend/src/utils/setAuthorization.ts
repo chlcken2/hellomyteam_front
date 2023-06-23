@@ -24,8 +24,3 @@ export const removeLocalCookie = () => {
   localStorage.removeItem("token");
   document.cookie = "refresh=; Max-Age=0";
 };
-
-export const setToken = (accessToken: string, refreshToken: string) => {
-  setLocalStorage(accessToken);
-  document.cookie = `refresh=${refreshToken}; path=/; max-age=${getExpiredDate()}`;
-};

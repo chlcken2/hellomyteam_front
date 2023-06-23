@@ -53,6 +53,7 @@ const FindTeam = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+
   const searchQuery = searchParams.get("contents");
   const memberId = Number(localStorage.getItem("userId"));
   const [value, setValue] = useState<string>(!searchQuery ? "" : searchQuery);
@@ -65,6 +66,7 @@ const FindTeam = () => {
     data: searchTeamListResponse,
     isLoading: searchTeamIsLoading,
     refetch: searchTeamListRefetch,
+    isFetching: searchTeamListIsFetching,
   } = useSearchTeamQuery(memberId, value);
 
   const {
@@ -72,9 +74,14 @@ const FindTeam = () => {
     fetchNextPage,
     isLoading: teamListIsLoading,
     hasNextPage,
+    isFetching: teamListIsFetching,
+    isFetchingNextPage,
   } = useInfiniteTeamListQuery(memberId);
 
   const onEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !value.length) {
+      navigate("/search");
+    }
     if (e.key === "Enter" && value.length >= 2) {
       navigate(`?contents=${value}`);
       searchTeamListRefetch().then((data) =>
@@ -83,43 +90,46 @@ const FindTeam = () => {
     }
   };
 
-  useEffect(() => {
-    if (searchQuery) {
-      searchTeamListRefetch().then((data) =>
-        teamListDispatch({ type: "SET_TEAM_LIST", value: data.data.data }),
-      );
-    } else {
-      fetchNextPage();
-    }
-  }, [location.search]);
-
   const userJoinedTeam = (teamId: number) => {
     if (!joinedTeams) return false;
     return joinedTeams.some((el) => el.teamId === teamId);
   };
 
   useEffect(() => {
-    teamListDispatch({
-      type: "SET_TEAM_LIST",
-      value: teamListResponse
-        ? teamListResponse.pages.flatMap((el) => el.data.data.content)
-        : [],
+    if (searchQuery) {
+      searchTeamListRefetch().then((data) =>
+        teamListDispatch({ type: "SET_TEAM_LIST", value: data.data.data }),
+      );
+    } else {
+      teamListDispatch({
+        type: "SET_TEAM_LIST",
+        value: teamListResponse
+          ? teamListResponse.pages.flatMap((el) => el.data.data.content)
+          : [],
+      });
+    }
+  }, [teamListResponse, location.search]);
+
+  const intersection = (entries: IntersectionObserverEntry[]) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      if (hasNextPage && !searchQuery) {
+        fetchNextPage();
+      }
     });
-  }, [teamListResponse]);
+  };
 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        if (hasNextPage) fetchNextPage();
-      });
-    });
+    const observer = new IntersectionObserver(intersection, { threshold: 1 });
 
     observer.observe(bottomObserver.current);
+    if (searchQuery) {
+      observer.disconnect();
+    }
     return () => {
       observer.disconnect();
     };
-  }, [hasNextPage]);
+  }, [hasNextPage, searchQuery]);
 
   const handleJoinButton = (teamId: number, memberAuthority: MemberAuthorityType) => {
     if (memberAuthority === "WAIT") {
@@ -166,7 +176,14 @@ const FindTeam = () => {
       teamCardData = searchTeamListResponse.data;
     }
 
-    if (teamListIsLoading || searchTeamIsLoading) return <LoadingSpinner />;
+    // if (
+    //   (teamListIsLoading ||
+    //     searchTeamIsLoading ||
+    //     teamListIsFetching ||
+    //     searchTeamListIsFetching) &&
+    //   !isFetchingNextPage
+    // )
+    //   return <LoadingSpinner />;
 
     if (!teamCardData.length) return <NoTeamFound searchValue={value} />;
 
@@ -188,13 +205,34 @@ const FindTeam = () => {
         />
       );
     });
-  }, [dropDownUnit, teamListState, joinedTeams, searchQuery]);
+  }, [
+    dropDownUnit,
+    teamListState,
+    joinedTeams,
+    searchQuery,
+    teamListIsFetching,
+    searchTeamListIsFetching,
+  ]);
 
   const drowDownRef = useOutsideClick({
     onClickOutside: () => {
       setDropDownMenuOpen(false);
     },
   });
+
+  const getInputRightIcon = () => {
+    const onClick = () => {
+      setValue("");
+      navigate("/search");
+    };
+    return (
+      value && (
+        <button onClick={onClick}>
+          <img src={`${img}/icons/close-gray.svg`} alt="" />
+        </button>
+      )
+    );
+  };
 
   return (
     <>
@@ -208,6 +246,8 @@ const FindTeam = () => {
                 value={value}
                 placeholder="팀 이름 또는 팀 고유 코드"
                 keyDownHandler={onEnterPress}
+                leftIcon={<img src={`${img}/icons/board-search.png`} alt="" />}
+                rightIcon={getInputRightIcon()}
               />
             </div>
             <div ref={drowDownRef}>
@@ -255,9 +295,10 @@ const FindTeam = () => {
             </div>
           </div>
           <div className="team-card-container">{teamCardComponent}</div>
+          {isFetchingNextPage && <LoadingSpinner position="auto" />}
         </div>
+        <div className="find-team-observer" ref={bottomObserver} />
       </div>
-      <div className="find-team-observer" ref={bottomObserver} />
       <Toast />
     </>
   );

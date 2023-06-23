@@ -21,6 +21,8 @@ interface PropsType {
   max?: number;
   name?: string;
   bottomLine?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
 const Input = ({
@@ -42,6 +44,8 @@ const Input = ({
   children,
   name,
   bottomLine,
+  leftIcon,
+  rightIcon,
 }: PropsType) => {
   const [isViewPassword, setIsViewPassword] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -77,6 +81,7 @@ const Input = ({
       <div className={inputContainerClassName}>
         <Label id={id} isError={isError} isRequierd={isRequierd} label={label} />
         <div className={inputWrapperClassName}>
+          {leftIcon && <div className="input-left-icon">{leftIcon}</div>}
           <input
             id={id}
             readOnly={readOnly}
@@ -91,6 +96,7 @@ const Input = ({
             max={max}
             name={name}
           />
+          {rightIcon && rightIcon}
           {type === "password" && (
             <svg
               width="20"

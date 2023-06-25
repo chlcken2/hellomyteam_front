@@ -1,12 +1,15 @@
 import {
   useDeleteCommentMutation,
   useEditCommentMutation,
+  useLikeCommentMutation,
 } from "quires/comment/useCommentMutation";
 import { memo, useState, useRef, useEffect } from "react";
 import { CommentType } from "types/commentType";
 import { formatDate } from "utils/common";
-import "../../styles/components/common.scss";
+import UserState from "recoil/userAtom";
+import { useRecoilState } from "recoil";
 import CommentTextarea from "./CommentTextarea";
+import "../../styles/components/common.scss";
 
 interface PropsTyeps {
   isPostWriter: boolean;
@@ -27,6 +30,7 @@ const Comment = ({
   imgUrl,
   onClickWriteReplyButton,
 }: PropsTyeps) => {
+  const [user] = useRecoilState(UserState);
   const menuRef = useRef<HTMLDivElement>(null);
   const isDeleted = comment.commentStatus === "DELETE_USER";
 
@@ -46,6 +50,12 @@ const Comment = ({
     isLoading: isDeleteCommentLoading,
     error: deleteCommentError,
   } = useDeleteCommentMutation(Number(boardId));
+
+  const {
+    mutate: likeComment,
+    isLoading: isLikeCommentLoading,
+    error: likeCommentError,
+  } = useLikeCommentMutation(Number(boardId));
 
   const handleEditComment = () => {
     if (isEditCommentLoading) return alert("댓글 수정 중입니다.");
@@ -125,6 +135,11 @@ const Comment = ({
     }
   };
 
+  const handleLike = (commentId: number) => {
+    if (!user || !user.teamMemberInfoId) return;
+    likeComment({ commentId, teamMemberInfoId: user.teamMemberInfoId });
+  };
+
   useEffect(() => {
     if (editCommentData?.data.status === "success") {
       setIsEdit(false);
@@ -159,7 +174,12 @@ const Comment = ({
         </div>
         <div className="comment-footer">
           <div className="comment-button-box">
-            <button className="comment-like">좋아요 {comment.likeCount}</button>
+            <button
+              className="comment-like"
+              onClick={() => handleLike(comment.commentId)}
+            >
+              좋아요 {comment.likeCount}
+            </button>
             {!isReply && !isDeleted && onClickWriteReplyButton && (
               <button onClick={onClickWriteReplyButton} className="comment-to-comment">
                 답글쓰기

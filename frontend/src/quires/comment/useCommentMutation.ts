@@ -12,6 +12,11 @@ interface RegistCommentFetcherPropsType {
   parentId: number;
 }
 
+interface LikeCommentFetcherPropsType {
+  commentId: number;
+  teamMemberInfoId: number;
+}
+
 interface EditCommentFetcherPropsType {
   commentId: number;
   content: string;
@@ -59,6 +64,15 @@ const editCommentFetcher = ({
 const deleteCommentFetcher = (commentId: number) =>
   instance.delete<ApiResponseType<string>>(`/api/comments/${commentId}`);
 
+const likeCommentFetcher = ({
+  commentId,
+  teamMemberInfoId,
+}: LikeCommentFetcherPropsType) =>
+  instance.post<ApiResponseType<RegistCommentResponseType>>(
+    `/api/comments/${commentId}/like`,
+    { teamMemberInfoId },
+  );
+
 // mutation part
 export const useRegistCommentMutation = (boardId: number) => {
   const queryClient = useQueryClient();
@@ -90,4 +104,16 @@ export const useDeleteCommentMutation = (boardId: number) => {
   return useMutation((commentId: number) => deleteCommentFetcher(commentId), {
     onSuccess: () => queryClient.invalidateQueries([GET_COMMENTS_QUERY_KEY, boardId]),
   });
+};
+
+export const useLikeCommentMutation = (boardId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    ({ commentId, teamMemberInfoId }: LikeCommentFetcherPropsType) =>
+      likeCommentFetcher({ commentId, teamMemberInfoId }),
+    {
+      onSuccess: () => queryClient.invalidateQueries([GET_COMMENTS_QUERY_KEY, boardId]),
+    },
+  );
 };

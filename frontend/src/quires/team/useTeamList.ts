@@ -36,7 +36,7 @@ export interface TeamListType {
 
 const getPageParam = (currentPage: number, totalPage: number) => {
   if (totalPage === 1 && currentPage === 0) return undefined;
-  if (totalPage < currentPage + 1) return undefined;
+  if (totalPage <= currentPage + 1) return undefined;
 
   return currentPage + 1;
 };
@@ -64,7 +64,6 @@ const useInfiniteTeamListQuery = (memberId: number) => {
       }) => {
         return getPageParam(pageable.pageNumber, totalPages);
       },
-      enabled: false,
     },
   );
 };
